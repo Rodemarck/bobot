@@ -36,7 +36,7 @@ public class Main {
     private static void jda(){
         log.debug("logando");
         try{
-            final var jda = JDABuilder.createDefault(Constantes.env.get("chave"))
+            final JDA jda = JDABuilder.createDefault(Constantes.env.get("token"))
                     .setActivity(Activity.playing("-tutorial"))
                     .setStatus(OnlineStatus.ONLINE)
                     .disableCache(CacheFlag.ACTIVITY)

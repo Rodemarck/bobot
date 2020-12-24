@@ -21,7 +21,21 @@ public class Poll implements Serializable{
     private List<Integer> valores;
     private HashMap<String,Integer> usuariosId;
 
-    public record top(int pri,int priPos, int sec, int secPos, int total) {};
+    public class top {
+        int pri;
+        int priPos;
+        int sec;
+        int secPos;
+        int total;
+
+        public top(int pri, int priPos, int sec, int secPos, int total) {
+            this.pri = pri;
+            this.priPos = priPos;
+            this.sec = sec;
+            this.secPos = secPos;
+            this.total = total;
+        }
+    };
 
     public Poll(String titulo, LinkedList<String> opcoes, GuildMessageReceivedEvent event) {
         this.criadorId = event.getAuthor().getId();
