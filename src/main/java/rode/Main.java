@@ -39,11 +39,6 @@ public class Main {
             final JDA jda = JDABuilder.createDefault(Constantes.env.get("token"))
                     .setActivity(Activity.playing("-tutorial"))
                     .setStatus(OnlineStatus.ONLINE)
-                    .disableCache(CacheFlag.ACTIVITY)
-                    .setMemberCachePolicy(MemberCachePolicy.NONE)
-                    .setChunkingFilter(ChunkingFilter.NONE)
-                    .disableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_TYPING)
-                    .setLargeThreshold(10)
                     .build();
             inicializaComandos();
             jda.addEventListener(new Controlador());
