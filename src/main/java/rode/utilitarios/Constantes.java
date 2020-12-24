@@ -1,10 +1,13 @@
 package rode.utilitarios;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Constantes {
+    public static final Dotenv env = Dotenv.load();
     public static final HashMap<String, String> EMOTES = new HashMap<>();
     public static final HashMap<String, String> EMOTES_NOME = new HashMap<>();
     public static final HashMap<String,Integer> EVENTOS = new HashMap<>();

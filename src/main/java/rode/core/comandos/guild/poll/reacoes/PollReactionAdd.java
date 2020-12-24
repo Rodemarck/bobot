@@ -1,4 +1,4 @@
-package rode.core.comandos.guild.poll;
+package rode.core.comandos.guild.poll.reacoes;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.bson.Document;
@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.ComandoGuildReacoes;
 import rode.core.Helper;
+import rode.core.PollHelper;
 import rode.model.Poll;
 import rode.utilitarios.Memoria;
 import rode.utilitarios.Constantes;

@@ -14,7 +14,7 @@ public class Memoria {
 
     static {
         try{
-            mongoClient = MongoClients.create(System.getenv("mongo"));//System.getenv("mongo")
+            mongoClient = MongoClients.create(Constantes.env.get("mongo"));
             database = mongoClient.getDatabase("bot");
             guilds  = database.getCollection("guild");
         }catch (Exception e){

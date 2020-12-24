@@ -21,6 +21,8 @@ public class Poll implements Serializable{
     private List<Integer> valores;
     private HashMap<String,Integer> usuariosId;
 
+    public record top(int pri,int priPos, int sec, int secPos, int total) {};
+
     public Poll(String titulo, LinkedList<String> opcoes, GuildMessageReceivedEvent event) {
         this.criadorId = event.getAuthor().getId();
         this.titulo = titulo;
@@ -117,34 +119,47 @@ public class Poll implements Serializable{
         }
     }
 
-    public MessageEmbed me(){
-        int pri=0,sec=0,total=0,pos=0,num;
+    private top calculaTop(){
+        int pri=0,sec=0,total=0,priPos=0,secPos=0,num;
         int n = opcoes.size();
         for(int i=0; i<n;i++){
             num = valores.get(i);
             if(num >= pri){
                 sec = pri;
-                pos = i;
                 pri = num;
+                secPos = priPos;
+                priPos = i;
             }else if(num > sec)
                 sec = num;
             total += num;
         }
-        log.info("me, total = {}",total);
+        return new top(pri, priPos, sec,secPos, total);
+    }
+    public MessageEmbed me(){
+        top t = calculaTop();
+        int n = opcoes.size();
+        log.info("me, total = {}",t.total);
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle(titulo);
         for(int i=0; i<n;i++){
-            int numero = (total==0)? 0 : Math.round(((float)valores.get(i)/total)*100);
-            eb.appendDescription(Constantes.POOL_EMOTES.get(i) + ": " + ((i==pos)? ("**" + opcoes.get(i) + "**"):opcoes.get(i) )+ "\t[" + (numero) + "%]\n\n");
+            int numero = (t.total==0)? 0 : Math.round(((float)valores.get(i)/t.total)*100);
+            eb.appendDescription(Constantes.POOL_EMOTES.get(i) + ": " + ((i==t.priPos)? ("**" + opcoes.get(i) + "**"):opcoes.get(i) )+ "\t[" + (numero) + "%]\n\n");
         }
-        if(pri == sec)
+        if(t.pri == t.sec)
             eb.appendDescription("situação: **empatado** ");
         else
-            eb.appendDescription("situação: **" + opcoes.get(pos) + "** ganhando por " + (pri-sec) +" votos");
+            eb.appendDescription("situação: **" + opcoes.get(t.priPos) + "** ganhando por " + (t.pri-t.sec) +" votos");
         return eb.build();
     }
 
+    public MessageEmbed config(String user) {
+        top t = calculaTop();
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setTitle(titulo);
 
+
+        return null;
+    }
 
     public String getTitulo() {
         return titulo;
@@ -192,4 +207,6 @@ public class Poll implements Serializable{
     public HashMap<String, Integer> getUsuariosId() {
         return usuariosId;
     }
+
+
 }

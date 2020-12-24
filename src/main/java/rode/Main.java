@@ -1,11 +1,14 @@
 package rode;
 
 
-import jdk.jshell.JShell;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.controller.Controlador;
@@ -13,16 +16,14 @@ import rode.core.ComandoGuild;
 import rode.core.ComandoGuildReacoes;
 import rode.core.Executador;
 import rode.core.comandos.guild.*;
-import rode.core.comandos.guild.poll.*;
+import rode.core.comandos.guild.poll.reacoes.PollReactionAdd;
+import rode.core.comandos.guild.poll.reacoes.PollReactionRem;
+import rode.core.comandos.guild.poll.texto.*;
+import rode.utilitarios.Constantes;
 
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
-import java.util.Random;
-import java.util.Scanner;
 
 
 public class Main {
@@ -35,10 +36,14 @@ public class Main {
     private static void jda(){
         log.debug("logando");
         try{
-            final JDA jda = JDABuilder.createDefault(System.getenv("chave"))//System.getenv("chave")
-                    .setActivity(Activity.playing("-tutorial"))//-tutorial
+            final var jda = JDABuilder.createDefault(Constantes.env.get("chave"))
+                    .setActivity(Activity.playing("-tutorial"))
                     .setStatus(OnlineStatus.ONLINE)
-                    .setAutoReconnect(true)
+                    .disableCache(CacheFlag.ACTIVITY)
+                    .setMemberCachePolicy(MemberCachePolicy.NONE)
+                    .setChunkingFilter(ChunkingFilter.NONE)
+                    .disableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_TYPING)
+                    .setLargeThreshold(10)
                     .build();
             inicializaComandos();
             jda.addEventListener(new Controlador());

@@ -1,4 +1,4 @@
-package rode.core.comandos.guild.poll;
+package rode.core.comandos.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.bson.Document;

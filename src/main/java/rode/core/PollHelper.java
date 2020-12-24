@@ -1,4 +1,4 @@
-package rode.core.comandos.guild.poll;
+package rode.core;
 
 import net.dv8tion.jda.api.entities.Message;
 import org.bson.Document;
