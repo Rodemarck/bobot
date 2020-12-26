@@ -18,7 +18,10 @@ public class Configuracoes extends ComandoGuild {
         PollHelper.getPoll(args, event,(titulo, opcoes, modelGuild, query) -> {
             if(modelGuild != null){
                 var poll = modelGuild.getPoll(titulo);
-                poll.config(event.getEvent().getAuthor().getAsMention());
+                event.reply(poll.config(), message -> {
+                    message.editMessage("config").submit();
+                    return null;
+                });
             }
         });
     }

@@ -4,6 +4,7 @@ import lombok.Data;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -13,7 +14,11 @@ import rode.utilitarios.Constantes;
 
 import java.io.*;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 @Data
 public class Poll implements Serializable{
@@ -25,6 +30,7 @@ public class Poll implements Serializable{
     private HashMap<String,Integer> usuariosId;
 
     private LocalDateTime dataLimite;
+    private LocalDateTime dataCriacao;
 
     private class top {
         int pri;
@@ -48,15 +54,18 @@ public class Poll implements Serializable{
         this.opcoes = opcoes;
         this.valores = new LinkedList<>();
         this.usuariosId = new HashMap<>();
+        this.dataCriacao = LocalDateTime.now();
         opcoes.forEach(e->valores.add(0));
     }
 
-    public Poll(String criadorId, String titulo, LinkedList<String> opcoes, LinkedList<Integer> valores, HashMap<String, Integer> usuariosId) {
+    public Poll(String criadorId, String titulo, LinkedList<String> opcoes, LinkedList<Integer> valores, HashMap<String, Integer> usuariosId, LocalDateTime dataCriacao, LocalDateTime dataLimite) {
         this.criadorId = criadorId;
         this.titulo = titulo;
         this.opcoes = opcoes;
         this.valores = valores;
         this.usuariosId = usuariosId;
+        this.dataCriacao = dataCriacao;
+        this.dataLimite = dataLimite;
     }
 
     public Poll(String criadorId, String titulo, LinkedList<String> opcoes) {
@@ -65,25 +74,31 @@ public class Poll implements Serializable{
         this.opcoes = opcoes;
         this.usuariosId = new HashMap<>();
         this.valores = new LinkedList<>();
+        this.dataCriacao = LocalDateTime.now();
     }
     public Poll(){}
 
 
     public static Poll fromMongo(Document d) {
-
         HashMap<String, Integer> ids = new HashMap<>();
         ((List<Document>)d.get("usuariosId")).forEach(doc->ids.put(doc.getString("usuario"),doc.getInteger("escolha")));
         return new Poll(d.getString("criadorId"),
                         d.getString("titulo"),
                         (new LinkedList<>((List<String>)d.get("opcoes"))),
                         (new LinkedList<>((List<Integer>)d.get("valores"))),
-                ids);
+                        ids,
+                        LocalDateTime.parse(d.getString("dataCriacao")),
+                LocalDateTime.parse(d.getString("dataLimite"))
+                    );
+
     }
     public Document toMongo() {
         return new Document()
                 .append("criadorId",criadorId)
                 .append("titulo",titulo)
                 .append("opcoes",opcoes)
+                .append("dataCriacao", dataCriacao.toString())
+                .append("dataLimite", dataLimite.toString())
                 .append("valores",valores)
                 .append("usuariosId",usuariosId.entrySet().stream().map(u->
                         new Document()
@@ -143,7 +158,7 @@ public class Poll implements Serializable{
     }
 
     public void fecha(){
-        dataLimite = LocalDateTime.now().minusDays(1);
+        dataLimite = LocalDateTime.now().minusMinutes(1);
     }
 
     private top calculaTop(){
@@ -180,14 +195,33 @@ public class Poll implements Serializable{
         return eb.build();
     }
 
-    public MessageEmbed config(String user) {
+    public MessageEmbed config() {
         top t = calculaTop();
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle(titulo);
-
-
-        return null;
+        eb.appendDescription("criador : <@" + criadorId + "> \n");
+        eb.appendDescription("criado no dia : " + dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + '\n');
+        eb.appendDescription("aberta: ");
+        if (isAberto()) {
+            eb.appendDescription("**Sim.**\n");
+            if (dataLimite != null) {
+                long tempo = ChronoUnit.MINUTES.between(LocalDateTime.now(), dataLimite);
+                double dias = Math.floor(tempo / (24 * 60));
+                tempo -= (dias * 24 * 60);
+                double horas = Math.floor(tempo / 60);
+                tempo -= horas;
+                eb.appendDescription("tempo restante **" + dias + " dias, " + horas + " horas, " + tempo + " minutos**\n");
+            }
+        } else
+            eb.appendDescription("**Não.**\n");
+        eb.appendDescription("resultado: ");
+        if (t.pri == t.sec)
+            eb.appendDescription("**empate**\n");
+        else
+            eb.appendDescription("**" + opcoes.get(t.priPos) + "** ganhando por " + (t.pri - t.sec) + " votos\n");
+        return eb.build();
     }
+
 
     public String getTitulo() {
         return titulo;

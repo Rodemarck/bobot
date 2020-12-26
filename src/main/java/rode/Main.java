@@ -20,25 +20,27 @@ import rode.utilitarios.Constantes;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 public class Main {
     private static Logger log = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) throws IOException, InterruptedException {
-        jda();
-        //System.out.println(Constantes.env.get("mongo"));
+        //jda();
+        System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMMM, yyyy HH:mm")));
     }
 
 
     private static void jda(){
         log.debug("logando");
         try{
+            inicializaComandos();
             final JDA jda = JDABuilder.createDefault(Constantes.env.get("token"))
                     .setActivity(Activity.playing("-tutorial"))
                     .setStatus(OnlineStatus.ONLINE)
+                    .addEventListeners(new Controlador())
                     .build();
-            inicializaComandos();
-            jda.addEventListener(new Controlador());
         } catch (LoginException e) {
             e.printStackTrace();
         }
@@ -58,7 +60,9 @@ public class Main {
         cadastraComando(new Delay());
         cadastraComando(new Diga());
         cadastraComando(new FechaPoll());
+        cadastraComando(new Configuracoes());
     }
+
 
     private static void cadastraComando(ComandoGuild comando) {
         int id_comando = Executador.COMANDOS_GUILD.size() + 1;
