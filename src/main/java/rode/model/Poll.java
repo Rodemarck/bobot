@@ -200,7 +200,8 @@ public class Poll implements Serializable{
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle(titulo);
         eb.appendDescription("criador : <@" + criadorId + "> \n");
-        eb.appendDescription("criado no dia : " + dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + '\n');
+        if(dataCriacao != null)
+            eb.appendDescription("criado no dia : " + dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + '\n');
         eb.appendDescription("aberta: ");
         if (isAberto()) {
             eb.appendDescription("**Sim.**\n");

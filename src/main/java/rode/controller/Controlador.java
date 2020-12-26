@@ -25,19 +25,9 @@ public class Controlador extends ListenerAdapter {
     @Override
     public void onReady(@NotNull ReadyEvent event) {
         event.getJDA().retrieveUserById(305090445283688450l).submit()
-                .thenCompose(user -> user.openPrivateChannel().submit())
-                .thenCompose(privateChannel ->
-                    privateChannel.getHistory().retrievePast(100).submit()
-                            .thenCompose(messages -> {
-                                messages.forEach(message -> privateChannel.deleteMessageById(message.getIdLong()).submit());
-                                return null;
-                            })
-                ).thenRun(()->
-                event.getJDA().retrieveUserById(305090445283688450l).submit()
                     .thenCompose(user -> user.openPrivateChannel().submit())
                     .thenCompose(privateChannel -> privateChannel.sendMessage("nhe nhe").submit())
-                    .thenCompose(m->m.addReaction("\u2705").submit()))
-        ;
+                    .thenCompose(m->m.addReaction("\u2705").submit());
 
     }
 
