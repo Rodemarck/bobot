@@ -27,8 +27,8 @@ import java.time.format.DateTimeFormatter;
 public class Main {
     private static Logger log = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) throws IOException, InterruptedException {
-        //jda();
-        System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMMM, yyyy HH:mm")));
+        jda();
+        //System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMMM, yyyy HH:mm")));
     }
 
 
