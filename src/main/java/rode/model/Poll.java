@@ -87,8 +87,8 @@ public class Poll implements Serializable{
                         (new LinkedList<>((List<String>)d.get("opcoes"))),
                         (new LinkedList<>((List<Integer>)d.get("valores"))),
                         ids,
-                        LocalDateTime.parse(d.getString("dataCriacao")),
-                LocalDateTime.parse(d.getString("dataLimite"))
+                d.getString("dataCriacao") == null? null:LocalDateTime.parse(d.getString("dataCriacao")),
+                d.getString("dataLimite") == null? null:LocalDateTime.parse(d.getString("dataLimite"))
                     );
 
     }
