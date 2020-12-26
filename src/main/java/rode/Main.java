@@ -5,10 +5,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.utils.ChunkingFilter;
-import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.controller.Controlador;
@@ -30,6 +26,7 @@ public class Main {
     private static Logger log = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) throws IOException, InterruptedException {
         jda();
+        //System.out.println(Constantes.env.get("mongo"));
     }
 
 
@@ -47,7 +44,7 @@ public class Main {
         }
     }
     private static void inicializaComandos() {
-        cadastraComando(new AbrePoll());
+        cadastraComando(new MostraPoll());
         cadastraComando(new AdicionaOpcoesPoll());
         cadastraComando(new DeletaPoll());
         cadastraComando(new ListarPolls());
@@ -60,6 +57,7 @@ public class Main {
         cadastraComando(new GraficoPoll());
         cadastraComando(new Delay());
         cadastraComando(new Diga());
+        cadastraComando(new FechaPoll());
     }
 
     private static void cadastraComando(ComandoGuild comando) {

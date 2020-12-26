@@ -31,6 +31,10 @@ public class PollReactionAdd extends ComandoGuildReacoes {
             PollHelper.getPoll(args, event, (titulo1, opcoes, guild, query) -> {
                 if(guild != null){
                     Poll poll = guild.getPoll(titulo);
+                    if(!poll.isAberto()){
+                        event.reply("a poll {**" + poll.getTitulo() + "**} foi fechada", message -> message.delete().submitAfter(5,TimeUnit.SECONDS));
+                        return;
+                    }
                     if(poll.getOpcoes().size() > index){
                         if(poll.hasUser(event.getId())){
                             event.getMessage().removeReaction(event.emoji(), event.getEvent().getUser()).queue(mm->{

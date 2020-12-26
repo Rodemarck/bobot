@@ -15,10 +15,10 @@ import rode.utilitarios.*;
 
 import java.util.LinkedList;
 
-public class AbrePoll extends ComandoGuild {
+public class MostraPoll extends ComandoGuild {
     private static Logger log = LoggerFactory.getLogger(Main.class);
-    public AbrePoll() {
-        super("poll",null,"poll","abre","open");
+    public MostraPoll() {
+        super("poll",null,"poll","enquete","enq");
     }
 
     @Override
@@ -64,7 +64,7 @@ public class AbrePoll extends ComandoGuild {
     public void helpExtensive(EmbedBuilder me) {
         me.appendDescription("Comando para abrir uma nova poll (enquete) no servidor.\n\n");
         me.appendDescription("**-poll {titulo} [opção 1] [opção 2] ...**\n\n");
-        me.appendDescription("Aliases (comandos alternativos) : **poll**, **abre**, **open**.\n\n");
+        me.appendDescription("Aliases (comandos alternativos) : **poll**, **enquete**, **enq**.\n\n");
         me.appendDescription("Se não for informado nenhuma opção, por padrão será adicionado as opções **sim** e **não**.");
         me.appendDescription(" O limite de opções é 36.\n\n");
         me.appendDescription("É possivel votar em apenas uma opção por vez, reagindo à um dos emojois correspondentes a opção.\n");

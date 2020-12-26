@@ -11,6 +11,7 @@ import rode.utilitarios.Constantes;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 
 public class PollReactionRem extends ComandoGuildReacoes {
     public PollReactionRem() {
@@ -24,6 +25,10 @@ public class PollReactionRem extends ComandoGuildReacoes {
         PollHelper.getPoll(args,event,(titulo1, opcoes, guild, query) -> {
             if(guild != null){
                 Poll poll = guild.getPoll(titulo);
+                if(!poll.isAberto()){
+                    event.reply("a poll {**" + poll.getTitulo() + "**} foi fechada", message -> message.delete().submitAfter(5, TimeUnit.SECONDS));
+                    return;
+                }
                 int index = Constantes.POOL_EMOTES.indexOf(event.emoji());
                 poll.rem(index, event.getId());
                 event.getMessage().editMessage(poll.me()).queue();

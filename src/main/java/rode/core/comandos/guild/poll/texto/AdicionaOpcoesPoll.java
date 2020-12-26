@@ -10,6 +10,7 @@ import rode.utilitarios.Memoria;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 
 public class AdicionaOpcoesPoll extends ComandoGuild {
     public AdicionaOpcoesPoll() {
@@ -28,6 +29,10 @@ public class AdicionaOpcoesPoll extends ComandoGuild {
                     return;
                 }
                 Poll poll = guild.getPoll(titulo);
+                if(!poll.isAberto()){
+                    event.reply("a poll {**" + poll.getTitulo() + "**} foi fechada", message -> message.delete().submitAfter(5, TimeUnit.SECONDS));
+                    return;
+                }
                 poll.addOpcoes(opcoes);
                 Memoria.guilds.updateOne(query,new Document("$set",guild.toMongo()));
                 event.reply(poll.me(),message->PollHelper.addReaction(message, poll.getOpcoes().size()));

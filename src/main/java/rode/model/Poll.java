@@ -1,5 +1,6 @@
 package rode.model;
 
+import lombok.Data;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -11,8 +12,10 @@ import rode.core.Helper;
 import rode.utilitarios.Constantes;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+@Data
 public class Poll implements Serializable{
     private static Logger log = LoggerFactory.getLogger(Poll.class);
     private String criadorId;
@@ -21,7 +24,9 @@ public class Poll implements Serializable{
     private List<Integer> valores;
     private HashMap<String,Integer> usuariosId;
 
-    public class top {
+    private LocalDateTime dataLimite;
+
+    private class top {
         int pri;
         int priPos;
         int sec;
@@ -133,6 +138,14 @@ public class Poll implements Serializable{
         }
     }
 
+    public boolean isAberto(){
+        return dataLimite == null || LocalDateTime.now().isBefore(dataLimite);
+    }
+
+    public void fecha(){
+        dataLimite = LocalDateTime.now().minusDays(1);
+    }
+
     private top calculaTop(){
         int pri=0,sec=0,total=0,priPos=0,secPos=0,num;
         int n = opcoes.size();
@@ -159,10 +172,11 @@ public class Poll implements Serializable{
             int numero = (t.total==0)? 0 : Math.round(((float)valores.get(i)/t.total)*100);
             eb.appendDescription(Constantes.POOL_EMOTES.get(i) + ": " + ((i==t.priPos)? ("**" + opcoes.get(i) + "**"):opcoes.get(i) )+ "\t[" + (numero) + "%]\n\n");
         }
+        eb.appendDescription(isAberto()? "situação: " : "teminou em: ");
         if(t.pri == t.sec)
-            eb.appendDescription("situação: **empatado** ");
+            eb.appendDescription("**empate**");
         else
-            eb.appendDescription("situação: **" + opcoes.get(t.priPos) + "** ganhando por " + (t.pri-t.sec) +" votos");
+            eb.appendDescription("**" + opcoes.get(t.priPos) + "** ganhando por " + (t.pri-t.sec) +" votos");
         return eb.build();
     }
 

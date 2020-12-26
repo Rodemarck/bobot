@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'net.dv8tion:JDA:4.2.0_221'
+    implementation 'net.dv8tion:JDA:4.2.0_223'
 
     // https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver
     implementation 'org.mongodb:mongodb-driver-legacy:4.0.5'
@@ -35,6 +35,10 @@ dependencies {
     compile group: 'jfree', name: 'jfreechart', version: '1.0.13'
 
     implementation 'io.github.cdimascio:java-dotenv:5.2.2'
+
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    implementation 'org.projectlombok:lombok:1.18.16'
+
 }
 
 compileJava.options.encoding = 'UTF-8'
