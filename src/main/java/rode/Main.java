@@ -1,7 +1,6 @@
 package rode;
 
 
-import kotlin.jvm.internal.Reflection;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -12,7 +11,6 @@ import rode.controller.Controlador;
 import rode.core.ComandoGuild;
 import rode.core.ComandoGuildReacoes;
 import rode.core.Executador;
-import rode.core.UseComande;
 import rode.core.comandos.guild.*;
 import rode.core.comandos.guild.poll.reacoes.PollReactionAdd;
 import rode.core.comandos.guild.poll.reacoes.PollReactionRem;
@@ -23,7 +21,6 @@ import rode.utilitarios.Regex;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
@@ -33,6 +30,7 @@ public class Main {
     private static Logger log = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) throws IOException, InterruptedException {
         jda();
+    //System.out.println("{viado de dmais} 12 dias".replaceAll("\\{([^\\}]+)\\}",""));
 
     }
 
@@ -66,7 +64,6 @@ public class Main {
         cadastraComando(new Diga());
         cadastraComando(new FechaPoll());
         cadastraComando(new Configuracoes());
-        cadastraComando(new SetDataPoll());
     }
 
 

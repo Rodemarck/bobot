@@ -34,22 +34,25 @@ public class SetDataPoll  extends ComandoGuild {
                 LinkedList<String> param = Regex.extract("\\d+(d((ia|ay)s?)?)",s);
                 if(param.size() > 0){
                     param.forEach(p->{
-                        if(Pattern.compile("\\d+").matcher(p).find())
-                            data.plusDays(Long.parseLong(Pattern.compile("\\d+").matcher(p).group()));
+                        var m = Pattern.compile("\\d+").matcher(p);
+                        if(m.find())
+                            data.plusDays(Long.parseLong(m.group()));
                     });
                 }
                 param = Regex.extract("\\d+((w(eek)?|s(emana)?)s?)",s);
                 if(param.size() > 0){
                     param.forEach(p->{
-                        if(Pattern.compile("\\d+").matcher(p).find())
-                            data.plusWeeks(Long.parseLong(Pattern.compile("\\d+").matcher(p).group()));
+                        var m = Pattern.compile("\\d+").matcher(p);
+                        if(m.find())
+                            data.plusWeeks(Long.parseLong(m.group()));
                     });
                 }
                 param = Regex.extract("\\d+(h(o(ra|ur))?s?)",s);
                 if(param.size() > 0){
                     param.forEach(p->{
-                        if(Pattern.compile("\\d+").matcher(p).find())
-                            data.plusHours(Long.parseLong(Pattern.compile("\\d+").matcher(p).group()));
+                        var m = Pattern.compile("\\d+").matcher(p);
+                        if(m.find())
+                            data.plusHours(Long.parseLong(m.group()));
                     });
                 }
                 if(data.equals(controle)){
