@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 
 public class Main {
-    private static Logger log = LoggerFactory.getLogger(Main.class);
+        private static Logger log = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) throws IOException, InterruptedException {
         jda();
     //System.out.println("{viado de dmais} 12 dias".replaceAll("\\{([^\\}]+)\\}",""));

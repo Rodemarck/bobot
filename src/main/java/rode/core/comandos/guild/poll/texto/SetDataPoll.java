@@ -3,6 +3,9 @@ package rode.core.comandos.guild.poll.texto;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import rode.Main;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
@@ -19,6 +22,8 @@ import java.util.stream.Collectors;
 
 @UseComande
 public class SetDataPoll  extends ComandoGuild {
+    private static Logger log = LoggerFactory.getLogger(SetDataPoll.class);
+
     public SetDataPoll() {
         super("data", Permission.ADMINISTRATOR, "data","date");
     }
@@ -35,24 +40,37 @@ public class SetDataPoll  extends ComandoGuild {
                 if(param.size() > 0){
                     param.forEach(p->{
                         var m = Pattern.compile("\\d+").matcher(p);
-                        if(m.find())
-                            data.plusDays(Long.parseLong(m.group()));
+                        if(m.find()){
+                            var g = m.group();
+                            log.info("dias {} -> {}", p,g);
+                            data.plusDays(Long.parseLong(g));
+                        }
+
                     });
                 }
                 param = Regex.extract("\\d+((w(eek)?|s(emana)?)s?)",s);
                 if(param.size() > 0){
                     param.forEach(p->{
+
                         var m = Pattern.compile("\\d+").matcher(p);
-                        if(m.find())
-                            data.plusWeeks(Long.parseLong(m.group()));
+                        if(m.find()){
+                            var g = m.group();
+                            log.info("dias {} -> {}", p,g);
+                            data.plusWeeks(Long.parseLong(g));
+                        }
+
                     });
                 }
                 param = Regex.extract("\\d+(h(o(ra|ur))?s?)",s);
                 if(param.size() > 0){
                     param.forEach(p->{
                         var m = Pattern.compile("\\d+").matcher(p);
-                        if(m.find())
-                            data.plusHours(Long.parseLong(m.group()));
+                        if(m.find()){
+                            var g = m.group();
+                            log.info("horas {} -> {}", p,g);
+                            data.plusHours(Long.parseLong(g));
+                        }
+
                     });
                 }
                 if(data.equals(controle)){
