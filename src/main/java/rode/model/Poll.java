@@ -20,7 +20,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-@Data
 public class Poll implements Serializable{
     private static Logger log = LoggerFactory.getLogger(Poll.class);
     private String criadorId;
@@ -271,5 +270,19 @@ public class Poll implements Serializable{
         return usuariosId;
     }
 
+    public LocalDateTime getDataLimite() {
+        return dataLimite;
+    }
 
+    public void setDataLimite(LocalDateTime dataLimite) {
+        this.dataLimite = dataLimite;
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
 }
