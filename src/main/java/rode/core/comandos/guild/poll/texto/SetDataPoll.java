@@ -84,6 +84,7 @@ public class SetDataPoll  extends ComandoGuild {
                 }else
                     poll.setDataLimite(data);
                 Memoria.guilds.updateOne(query, new Document("$set", modelGuild.toMongo()));
+                event.reply("o limite agora é " + poll.getDataLimite().toString());
             }
         });
     }
