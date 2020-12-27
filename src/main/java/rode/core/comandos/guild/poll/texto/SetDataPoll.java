@@ -34,19 +34,22 @@ public class SetDataPoll  extends ComandoGuild {
                 LinkedList<String> param = Regex.extract("\\d+(d((ia|ay)s?)?)",s);
                 if(param.size() > 0){
                     param.forEach(p->{
-                        data.plusDays(Long.parseLong(Pattern.compile("\\d+").matcher(p).group()));
+                        if(Pattern.compile("\\d+").matcher(p).find())
+                            data.plusDays(Long.parseLong(Pattern.compile("\\d+").matcher(p).group()));
                     });
                 }
                 param = Regex.extract("\\d+((w(eek)?|s(emana)?)s?)",s);
                 if(param.size() > 0){
                     param.forEach(p->{
-                        data.plusWeeks(Long.parseLong(Pattern.compile("\\d+").matcher(p).group()));
+                        if(Pattern.compile("\\d+").matcher(p).find())
+                            data.plusWeeks(Long.parseLong(Pattern.compile("\\d+").matcher(p).group()));
                     });
                 }
                 param = Regex.extract("\\d+(h(o(ra|ur))?s?)",s);
                 if(param.size() > 0){
                     param.forEach(p->{
-                        data.plusHours(Long.parseLong(Pattern.compile("\\d+").matcher(p).group()));
+                        if(Pattern.compile("\\d+").matcher(p).find())
+                            data.plusHours(Long.parseLong(Pattern.compile("\\d+").matcher(p).group()));
                     });
                 }
                 if(data.equals(controle)){
