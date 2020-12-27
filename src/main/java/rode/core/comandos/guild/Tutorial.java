@@ -4,10 +4,12 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import rode.core.Executador;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
+import rode.core.UseComande;
 
 import java.io.IOException;
 import java.util.LinkedList;
 
+@UseComande
 public class Tutorial extends ComandoGuild {
     private static EmbedBuilder tutorial;
 

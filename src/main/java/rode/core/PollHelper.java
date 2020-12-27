@@ -2,7 +2,6 @@ package rode.core;
 
 import net.dv8tion.jda.api.entities.Message;
 import org.bson.Document;
-import rode.core.Helper;
 import rode.model.ModelGuild;
 import rode.model.Poll;
 import rode.utilitarios.Constantes;
@@ -26,9 +25,9 @@ public final class PollHelper {
     public static void getPoll(LinkedList<String> args, Helper event, PollFunction pf) throws IOException {
         args.poll();
         String txt = args.stream().collect(Collectors.joining(" "));
-        String titulo = Regex.extract("\\{([^\\}])+\\}", txt).getFirst();
+        String titulo = Regex.extractInside("\\{([^\\}])+\\}", txt).getFirst();
         LinkedList<String> opcoes = new LinkedList<>();
-        for(String s:Regex.extract("\\[([^\\]])+\\]", txt))
+        for(String s:Regex.extractInside("\\[([^\\]])+\\]", txt))
             if(!opcoes.contains(s))
                 opcoes.add(s);
         Document query = new Document("id", event.guildId()).append("polls.titulo",titulo);
@@ -45,7 +44,7 @@ public final class PollHelper {
         LinkedList<String>args2 = new LinkedList<>(args);
         args2.poll();
         String txt = args.stream().collect(Collectors.joining(" "));
-        String titulo = Regex.extract("\\{([^\\}])+\\}", txt).getFirst();
+        String titulo = Regex.extractInside("\\{([^\\}])+\\}", txt).getFirst();
 
         Document query = new Document("id",event.guildId()).append("polls.titulo",titulo);
         Document doc = Memoria.guilds.find(query).first();

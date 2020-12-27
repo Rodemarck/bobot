@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
+import rode.core.UseComande;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -12,6 +13,7 @@ import javax.script.ScriptException;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
+@UseComande
 public class Eval extends ComandoGuild {
     public Eval() {
         super("eval", null, "eval", "js");

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import rode.core.ComandoGuildReacoes;
 import rode.core.Helper;
 import rode.core.PollHelper;
+import rode.core.UseComande;
 import rode.model.Poll;
 import rode.utilitarios.Memoria;
 import rode.utilitarios.Constantes;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
+@UseComande
 public class PollReactionAdd extends ComandoGuildReacoes {
     private static Logger log = LoggerFactory.getLogger(PollReactionAdd.class);
     public PollReactionAdd() {

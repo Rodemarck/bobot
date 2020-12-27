@@ -5,6 +5,7 @@ import org.bson.Document;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
+import rode.core.UseComande;
 import rode.model.Poll;
 import rode.utilitarios.Memoria;
 
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
+@UseComande
 public class AdicionaOpcoesPoll extends ComandoGuild {
     public AdicionaOpcoesPoll() {
         super("addop", null, "addpoll","addop","addoptions","addopções","addoveop","addoveoptions","addoveopções");

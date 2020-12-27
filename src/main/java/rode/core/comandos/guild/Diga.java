@@ -4,10 +4,12 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
+import rode.core.UseComande;
 
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
+@UseComande
 public class Diga extends ComandoGuild {
     public Diga() {
         super("diz", null,"diz","diga", "say");

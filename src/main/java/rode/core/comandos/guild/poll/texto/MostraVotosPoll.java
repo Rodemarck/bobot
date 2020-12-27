@@ -4,11 +4,13 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
+import rode.core.UseComande;
 import rode.model.Poll;
 
 import java.io.IOException;
 import java.util.LinkedList;
 
+@UseComande
 public class MostraVotosPoll extends ComandoGuild {
     public MostraVotosPoll() {
         super("votos", null, "votos","votes","vpoll");

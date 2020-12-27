@@ -5,9 +5,11 @@ import net.dv8tion.jda.api.Permission;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
+import rode.core.UseComande;
 
 import java.util.LinkedList;
 
+@UseComande
 public class Configuracoes extends ComandoGuild {
     public Configuracoes() {
         super("configuracao", null, "config","configuracao","configuração","def","definicoes","definições","configuracoes","configurações","settings");

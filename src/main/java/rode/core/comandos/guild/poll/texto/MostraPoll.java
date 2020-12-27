@@ -9,12 +9,14 @@ import rode.Main;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
+import rode.core.UseComande;
 import rode.model.ModelGuild;
 import rode.model.Poll;
 import rode.utilitarios.*;
 
 import java.util.LinkedList;
 
+@UseComande
 public class MostraPoll extends ComandoGuild {
     private static Logger log = LoggerFactory.getLogger(Main.class);
     public MostraPoll() {

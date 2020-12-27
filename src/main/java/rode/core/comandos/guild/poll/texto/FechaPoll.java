@@ -6,11 +6,13 @@ import org.bson.Document;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
+import rode.core.UseComande;
 import rode.model.Poll;
 import rode.utilitarios.Memoria;
 
 import java.util.LinkedList;
 
+@UseComande
 public class FechaPoll extends ComandoGuild {
     public FechaPoll() {
         super("fecha", null, "fecha","close");
