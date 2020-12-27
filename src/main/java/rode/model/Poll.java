@@ -97,8 +97,8 @@ public class Poll implements Serializable{
                 .append("criadorId",criadorId)
                 .append("titulo",titulo)
                 .append("opcoes",opcoes)
-                .append("dataCriacao", dataCriacao.toString())
-                .append("dataLimite", dataLimite.toString())
+                .append("dataCriacao", dataCriacao==null? null:dataCriacao.toString())
+                .append("dataLimite", dataLimite==null?null:dataLimite.toString())
                 .append("valores",valores)
                 .append("usuariosId",usuariosId.entrySet().stream().map(u->
                         new Document()
