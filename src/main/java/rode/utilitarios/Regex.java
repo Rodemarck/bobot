@@ -32,4 +32,11 @@ public class Regex {
             strs.add( m.group());
         return strs;
     }
+
+    public static boolean isLink(String input){
+        Matcher m = Pattern
+                .compile("(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#\\[\\]@!\\$&'\\(\\)\\*\\+,;=.]+")
+                .matcher(input);
+        return m.find();
+    }
 }

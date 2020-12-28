@@ -9,17 +9,15 @@ import rode.Main;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
-import rode.core.UseComande;
 import rode.model.ModelGuild;
 import rode.model.Poll;
 import rode.utilitarios.*;
 
 import java.util.LinkedList;
 
-@UseComande
-public class MostraPoll extends ComandoGuild {
-    private static Logger log = LoggerFactory.getLogger(Main.class);
-    public MostraPoll() {
+public class AbrePoll extends ComandoGuild {
+    private static Logger log = LoggerFactory.getLogger(AbrePoll.class);
+    public AbrePoll() {
         super("poll",null,"poll","enquete","enq");
     }
 
@@ -64,12 +62,16 @@ public class MostraPoll extends ComandoGuild {
 
     @Override
     public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("Comando para abrir uma nova poll (enquete) no servidor.\n\n");
-        me.appendDescription("**-poll {titulo} [opção 1] [opção 2] ...**\n\n");
-        me.appendDescription("Aliases (comandos alternativos) : **poll**, **enquete**, **enq**.\n\n");
-        me.appendDescription("Se não for informado nenhuma opção, por padrão será adicionado as opções **sim** e **não**.");
-        me.appendDescription(" O limite de opções é 36.\n\n");
-        me.appendDescription("É possivel votar em apenas uma opção por vez, reagindo à um dos emojois correspondentes a opção.\n");
-        me.appendDescription("Para retirar seu voto, basta reagir novamente no mesmo emoji.");
+        me.appendDescription("""
+                Comando para abrir uma nova poll (enquete) no servidor.
+                
+                **-poll {titulo} [opção 1] [opção 2] ...**
+                
+                Aliases (comandos alternativos) : **poll**, **enquete**, **enq**.
+                Se não for informado nenhuma opção, por padrão será adicionado as opções **sim** e **não**.
+                O limite de opções é 20.
+                É possível votar em apenas uma opção por vez, reagindo à um dos emojis correspondentes a opção, ou utilizando o comando **votar**.
+                Para retirar seu voto, basta votar novamente na mesma opção.
+                """);
     }
 }

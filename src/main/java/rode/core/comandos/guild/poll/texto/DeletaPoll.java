@@ -6,14 +6,12 @@ import org.bson.Document;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
-import rode.core.UseComande;
 import rode.model.Poll;
 import rode.utilitarios.Memoria;
 
 import java.io.IOException;
 import java.util.LinkedList;
 
-@UseComande
 public class DeletaPoll extends ComandoGuild {
     public DeletaPoll() {
         super("deleta", Permission.ADMINISTRATOR, "delpoll","delet","deleta");
@@ -35,7 +33,7 @@ public class DeletaPoll extends ComandoGuild {
 
     @Override
     public boolean livre(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        return super.livre(args, event) || PollHelper.livre(args, event);
+        return super.livre(args, event) || PollHelper.livreDono(args, event);
     }
 
     @Override
@@ -45,8 +43,12 @@ public class DeletaPoll extends ComandoGuild {
 
     @Override
     public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("Comando para deletar uma poll (enquete) aberta neste servidor.\n\n");
-        me.appendDescription("**-deleta {titulo}***.\n\n");
-        me.appendDescription("Aliases (comandos alternativos) : **delpoll**, **delet**, **deleta**\n\n");
+        me.appendDescription("""
+                Comando para deletar uma poll (enquete) aberta neste servidor.
+                
+                **-deleta {titulo}***
+                
+                Aliases (comandos alternativos) : **delpoll**, **delet**, **deleta**.
+                """);
     }
 }

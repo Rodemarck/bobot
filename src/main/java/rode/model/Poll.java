@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.Helper;
 import rode.utilitarios.Constantes;
+import rode.utilitarios.Regex;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -30,6 +31,17 @@ public class Poll implements Serializable{
 
     private LocalDateTime dataLimite;
     private LocalDateTime dataCriacao;
+
+    public MessageEmbed visualiza(int i) {
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setTitle(titulo)
+                .appendDescription(opcoes.get(i));
+        if(Regex.isLink(opcoes.get(i)))
+                eb.setImage(opcoes.get(i));
+        eb.addField("opção", Constantes.POOL_votos.get(i),true)
+                .setFooter(i + " / " + (opcoes.size()-1));
+        return eb.build();
+    }
 
     private class top {
         int pri;
@@ -147,6 +159,10 @@ public class Poll implements Serializable{
                     if(usuario.getValue() == index){
                         usuariosId.remove(usuario.getKey());
                     }
+                    if(usuario.getValue() > index){
+                        usuariosId.remove(usuario.getKey());
+                        usuariosId.put(usuario.getKey(), usuario.getValue() - 1);
+                    }
                 }
             }
         }
@@ -199,22 +215,40 @@ public class Poll implements Serializable{
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle(titulo);
         eb.appendDescription("criador : <@" + criadorId + "> \n");
-        if(dataCriacao != null)
-            eb.appendDescription("criado no dia : " + dataCriacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + '\n');
+        String dara = "";
+
+        log.info("no fim minha dara foi [{}]", dara);
+        if(dataCriacao != null){
+            eb.appendDescription("criado no dia : **" +
+                    dataCriacao.format(DateTimeFormatter.ofPattern("dd")) +
+                    " de " + dataCriacao.format(DateTimeFormatter.ofPattern("MMMM")) +
+                    " de " + dataCriacao.format(DateTimeFormatter.ofPattern("YYYY")) +
+                    ", as " + dataCriacao.format(DateTimeFormatter.ofPattern("HH:mm")) + "**\n"
+            );
+        }
+
         eb.appendDescription("aberta: ");
-        if (isAberto()) {
-            eb.appendDescription("**Sim.**\n");
-            if (dataLimite != null) {
-                long tempo = ChronoUnit.MINUTES.between(LocalDateTime.now(), dataLimite);
-                double dias = Math.floor(tempo / (24 * 60));
-                tempo -= (dias * 24 * 60);
-                double horas = Math.floor(tempo / 60);
-                tempo -= horas;
-                eb.appendDescription("tempo restante **" + dias + " dias, " + horas + " horas, " + tempo + " minutos**\n");
+
+        if(dataLimite == null)
+            eb.appendDescription("**sim.**\n");
+        else{
+            if(LocalDateTime.now().isBefore(dataLimite)){
+                eb.appendDescription("**sim.**\n");
+                eb.appendDescription("data limite de votação : ");
             }
-        } else
-            eb.appendDescription("**Não.**\n");
+            else{
+                eb.appendDescription("**não.**\n");
+                eb.appendDescription("data encerramento da votação: ");
+            }
+            eb.appendDescription("**" +
+                    dataLimite.format(DateTimeFormatter.ofPattern("dd")) +
+                    " de " + dataLimite.format(DateTimeFormatter.ofPattern("MMMM")) +
+                    " de " + dataLimite.format(DateTimeFormatter.ofPattern("YYYY")) +
+                    ", as " + dataLimite.format(DateTimeFormatter.ofPattern("HH:mm")) + "**\n"
+            );
+        }
         eb.appendDescription("resultado: ");
+
         if (t.pri == t.sec)
             eb.appendDescription("**empate**\n");
         else

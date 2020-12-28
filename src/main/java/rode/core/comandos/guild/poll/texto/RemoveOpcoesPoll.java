@@ -6,14 +6,12 @@ import org.bson.Document;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
-import rode.core.UseComande;
 import rode.model.Poll;
 import rode.utilitarios.Memoria;
 
 import java.io.IOException;
 import java.util.LinkedList;
 
-@UseComande
 public class RemoveOpcoesPoll extends ComandoGuild {
     public RemoveOpcoesPoll() {
         super("remop", Permission.ADMINISTRATOR,  "rempoll","remop","remoptions","remopções","removeop","removeoptions","removeopções");
@@ -21,7 +19,7 @@ public class RemoveOpcoesPoll extends ComandoGuild {
 
     @Override
     public boolean livre(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        return super.livre(args, event) || PollHelper.livre(args, event);
+        return super.livre(args, event) || PollHelper.livreDono(args, event);
     }
 
     @Override
@@ -54,8 +52,12 @@ public class RemoveOpcoesPoll extends ComandoGuild {
 
     @Override
     public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("Comando para remover opções de uma poll (enquete), se a poll tiver essas opções.\n\n");
-        me.appendDescription("**-remop {título} [opção 1] [opção 2]**\n\n");
-        me.appendDescription("Aliases (comandos alternativos) : **rempoll**, **remop**, **remoptions**, **remopções**,**removeop**, **removeoptions**, **removeopções**.\n\n");
+        me.appendDescription("""
+                Comando para remover opções de uma poll (enquete), se a poll tiver essas opções.
+                
+                **-remop {título} [opção 1] [opção 2]**
+                
+                Aliases (comandos alternativos) : **rempoll**, **remop**, **remoptions**, **remopções**,**removeop**, **removeoptions**, **removeopções**.
+                """);
     }
 }

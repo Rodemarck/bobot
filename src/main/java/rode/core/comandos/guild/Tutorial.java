@@ -4,12 +4,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import rode.core.Executador;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
-import rode.core.UseComande;
 
 import java.io.IOException;
 import java.util.LinkedList;
 
-@UseComande
 public class Tutorial extends ComandoGuild {
     private static EmbedBuilder tutorial;
 
@@ -43,12 +41,17 @@ public class Tutorial extends ComandoGuild {
     }
     @Override
     public void help(EmbedBuilder me) {
-
+        me.appendDescription("**-tutorial comando** : exibe uma explicação detalhada de um comando.");
     }
 
     @Override
     public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("Tutorial para utilização do (futuro) bot mais útil do mundo (mas que no momneto só faz enquetes).\n");
-        me.appendDescription("Para instruções mais detalhadas utilize **-tutorial comando**.\n\n");
+        me.appendDescription("""
+                Tutorial para utilização do (futuro) bot mais útil do mundo (mas que no momneto só faz enquetes).
+                
+                **-tutorial comando**.
+                
+                exibe uma explicação detalhada de um comando.
+                """);
     }
 }

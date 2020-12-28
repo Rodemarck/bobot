@@ -3,11 +3,9 @@ package rode.core.comandos.guild;
 import net.dv8tion.jda.api.EmbedBuilder;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
-import rode.core.UseComande;
 
 import java.util.LinkedList;
 
-@UseComande
 public class PingGuild extends ComandoGuild {
     public PingGuild() {
         super("ping", null, "ping","pong");

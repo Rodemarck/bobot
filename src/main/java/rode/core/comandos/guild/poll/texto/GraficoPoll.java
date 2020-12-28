@@ -4,14 +4,12 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
-import rode.core.UseComande;
 import rode.model.Poll;
 import rode.utilitarios.Grafico;
 
 import java.io.File;
 import java.util.LinkedList;
 
-@UseComande
 public class GraficoPoll extends ComandoGuild {
     public GraficoPoll() {
         super("grafico", null, "grafico","grpah","gpoll");
@@ -32,7 +30,7 @@ public class GraficoPoll extends ComandoGuild {
 
     @Override
     public void help(EmbedBuilder me) {
-        me.appendDescription("**-grafico {titulo}** : envia um grafico dos votos da poll.");
+        me.appendDescription("**-grafico {titulo}** : envia um grafico dos votos da poll.\n\n");
     }
 
     @Override

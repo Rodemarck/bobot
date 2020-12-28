@@ -5,7 +5,6 @@ import org.bson.Document;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
-import rode.core.UseComande;
 import rode.model.Poll;
 import rode.utilitarios.Memoria;
 
@@ -13,7 +12,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
-@UseComande
 public class AdicionaOpcoesPoll extends ComandoGuild {
     public AdicionaOpcoesPoll() {
         super("addop", null, "addpoll","addop","addoptions","addopções","addoveop","addoveoptions","addoveopções");
@@ -51,8 +49,12 @@ public class AdicionaOpcoesPoll extends ComandoGuild {
 
     @Override
     public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("Comando para adiciona opções de uma poll (enquete), se a poll não tiver essas opções.\n\n");
-        me.appendDescription("**-addop {título} [opção 1] [opção 2]**\n\n");
-        me.appendDescription("Aliases (comandos alternativos) : **addpoll**, **addop**, **addoptions**, **addopções**,**addoveop**, **addoveoptions**, **addoveopções**.\n\n");
-    }
+        me.appendDescription("""
+                Comando para adiciona opções de uma poll (enquete), se a poll não tiver essas opções.
+                
+                **-addop {título} [opção 1] [opção 2]**
+                
+                Aliases (comandos alternativos) : **addpoll**, **addop**, **addoptions**, **addopções**,**addoveop**, **addoveoptions**, **addoveopções**.
+                """);
+        }
 }

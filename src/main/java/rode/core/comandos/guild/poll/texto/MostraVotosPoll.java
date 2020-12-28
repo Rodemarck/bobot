@@ -4,13 +4,11 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
-import rode.core.UseComande;
 import rode.model.Poll;
 
 import java.io.IOException;
 import java.util.LinkedList;
 
-@UseComande
 public class MostraVotosPoll extends ComandoGuild {
     public MostraVotosPoll() {
         super("votos", null, "votos","votes","vpoll");
@@ -38,8 +36,12 @@ public class MostraVotosPoll extends ComandoGuild {
 
     @Override
     public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("Comando para listar todos os membros que votaram e seus respectivos votos de uma poll (enquete) especifica.\n\n");
-        me.appendDescription("**-votos {titulo}***.\n\n");
-        me.appendDescription("Aliases (comandos alternativos) : **votos**, **votes**, **vpoll**");
+        me.appendDescription("""
+                Comando para listar todos os membros que votaram e seus respectivos votos de uma poll (enquete) especifica.
+                                
+                **-votos {titulo}***.
+                                
+                Aliases (comandos alternativos) : **votos**, **votes**, **vpoll**
+                """);
     }
 }

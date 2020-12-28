@@ -5,6 +5,7 @@ plugins {
 }
 mainClassName  = 'rode.Main'
 version '1.0'
+project.targetCompatibility = 15
 
 task stage(dependsOn: ['build', 'clean'])
 build.mustRunAfter clean
@@ -38,6 +39,10 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.projectlombok/lombok
     implementation 'org.projectlombok:lombok:1.18.16'
+
+    // https://mvnrepository.com/artifact/org.reflections/reflections
+    compile 'org.reflections:reflections:0.9.11'
+
 
 }
 

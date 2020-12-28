@@ -5,7 +5,6 @@ import org.bson.Document;
 import rode.core.ComandoGuildReacoes;
 import rode.core.Helper;
 import rode.core.PollHelper;
-import rode.core.UseComande;
 import rode.model.Poll;
 import rode.utilitarios.Memoria;
 import rode.utilitarios.Constantes;
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
-@UseComande
 public class PollReactionRem extends ComandoGuildReacoes {
     public PollReactionRem() {
         super("--pol--", null, "poll---");
@@ -38,6 +36,11 @@ public class PollReactionRem extends ComandoGuildReacoes {
                 return;
             }
         });
+    }
+
+    @Override
+    public boolean livre(LinkedList<String> args, Helper.Reacao event) throws IOException {
+        return PollHelper.livreSiMesmo(args,event);
     }
 
     @Override

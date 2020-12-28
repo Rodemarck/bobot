@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import org.bson.Document;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
-import rode.core.UseComande;
 import rode.model.ModelGuild;
 import rode.utilitarios.Memoria;
 
@@ -12,7 +11,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import rode.model.Poll;
 
-@UseComande
 public class ListarPolls extends ComandoGuild {
 
     public ListarPolls() {
@@ -46,8 +44,12 @@ public class ListarPolls extends ComandoGuild {
 
     @Override
     public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("Comando para listar todas as polls (enquetes) abertas neste servidor.\n\n");
-        me.appendDescription("**-listar**.\n\n");
-        me.appendDescription("Aliases (comandos alternativos) : **lpoll**, **list**, **listar**, **listpoll**, **listarpoll**");
+        me.appendDescription("""
+                Comando para listar todas as polls (enquetes) abertas neste servidor.
+                
+                **-listar**.
+                
+                Aliases (comandos alternativos) : **lpoll**, **list**, **listar**, **listpoll**, **listarpoll**
+                """);
     }
 }

@@ -2,21 +2,15 @@ package rode.core.comandos.guild;
 
 import jdk.jshell.JShell;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
-import rode.core.UseComande;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
-@UseComande
 public class Eval extends ComandoGuild {
     public Eval() {
-        super("eval", null, "eval", "js");
+        super("eval", null, "eval", "shell");
     }
 
     @Override
@@ -34,11 +28,18 @@ public class Eval extends ComandoGuild {
 
     @Override
     public void help(EmbedBuilder me) {
-
+        me.appendDescription("**-eval expressão** : retorna o resultado da expressão\n\n");
     }
 
     @Override
     public void helpExtensive(EmbedBuilder me) {
-
+        me.appendDescription("""
+                comando para executar e retorna o resultado da expressão javashell
+                
+                **-eval 1+1**
+                
+                Aliases (comandos alternativos) : **eval**, **shell**
+                o termino da execução todas as variáveis e Métodos são apagados.
+                """);
     }
 }
