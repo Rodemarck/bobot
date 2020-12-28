@@ -63,7 +63,7 @@ public class Controlador extends ListenerAdapter {
                         return null;
                     });
         }
-        if(!event.getMember().getUser().isBot())
+        else if(!event.getMember().getUser().isBot())
             Executador.interpreta(event);
     }
 
@@ -77,7 +77,7 @@ public class Controlador extends ListenerAdapter {
                         return null;
                     });
         }
-        if(!event.getMember().getUser().isBot())
+        else if(!event.getMember().getUser().isBot())
             Executador.interpreta(event);
     }
 
