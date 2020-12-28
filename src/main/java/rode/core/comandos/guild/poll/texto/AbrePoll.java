@@ -25,7 +25,6 @@ public class AbrePoll extends ComandoGuild {
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
         PollHelper.getPoll(args, event, (titulo, opcoes, guild, query) -> {
             if(guild != null){Poll poll = guild.getPoll(titulo);
-                System.out.println("uuu");
                 event.reply(poll.me(),message -> PollHelper.addReaction(message, poll.getOpcoes().size()));
                 return;
             }
@@ -40,12 +39,9 @@ public class AbrePoll extends ComandoGuild {
             Document doc = Memoria.guilds.find(query).first();
 
             if(doc == null){
-                System.out.println("nova guild criada");
                 guild = new ModelGuild(event.guildId());
                 guild.getPolls().add(poll);
-                System.out.println(guild.toMongo());
                 BsonValue a = Memoria.guilds.insertOne(guild.toMongo()).getInsertedId();
-                System.out.println(a);
                 return;
             }
             guild = ModelGuild.fromMongo(doc);

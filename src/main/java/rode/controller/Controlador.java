@@ -55,12 +55,28 @@ public class Controlador extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
+        if(event.getMember() == null){
+            event.getJDA().retrieveUserById(event.getUserId()).submit()
+                    .thenCompose(user -> {
+                        if(!event.getMember().getUser().isBot())
+                            Executador.interpreta(event);
+                        return null;
+                    });
+        }
         if(!event.getMember().getUser().isBot())
             Executador.interpreta(event);
     }
 
     @Override
     public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent event) {
+        if(event.getMember() == null){
+            event.getJDA().retrieveUserById(event.getUserId()).submit()
+                    .thenCompose(user -> {
+                        if(!event.getMember().getUser().isBot())
+                            Executador.interpreta(event);
+                        return null;
+                    });
+        }
         if(!event.getMember().getUser().isBot())
             Executador.interpreta(event);
     }

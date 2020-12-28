@@ -19,10 +19,8 @@ public class ListarPolls extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws IOException, Exception {
-        System.out.println("listar");
         Document doc = Memoria.guilds.find(new Document("id", event.guildId())).first();
         if(doc != null){
-            System.out.println("tem     guild");
             ModelGuild g = ModelGuild.fromMongo(doc);
 
             EmbedBuilder eb = new EmbedBuilder();

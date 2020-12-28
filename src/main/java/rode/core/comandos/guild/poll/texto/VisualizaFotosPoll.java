@@ -41,7 +41,7 @@ public class VisualizaFotosPoll extends ComandoGuild {
         me.appendDescription("""
                 Comando para exibir as opções de uma poll de forma mais detalhada
                 
-                **-fotos {titulo}**
+                **-vizualiza {titulo}**
                 
                 Aliases (comandos alternativos) : **vizualiza**, **vizualizar**, **view**
                 Se a opção for um link para imagem, ela será carregada.
