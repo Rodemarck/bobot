@@ -60,7 +60,7 @@ public class Executador {
     public static void interpreta(GuildMessageReceivedEvent e) {
         tryCatch(e.getJDA(), ()->{
 
-            LinkedList<String> args = traduz(e.getMessage().getContentRaw());
+            LinkedList<String> args = traduz(e.getMessage().getContentStripped());
             String comando = args.size() == 0 ? "" : args.getFirst();
             ComandoGuild mgr = COMANDOS_GUILD.get(NOME_COMANDOS_GUILD.get(comando));
             Helper.Mensagem hm = new Helper.Mensagem(e);

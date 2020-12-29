@@ -49,6 +49,7 @@ public class Eval extends ComandoGuild {
         long i = System.currentTimeMillis();
         String str = args.stream().collect(Collectors.joining(" "));
         try{
+            System.out.println(str);
             event.reply(">> " + shell.eval(str).get(0).value());
             long k = System.currentTimeMillis();
             System.out.println((k-i) + "ms de delai de pqp");
