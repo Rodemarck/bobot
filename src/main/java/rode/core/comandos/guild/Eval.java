@@ -46,17 +46,20 @@ public class Eval extends ComandoGuild {
             time = LocalDateTime.now();
         }
         args.poll();
-        long i = System.currentTimeMillis();
         String str = args.stream().collect(Collectors.joining(" "));
         try{
-            System.out.println(str);
+            var b = shell.eval(str).get(0);
             event.reply(">> " + shell.eval(str).get(0).value());
-            long k = System.currentTimeMillis();
-            System.out.println((k-i) + "ms de delai de pqp");
         } catch (Exception e) {
-            event.reply(e.getMessage());
+            if(e.getMessage() != null)
+                event.reply(e.getMessage());
             throw e;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Eval{}";
     }
 
     @Override
