@@ -23,8 +23,10 @@ public class VisualizaFotosPoll extends ComandoGuild {
                 event.reply("pic", message ->
                         message.editMessage(poll.visualiza(0)).submit()
                         .thenCompose(message1 -> {
-                            message1.addReaction(Constantes.EMOTES.get("esquerda")).submit();
-                            return message1.addReaction(Constantes.EMOTES.get("direita")).submit();
+                            message1.addReaction(Constantes.EMOTES.get("esquerda")).submit()
+                                .thenRun(()->message1.addReaction(Constantes.EMOTES.get("direita")).submit())
+                                .thenRun(()->PollHelper.addReaction(message1, poll.getOpcoes().size()));
+                            return null;
                         })
                 );
             }
@@ -45,7 +47,7 @@ public class VisualizaFotosPoll extends ComandoGuild {
                 
                 Aliases (comandos alternativos) : **vizualiza**, **vizualizar**, **view**
                 Se a opção for um link para imagem, ela será carregada.
-                Só é possivel votar utilizando o comando **votar**
+                É possivel votar utilizando reações, ou usando comando **votar**
                 Use :arrow_left:  e :arrow_right: para navegar entre os votos.
                 """);
     }

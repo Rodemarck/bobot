@@ -8,6 +8,7 @@ import rode.core.PollHelper;
 import rode.model.Poll;
 import rode.utilitarios.Memoria;
 import rode.utilitarios.Constantes;
+import rode.utilitarios.Regex;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -20,6 +21,7 @@ public class PollReactionRem extends ComandoGuildReacoes {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Reacao event) throws IOException, Exception {
+        final String tipo = args.getFirst();
         String titulo = event.getMessage().getEmbeds().get(0).getTitle();
         args.add('{' + titulo + '}');
         PollHelper.getPoll(args,event,(titulo1, opcoes, guild, query) -> {
@@ -31,7 +33,14 @@ public class PollReactionRem extends ComandoGuildReacoes {
                 }
                 int index = Constantes.POOL_EMOTES.indexOf(event.emoji());
                 poll.rem(index, event.getId());
-                event.getMessage().editMessage(poll.me()).queue();
+                if(tipo.contains("poll"))
+                    event.getMessage().editMessage(poll.me()).submit();
+                else if(tipo.contains("pic")){
+                    final var emb = event.getMessage().getEmbeds().get(0);
+                    LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
+                    int i = Integer.parseInt(param.getFirst());
+                    event.getMessage().editMessage(poll.visualiza(i)).submit();
+                }
                 Memoria.guilds.updateOne(query, new Document("$set",guild.toMongo()));
                 return;
             }

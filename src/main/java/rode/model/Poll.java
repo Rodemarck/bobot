@@ -33,14 +33,29 @@ public class Poll implements Serializable{
     private LocalDateTime dataCriacao;
 
     public MessageEmbed visualiza(int i) {
+        top t = calculaTop();
         EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle(titulo)
-                .appendDescription(opcoes.get(i));
+        eb.setTitle(titulo);
         if(Regex.isLink(opcoes.get(i)))
-                eb.setImage(opcoes.get(i));
-        eb.addField("opção", Constantes.POOL_votos.get(i),true)
-                .setFooter(i + " / " + (opcoes.size()-1));
-        return eb.build();
+           eb.setImage(opcoes.get(i));
+        else
+            eb.appendDescription(opcoes.get(i));
+        float numero = (t.total==0)? 0 : (((float)valores.get(i)/t.total)*100);
+        return eb.addField("opção", Constantes.POOL_votos.get(i),true)
+                .setFooter(String.format("""
+                    %d/%d                %d votos [%.2f %%]
+                    """, i,(opcoes.size()-1), valores.get(i), numero)
+         ).build();
+
+        /**
+         * return eb.addField("opção", Constantes.POOL_votos.get(i),true)
+         *                 .setFooter(String.format("""
+         *                         %d/%d      %d votos [%.2f %c]
+         *                         """, i,(opcoes.size()-1), valores.add(i), numero, '%')
+         *                 )
+         *                 .build();
+         */
+
     }
 
     private class top {

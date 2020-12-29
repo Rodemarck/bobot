@@ -20,22 +20,10 @@ public class PicReactionRem extends ComandoGuildReacoes {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Reacao event) throws IOException, Exception {
-        if(event.emoji().equals(Constantes.EMOTES.get("esquerda"))){
-            log.info("esq");
-            PicReaction.executa(args, event, -1);
-            return;
-        }
-        if(event.emoji().equals(Constantes.EMOTES.get("direita"))){
-            log.info("dir");
-            PicReaction.executa(args, event, 1);
-            return;
-        }
+        PicReaction.executa(args, event,"---");
     }
 
-    @Override
-    public boolean livre(LinkedList<String> args, Helper.Reacao event) throws IOException {
-        return PollHelper.livreSiMesmo(args, event);
-    }
+
 
 
     @Override

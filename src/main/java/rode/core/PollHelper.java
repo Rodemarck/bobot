@@ -20,7 +20,6 @@ public final class PollHelper {
     private static Logger log = LoggerFactory.getLogger(PollHelper.class);
     private PollHelper(){}
     public static CompletionStage<Void> addReaction(Message m, int n){
-        m.editMessage("poll").queue();
         for(int i=0; i<n; i++){
             m.addReaction(Constantes.POOL_EMOTES.get(i)).submit();
         }

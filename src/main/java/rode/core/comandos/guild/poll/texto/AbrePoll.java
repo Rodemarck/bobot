@@ -24,8 +24,12 @@ public class AbrePoll extends ComandoGuild {
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
         PollHelper.getPoll(args, event, (titulo, opcoes, guild, query) -> {
-            if(guild != null){Poll poll = guild.getPoll(titulo);
-                event.reply(poll.me(),message -> PollHelper.addReaction(message, poll.getOpcoes().size()));
+            if(guild != null){
+                Poll poll = guild.getPoll(titulo);
+                event.reply("poll", message ->
+                        message.editMessage(poll.me()).submit()
+                                .thenCompose(message1 -> PollHelper.addReaction(message1,poll.getOpcoes().size()))
+                );
                 return;
             }
 
@@ -34,7 +38,10 @@ public class AbrePoll extends ComandoGuild {
                 opcoes.add("não");
             }
             final Poll  poll = new Poll(titulo,opcoes, event.getEvent());
-            event.reply(poll.me(),message->PollHelper.addReaction(message,poll.getOpcoes().size()));
+            event.reply("poll", message ->
+                    message.editMessage(poll.me()).submit()
+                            .thenCompose(message1 -> PollHelper.addReaction(message1,poll.getOpcoes().size()))
+            );
             query = new Document("id",event.guildId());
             Document doc = Memoria.guilds.find(query).first();
 

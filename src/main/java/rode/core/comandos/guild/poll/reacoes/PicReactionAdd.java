@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.ComandoGuildReacoes;
+import rode.core.Executador;
 import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.core.comandos.guild.poll.texto.AbrePoll;
@@ -23,18 +24,7 @@ public class PicReactionAdd extends ComandoGuildReacoes {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Reacao event) throws IOException, Exception {
-        if(event.emoji().equals(Constantes.EMOTES.get("esquerda"))){
-            log.info("esq");
-            PicReaction.executa(args, event, -1);
-            return;
-        }
-        if(event.emoji().equals(Constantes.EMOTES.get("direita"))){
-            log.info("dir");
-            PicReaction.executa(args, event, 1);
-            return;
-        }
-        event.reply("**"+event.getEvent().getUser().getName() + "** pare de trolar.", message -> message.delete().submitAfter(5, TimeUnit.SECONDS));
-        event.getMessage().removeReaction(event.emoji());
+        PicReaction.executa(args, event,"+++");
     }
 
     @Override

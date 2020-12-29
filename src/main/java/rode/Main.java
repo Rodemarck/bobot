@@ -43,7 +43,7 @@ public class Main {
         log.debug("logando");
         try{
             inicializaComandos();
-            JDABuilder.createDefault(Constantes.env.get("token"))
+            JDABuilder.createDefault(Constantes.env.get("token_teste"))
                     .setActivity(Activity.playing("-tutorial"))
                     .setStatus(OnlineStatus.ONLINE)
                     .addEventListeners(new Controlador())
