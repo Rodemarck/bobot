@@ -41,15 +41,13 @@ public class Eval extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception{
+    public void executa(LinkedList<String> __, Helper.Mensagem event) throws Exception{
         synchronized (this){
             time = LocalDateTime.now();
         }
-        args.poll();
-        String str = args.stream().collect(Collectors.joining(" "));
+        String comando = event.getMessage().getContentStripped().substring(5);
         try{
-            var b = shell.eval(str).get(0);
-            event.reply(">> " + shell.eval(str).get(0).value());
+            event.reply(">> " + shell.eval(comando).get(0).value());
         } catch (Exception e) {
             if(e.getMessage() != null)
                 event.reply(e.getMessage());
@@ -79,10 +77,5 @@ public class Eval extends ComandoGuild {
                 """);
     }
 
-    private class ShellEventLoop extends TimerTask{
-        @Override
-        public void run() {
-            System.out.println("ha ha!!");
-        }
-    }
+
 }

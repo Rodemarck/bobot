@@ -58,6 +58,13 @@ public class ApagaMensagem extends ComandoGuild {
 
     @Override
     public void helpExtensive(EmbedBuilder me) {
-
+        me.appendDescription("""
+                Comando secreto que faz o bot apagar uma das minhas mensagem
+                
+                **-apagaMensagem id**
+                
+               
+                Pode ser útil para organizar, eu espero.
+                """);
     }
 }

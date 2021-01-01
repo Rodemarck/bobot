@@ -15,21 +15,13 @@ import rode.core.ComandoGuild;
 import rode.core.ComandoGuildReacoes;
 import rode.core.Executador;
 import rode.core.IgnoraComando;
-import rode.core.comandos.guild.*;
-import rode.core.comandos.guild.poll.reacoes.PollReactionAdd;
-import rode.core.comandos.guild.poll.reacoes.PollReactionRem;
-import rode.core.comandos.guild.poll.texto.*;
 import rode.utilitarios.Constantes;
-import sun.reflect.ReflectionFactory;
 
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.regex.Pattern;
+
 
 
 public class Main {
