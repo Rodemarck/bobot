@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import org.bson.Document;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,10 @@ import rode.core.ComandoGuild;
 import rode.core.ComandoGuildReacoes;
 import rode.core.Executador;
 import rode.core.IgnoraComando;
+import rode.model.ModelGuild;
+import rode.model.Poll;
 import rode.utilitarios.Constantes;
+import rode.utilitarios.Memoria;
 
 
 import javax.security.auth.login.LoginException;
@@ -27,7 +31,17 @@ import java.lang.reflect.InvocationTargetException;
 public class Main {
         private static Logger log = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) throws IOException, InterruptedException {
-        jda();
+        //jda();
+        /*Memoria.guilds.find().forEach(e->{
+            ModelGuild m = ModelGuild.fromMongo(e);
+            Poll poll = m.getPoll("ban <@581515398613172245> ");
+            if(poll != null){
+                m.getPolls().remove(poll);
+                Document query = new Document("id",m.getId()).append("polls.titulo","ban <@581515398613172245> ");
+                Memoria.guilds.updateOne(query, new Document("$set", m.toMongo()));
+                System.out.println(poll);
+            }
+        });*/
     }
 
 

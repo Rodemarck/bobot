@@ -60,9 +60,12 @@ public final class PollHelper {
 
         Document query = new Document("id",event.guildId()).append("polls.titulo",titulo);
         Document doc = Memoria.guilds.find(query).first();
+        System.out.println("doc = " + doc);
         if(doc != null) {
+            System.out.println("not");
             ModelGuild g = ModelGuild.fromMongo(doc);
             Poll poll = g.getPoll(titulo);
+            System.out.println("poll = " + poll);
             if(poll.getCriadorId().equals(event.getId()))
                 return true;
             event.getEvent().getJDA().retrieveUserById(poll.getCriadorId()).submit()

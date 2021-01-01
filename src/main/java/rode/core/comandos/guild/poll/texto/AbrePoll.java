@@ -14,6 +14,7 @@ import rode.model.Poll;
 import rode.utilitarios.*;
 
 import java.util.LinkedList;
+import java.util.regex.Pattern;
 
 public class AbrePoll extends ComandoGuild {
     private static Logger log = LoggerFactory.getLogger(AbrePoll.class);
@@ -36,6 +37,10 @@ public class AbrePoll extends ComandoGuild {
             if(opcoes.isEmpty()){
                 opcoes.add("sim");
                 opcoes.add("não");
+            }
+            if(Pattern.matches("<@\\d+>",titulo)){
+                event.reply("não pode haver menções em título de poll");
+                return;
             }
             final Poll  poll = new Poll(titulo,opcoes, event.getEvent());
             event.reply("poll", message ->

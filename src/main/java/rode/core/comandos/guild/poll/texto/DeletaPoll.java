@@ -14,7 +14,7 @@ import java.util.LinkedList;
 
 public class DeletaPoll extends ComandoGuild {
     public DeletaPoll() {
-        super("deleta", Permission.ADMINISTRATOR, "delpoll","delet","deleta");
+        super("deleta", Permission.MANAGE_CHANNEL, "delpoll","delete","deleta");
     }
 
     @Override
@@ -48,7 +48,7 @@ public class DeletaPoll extends ComandoGuild {
                 
                 **-deleta {titulo}***
                 
-                Aliases (comandos alternativos) : **delpoll**, **delet**, **deleta**.
+                Aliases (comandos alternativos) : **delpoll**, **delete**, **deleta**.
                 """);
     }
 }
