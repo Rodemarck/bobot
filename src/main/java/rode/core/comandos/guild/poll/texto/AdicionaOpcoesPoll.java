@@ -30,7 +30,7 @@ public class AdicionaOpcoesPoll extends ComandoGuild {
                     return;
                 }
                 for(String s:opcoes)
-                    if(Pattern.matches("<@\\d+>",s)){
+                    if(Pattern.matches(".*<@!?\\d+>.*",s)){
                         event.reply("não pode haver menções nas opções");
                         return;
                     }

@@ -38,7 +38,7 @@ public class AbrePoll extends ComandoGuild {
                 opcoes.add("sim");
                 opcoes.add("não");
             }
-            if(Pattern.matches("<@\\d+>",titulo)){
+            if(Pattern.matches(".*<@!?\\d+>.*",titulo)){
                 event.reply("não pode haver menções em título de poll");
                 return;
             }
