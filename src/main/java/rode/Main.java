@@ -31,7 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 public class Main {
         private static Logger log = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) throws IOException, InterruptedException {
-        //jda();
+        jda();
         /*Memoria.guilds.find().forEach(e->{
             ModelGuild m = ModelGuild.fromMongo(e);
             Poll poll = m.getPoll("ban <@581515398613172245> ");
