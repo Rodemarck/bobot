@@ -170,7 +170,7 @@ public class Poll implements Serializable{
                 final int index = this.opcoes.indexOf(s);
                 this.opcoes.remove(s);
                 this.valores.remove(index);
-                for(Map.Entry<String,Integer> usuario : usuariosId.entrySet()){
+                for(Map.Entry<String,Integer> usuario : ((HashMap<String,Integer>)usuariosId.clone()).entrySet()){
                     if(usuario.getValue() == index){
                         usuariosId.remove(usuario.getKey());
                     }

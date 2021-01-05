@@ -20,32 +20,32 @@ public class AdicionaOpcoesPoll extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws IOException, Exception {
-        PollHelper.getPoll(args, event, (titulo, opcoes, guild, query) -> {
-            if(guild != null){
-                if(opcoes.isEmpty()){
+        PollHelper.getPoll(args, event, dp -> {
+            if(dp.guild() != null){
+                if(dp.opcoes().isEmpty()){
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("cade as novas opções??");
                     help(eb);
                     event.reply(eb);
                     return;
                 }
-                for(String s:opcoes)
+                for(String s:dp.opcoes())
                     if(Pattern.matches(".*<@!?\\d+>.*",s)){
                         event.reply("não pode haver menções nas opções");
                         return;
                     }
-                Poll poll = guild.getPoll(titulo);
+                Poll poll = dp.guild().getPoll(dp.titulo());
                 if(!poll.isAberto()){
                     event.reply("a poll {**" + poll.getTitulo() + "**} foi fechada", message -> message.delete().submitAfter(5, TimeUnit.SECONDS));
                     return;
                 }
 
-                poll.addOpcoes(opcoes);
-                Memoria.guilds.updateOne(query,new Document("$set",guild.toMongo()));
+                poll.addOpcoes(dp.opcoes());
+                Memoria.guilds.updateOne(dp.query(),new Document("$set",dp.guild().toMongo()));
                 event.reply(poll.me(),message->PollHelper.addReaction(message, poll.getOpcoes().size()));
                 return;
             }
-            event.reply("a poll {**" + titulo + "**} não foi encontrada" );
+            event.reply("a poll {**" + dp.titulo() + "**} não foi encontrada" );
         });
     }
 

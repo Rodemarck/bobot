@@ -25,62 +25,42 @@ public class PollReactionAdd extends ComandoGuildReacoes {
     @Override
     public void executa(LinkedList<String> args, Helper.Reacao event) throws IOException, Exception {
         final String tipo = args.getFirst();
-        log.info("do tipo {}", tipo);
-        if(Constantes.POOL_EMOTES.contains(event.emoji())){
-            int index = Constantes.POOL_EMOTES.indexOf(event.emoji());
-            String titulo = event.getMessage().getEmbeds().get(0).getTitle();
-            args.add('{' + titulo + '}');
-            log.info("titulo da poll {}", titulo);
-            PollHelper.getPoll(args, event, (titulo1, opcoes, guild, query) -> {
-                if(guild != null){
-                    Poll poll = guild.getPoll(titulo);
-                    if(!poll.isAberto()){
-                        event.reply("a poll {**" + poll.getTitulo() + "**} foi fechada", message -> message.delete().submitAfter(5,TimeUnit.SECONDS));
-                        return;
-                    }
-                    if(poll.getOpcoes().size() > index){
-                        if(poll.hasUser(event.getId())){
-                            event.getMessage().removeReaction(event.emoji(), event.getEvent().getUser()).queue(mm->{
-                                if(index == poll.getOriginal(event.getId())){
-                                    poll.rem(index,event.getId());
-                                    Memoria.guilds.updateOne(query, new Document("$set",guild.toMongo()));
-                                    if(tipo.contains("poll"))
-                                        event.getMessage().editMessage(poll.me()).submit();
-                                    else if(tipo.contains("pic")){
-                                        final var emb = event.getMessage().getEmbeds().get(0);
-                                        LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
-                                        int i = Integer.parseInt(param.getFirst());
-                                        event.getMessage().editMessage(poll.visualiza(i)).submit();
-                                    }
-                                    return;
-                                }
-                                event.reply("**"+ event.getEvent().getUser().getName()+"** você já votou [**"+ Constantes.POOL_votos.get(poll.getOriginal(event.getId()))+ "**] nessa poll!",message->
-                                        message.delete().submitAfter(15, TimeUnit.SECONDS)
-                                );
-                            });
+        PollHelper.getPollFromEmote(args, event,dp -> {
+            if(dp.poll().getOpcoes().size() > dp.index()){
+                if(dp.poll().hasUser(event.getId())){
+                    event.getMessage().removeReaction(event.emoji(), event.getEvent().getUser()).queue(mm->{
+                        if(dp.index() == dp.poll().getOriginal(event.getId())){
+                            dp.poll().rem(dp.index(),event.getId());
+                            Memoria.guilds.updateOne(dp.query(), new Document("$set",dp.guild().toMongo()));
+                            if(tipo.contains("poll"))
+                                event.getMessage().editMessage(dp.poll().me()).submit();
+                            else if(tipo.contains("pic")){
+                                final var emb = event.getMessage().getEmbeds().get(0);
+                                LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
+                                int i = Integer.parseInt(param.getFirst());
+                                event.getMessage().editMessage(dp.poll().visualiza(i)).submit();
+                            }
                             return;
                         }
-                        poll.add(index, event.getId());
-                        if(tipo.contains("poll"))
-                            event.getMessage().editMessage(poll.me()).submit();
-                        else if(tipo.contains("pic")){
-                            final var emb = event.getMessage().getEmbeds().get(0);
-                            LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
-                            int i = Integer.parseInt(param.getFirst());
-                            event.getMessage().editMessage(poll.visualiza(i)).submit();
-                        }
-                        Memoria.guilds.updateOne(query, new Document("$set",guild.toMongo()));
-                        return;
-                    }
-                }else {
-                    event.reply("poll **{" + titulo + "}** não encontrada");
+                        event.reply("**"+ event.getEvent().getUser().getName()+"** você já votou [**"+ Constantes.POOL_votos.get(dp.poll().getOriginal(event.getId()))+ "**] nessa poll!",message->
+                                message.delete().submitAfter(15, TimeUnit.SECONDS)
+                        );
+                    });
+                    return;
                 }
-            });
-            return;
-        }
-        event.reply("**" + event.getEvent().getUser().getName() + "** pare de trolar," + event.emoji() + " não é uma opção para essa poll.", message->
-            message.delete().submitAfter(15, TimeUnit.SECONDS)
-        );
+                dp.poll().add(dp.index(), event.getId());
+                if(tipo.contains("dp.poll()"))
+                    event.getMessage().editMessage(dp.poll().me()).submit();
+                else if(tipo.contains("pic")){
+                    final var emb = event.getMessage().getEmbeds().get(0);
+                    LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
+                    int i = Integer.parseInt(param.getFirst());
+                    event.getMessage().editMessage(dp.poll().visualiza(i)).submit();
+                }
+                Memoria.guilds.updateOne(dp.query(), new Document("$set",dp.guild().toMongo()));
+                return;
+            }
+        } );
     }
 
     @Override

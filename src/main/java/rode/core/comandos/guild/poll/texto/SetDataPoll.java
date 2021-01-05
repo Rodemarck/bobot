@@ -27,14 +27,16 @@ public class SetDataPoll  extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        PollHelper.getPoll(args,event,(titulo, opcoes, modelGuild, query) -> {
-            if(modelGuild != null){
+        PollHelper.getPoll(args,event,dp -> {
+            if(dp.guild() != null){
                 log.info("ue...");
-                Poll poll = modelGuild.getPoll(titulo);
+                Poll poll = dp.guild().getPoll(dp.titulo());
                 String s = args.stream().collect(Collectors.joining()).replace("\\{([^\\}]+)\\}|\\[([^\\]]+)\\]","");
                 LinkedList<LocalDateTime> times = new LinkedList<>();
                 times.addFirst(LocalDateTime.now());
                 LocalDateTime controle = times.getFirst().plusMinutes(0);
+
+
 
                 passaTempo("\\d+(d((ia|ay)s?)?)",s,n -> times.addFirst(times.getFirst().plusDays(n)));
                 passaTempo("\\d+((w(eek)?|s(emana)?)s?)",s,n -> times.addFirst(times.getFirst().plusWeeks(n)));
@@ -51,7 +53,7 @@ public class SetDataPoll  extends ComandoGuild {
                     event.reply("tempo máximo é de 2 meses");
                 }else
                     poll.setDataLimite(times.getFirst());
-                Memoria.guilds.updateOne(query, new Document("$set", modelGuild.toMongo()));
+                Memoria.guilds.updateOne(dp.query(), new Document("$set", dp.guild().toMongo()));
                 event.reply("o limite agora é " + poll.getDataLimite().toString());
                 times.clear();
             }

@@ -14,6 +14,7 @@ import rode.utilitarios.Regex;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public final class PollHelper {
@@ -25,13 +26,13 @@ public final class PollHelper {
         }
         return null;
     }
-    public static void getPoll(LinkedList<String> args, Helper event, PollFunction pf) throws IOException {
+    public static void getPoll(LinkedList<String> args, Helper helper, PollFunction pf) throws IOException {
         args.poll();
         String txt = args.stream().collect(Collectors.joining(" "));
         LinkedList<String> param = Regex.extractInside("\\{([^\\}])+\\}", txt);
         if(param.size() == 0){
             log.info("não achei nada em {}", txt);
-            pf.apply(null, null,null,null);
+            pf.apply(new DadosPoll(null, null,null,null,null,0));
             return;
         }
         String titulo =param.getFirst();
@@ -39,16 +40,42 @@ public final class PollHelper {
         for(String s:Regex.extractInside("\\[([^\\]])+\\]", txt))
             if(!opcoes.contains(s))
                 opcoes.add(s);
-        Document query = new Document("id", event.guildId()).append("polls.titulo",titulo);
+
+        Document query = new Document("id", helper.guildId()).append("polls.titulo",titulo);
         Document doc = Memoria.guilds.find(query).first();
 
+        if(doc != null){
+            ModelGuild g = ModelGuild.fromMongo(doc);
+            pf.apply(new DadosPoll(titulo,args,g,query,null,0));
+        }
 
-        ModelGuild g = null;
-        if(doc != null)
-            g = ModelGuild.fromMongo(doc);
-        pf.apply(titulo,opcoes,g, query);
     }
-
+    public static void getPollFromEmote(LinkedList<String> args, Helper.Reacao helper, PollFunction function) throws IOException {
+        final String tipo = args.getFirst();
+        log.info("do tipo {}", tipo);
+        if(Constantes.POOL_EMOTES.contains(helper.emoji())) {
+            int index = Constantes.POOL_EMOTES.indexOf(helper.emoji());
+            String titulo = helper.getMessage().getEmbeds().get(0).getTitle();
+            args.add('{' + titulo + '}');
+            log.info("titulo da poll {}", titulo);
+            getPoll(args, helper, dp -> {
+                if(dp.guild() == null){
+                    helper.reply("sem registo da poll **" + titulo + "**", message -> message.delete().submitAfter(5,TimeUnit.SECONDS));
+                    return;
+                }
+                Poll poll = dp.guild().getPoll(dp.titulo());
+                if(!poll.isAberto()){
+                    helper.reply("a poll {**" + poll.getTitulo() + "**} foi fechada", message -> message.delete().submitAfter(5, TimeUnit.SECONDS));
+                    return;
+                }
+                function.apply(new DadosPoll(dp.titulo, dp.opcoes, dp.guild, dp.query, dp.poll, index));
+            });
+        }
+        else
+            helper.reply("**" + helper.getEvent().getUser().getName() + "** pare de trolar," + helper.emoji() + " não é uma opção para essa poll.", message->
+                    message.delete().submitAfter(15, TimeUnit.SECONDS)
+            );
+    }
     public static boolean livreSiMesmo(LinkedList<String> args, Helper.Reacao event) throws IOException {
         return event.getMessage().getAuthor().getId().equals(event.getEvent().getJDA().getSelfUser().getId());
     }
@@ -77,8 +104,8 @@ public final class PollHelper {
         return false;
     }
 
-
+    public record DadosPoll(String titulo, LinkedList<String> opcoes, ModelGuild guild, Document query, Poll poll, int index){};
     public interface PollFunction{
-        void apply(String titulo, LinkedList<String> opcoes, ModelGuild modelGuild, Document query) throws IOException;
+        void apply(DadosPoll dp) throws IOException;
     }
 }

@@ -29,20 +29,17 @@ public class PicReaction {
         }
 
         final int n = aux;
-        final var emb = event.getMessage().getEmbeds().get(0);
-        args.add('{' + emb.getTitle() + '}');
-        PollHelper.getPoll(args,event, (titulo, opcoes, modelGuild, query) -> {
-            if(modelGuild != null){
-                Poll poll = modelGuild.getPoll(titulo);
-                LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
-                int index = Integer.parseInt(param.getFirst());
-                index = (index + n);
-                if(index >= poll.getOpcoes().size())
-                    index = 0;
-                else if (index < 0)
-                    index = poll.getOpcoes().size() - 1;
-                event.getMessage().editMessage(poll.visualiza(index)).submit();
-            }
+        PollHelper.getPollFromEmote(args, event, dp->{
+            var emb = event.getMessage().getEmbeds().get(0);
+            LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
+            int index = Integer.parseInt(param.getFirst());
+            index = (index + n);
+            if(index >= dp.poll().getOpcoes().size())
+                index = 0;
+            else if (index < 0)
+                index = dp.poll().getOpcoes().size() - 1;
+            event.getMessage().editMessage(dp.poll().visualiza(index)).submit();
         });
+        final var emb = event.getMessage().getEmbeds().get(0);
     }
 }

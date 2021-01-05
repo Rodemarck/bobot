@@ -17,15 +17,14 @@ public class VisualizaFotosPoll extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        PollHelper.getPoll(args,event, (titulo, opcoes, modelGuild, query) -> {
-            if(modelGuild != null){
-                Poll poll = modelGuild.getPoll(titulo);
+        PollHelper.getPoll(args,event, dp -> {
+            if(dp.guild() != null){
                 event.reply("pic", message ->
-                        message.editMessage(poll.visualiza(0)).submit()
+                        message.editMessage(dp.poll().visualiza(0)).submit()
                         .thenCompose(message1 -> {
                             message1.addReaction(Constantes.EMOTES.get("esquerda")).submit()
                                 .thenRun(()->message1.addReaction(Constantes.EMOTES.get("direita")).submit())
-                                .thenRun(()->PollHelper.addReaction(message1, poll.getOpcoes().size()));
+                                .thenRun(()->PollHelper.addReaction(message1, dp.poll().getOpcoes().size()));
                             return null;
                         })
                 );

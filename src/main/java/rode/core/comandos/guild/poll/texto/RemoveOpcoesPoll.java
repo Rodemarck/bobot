@@ -24,24 +24,24 @@ public class RemoveOpcoesPoll extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws IOException, Exception {
-        PollHelper.getPoll(args, event, (titulo, opcoes, guild, query) -> {
-            if(opcoes.isEmpty()){
+        PollHelper.getPoll(args, event, dp-> {
+            if(dp.opcoes().isEmpty()){
                 EmbedBuilder eb = new EmbedBuilder();
                 help(eb);
                 event.reply(eb);
                 return;
             }
-            if(guild != null){
-                Poll poll = guild.getPoll(titulo);
-                poll.remOpcoes(opcoes);
-                final Document d = guild.toMongo();
-                Memoria.guilds.updateOne(query, new Document("$set",d));
+            if(dp.guild() != null){
+                Poll poll = dp.guild().getPoll(dp.titulo());
+                poll.remOpcoes(dp.opcoes());
+                final Document d = dp.guild().toMongo();
+                Memoria.guilds.updateOne(dp.query(), new Document("$set",d));
                 event.reply(poll.me(), message->
                     PollHelper.addReaction(message,poll.getOpcoes().size())
                 );
                 return;
             }
-            event.reply("poll **{" + titulo + "}** não encontrada");
+            event.reply("poll **{" + dp.titulo() + "}** não encontrada");
         });
     }
 

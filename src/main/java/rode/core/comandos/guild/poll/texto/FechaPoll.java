@@ -19,16 +19,15 @@ public class FechaPoll extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        PollHelper.getPoll(args,event, (titulo, opcoes, modelGuild, query) -> {
-            if(modelGuild != null){
-                var poll = modelGuild.getPoll(titulo);
-                if(!poll.isAberto()){
+        PollHelper.getPoll(args,event,dp -> {
+            if(dp.guild() != null){
+                if(!dp.poll().isAberto()){
                     event.reply("esta poll já está fechada", message -> message.delete().submitAfter(5, TimeUnit.SECONDS));
                     return;
                 }
-                poll.fecha();
-                Memoria.guilds.updateOne(query, new Document("$set",modelGuild.toMongo()));
-                event.reply("a poll {**" + titulo + "**} foi fechada", message -> message.addReaction(Constantes.EMOTES.get("check")).submit());
+                dp.poll().fecha();
+                Memoria.guilds.updateOne(dp.query(), new Document("$set",dp.guild().toMongo()));
+                event.reply("a poll {**" + dp.query() + "**} foi fechada", message -> message.addReaction(Constantes.EMOTES.get("check")).submit());
             }
         });
     }

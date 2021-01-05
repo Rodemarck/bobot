@@ -17,14 +17,14 @@ public class GraficoPoll extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        PollHelper.getPoll(args, event, (titulo, opcoes, guild, query) -> {
-            if(guild != null){
-                Poll poll = guild.getPoll(titulo);
+        PollHelper.getPoll(args, event, dp -> {
+            if(dp.guild() != null){
+                Poll poll = dp.guild().getPoll(dp.titulo());
                 File arq = Grafico.poll(poll, event.getEvent().getGuild());
                 event.reply(arq);
                 return;
             }
-            event.reply("poll {**" + titulo + "**} não encontrada.");
+            event.reply("poll {**" + dp.titulo() + "**} não encontrada.");
         });
     }
 

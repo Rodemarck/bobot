@@ -22,11 +22,10 @@ public class VotarPoll extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem helper) throws Exception {
-        PollHelper.getPoll(args, helper, (titulo, opcoes, modelGuild, query) -> {
-            if(modelGuild != null){
-                Poll poll = modelGuild.getPoll(titulo);
-                if(!poll.isAberto()){
-                    helper.reply("a poll {**" + poll.getTitulo() + "**} foi fechada", message -> message.delete().submitAfter(5,TimeUnit.SECONDS));
+        PollHelper.getPoll(args, helper, dp -> {
+            if(dp.guild() != null){
+                if(!dp.poll().isAberto()){
+                    helper.reply("a poll {**" + dp.poll().getTitulo() + "**} foi fechada", message -> message.delete().submitAfter(5,TimeUnit.SECONDS));
                     return;
                 }
                 String str = args.stream().collect(Collectors.joining());
@@ -37,26 +36,28 @@ public class VotarPoll extends ComandoGuild {
                 }
                 if(Constantes.POOL_votos.contains(votos.getFirst().toLowerCase())){
                     int index = Constantes.POOL_votos.indexOf(votos.getFirst().toLowerCase());
-                    if(index < poll.getOpcoes().size()){
-                        if(poll.hasUser(helper.getEvent().getAuthor().getId())){
-                            int original = poll.getOriginal(helper.getEvent().getAuthor().getId());
+                    if(index < dp.poll().getOpcoes().size()){
+                        if(dp.poll().hasUser(helper.getEvent().getAuthor().getId())){
+                            int original = dp.poll().getOriginal(helper.getEvent().getAuthor().getId());
                             if(index == original){
                                 helper.getMessage().delete().submit();
-                                poll.rem(index,helper.getId());
+                                dp.poll().rem(index,helper.getId());
                                 helper.reply("**" + helper.getEvent().getAuthor().getName() + "** seu voto foi retirado de com sucesso" , message -> message.delete().submitAfter(5, TimeUnit.SECONDS)) ;
-                                Memoria.guilds.updateOne(query, new Document("$set", modelGuild.toMongo()));
+                                Memoria.guilds.updateOne(dp.query(), new Document("$set", dp.guild().toMongo()));
                                 return;
                             }
                             else{
-                                //helper
+                                helper.reply("**"+ helper.getEvent().getAuthor().getName()+"** você já votou [**"+ Constantes.POOL_votos.get(dp.poll().getOriginal(helper.getId()))+ "**] nessa poll!",message->
+                                        message.delete().submitAfter(15, TimeUnit.SECONDS)
+                                );
                             }
                         }
                         else{
                             helper.getMessage().delete().submit();
-                            poll.add(index, helper.getId());
+                            dp.poll().add(index, helper.getId());
                             helper.reply("**" + helper.getEvent().getAuthor().getName() + "** voto computado com sucesso ",
                                     message -> message.delete().submitAfter(5, TimeUnit.SECONDS));
-                            Memoria.guilds.updateOne(query, new Document("$set", modelGuild.toMongo()));
+                            Memoria.guilds.updateOne(dp.query(), new Document("$set", dp.guild().toMongo()));
                             return;
                         }
                     }

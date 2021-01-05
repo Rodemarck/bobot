@@ -7,6 +7,7 @@ import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.model.Poll;
+import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 
 import java.io.IOException;
@@ -19,15 +20,15 @@ public class DeletaPoll extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws IOException, Exception {
-        PollHelper.getPoll(args, event,(titulo, opcoes, guild, query)->{
-            if(guild != null){
-                Poll poll = guild.getPoll(titulo);
-                guild.getPolls().remove(poll);
-                Memoria.guilds.updateOne(query,new Document("$set",guild.toMongo()));
-                event.reply("a poll {**" + titulo + "**} foi deletada", message -> message.addReaction("\u2705").submit());
+        PollHelper.getPoll(args, event,dp->{
+            if(dp.guild() != null){
+                Poll poll = dp.guild().getPoll(dp.titulo());
+                dp.guild().getPolls().remove(poll);
+                Memoria.guilds.updateOne(dp.query(),new Document("$set",dp.guild().toMongo()));
+                event.reply("a poll {**" + dp.titulo() + "**} foi deletada", message -> message.addReaction(Constantes.EMOTES.get("check")).submit());
                 return;
             }
-            event.reply("a poll {**" + titulo + "**} não foi encontrada");
+            event.reply("a poll {**" + dp.titulo() + "**} não foi encontrada");
         });
     }
 

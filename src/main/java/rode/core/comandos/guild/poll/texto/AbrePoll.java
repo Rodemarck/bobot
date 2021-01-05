@@ -5,7 +5,6 @@ import org.bson.BsonValue;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rode.Main;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
@@ -24,9 +23,9 @@ public class AbrePoll extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        PollHelper.getPoll(args, event, (titulo, opcoes, guild, query) -> {
-            if(guild != null){
-                Poll poll = guild.getPoll(titulo);
+        PollHelper.getPoll(args, event, (dp) -> {
+            if(dp.guild() != null){
+                Poll poll = dp.guild().getPoll(dp.titulo());
                 event.reply("poll", message ->
                         message.editMessage(poll.me()).submit()
                                 .thenCompose(message1 -> PollHelper.addReaction(message1,poll.getOpcoes().size()))
@@ -34,29 +33,37 @@ public class AbrePoll extends ComandoGuild {
                 return;
             }
 
-            if(opcoes.isEmpty()){
-                opcoes.add("sim");
-                opcoes.add("não");
+            if(dp.opcoes().isEmpty()){
+                dp.opcoes().add("sim");
+                dp.opcoes().add("não");
             }
-            if(Pattern.matches(".*<@!?\\d+>.*",titulo)){
+            else{
+                for(String s: dp.opcoes())
+                    if(Pattern.matches(".*<@!?\\d+>.*",s)){
+                        event.reply("não pode haver menções em opções de poll");
+                        return;
+                    }
+            }
+            
+            if(Pattern.matches(".*<@!?\\d+>.*",dp.titulo())){
                 event.reply("não pode haver menções em título de poll");
                 return;
             }
-            final Poll  poll = new Poll(titulo,opcoes, event.getEvent());
+            final Poll  poll = new Poll(dp.titulo(),dp.opcoes(), event.getEvent());
             event.reply("poll", message ->
                     message.editMessage(poll.me()).submit()
                             .thenCompose(message1 -> PollHelper.addReaction(message1,poll.getOpcoes().size()))
             );
-            query = new Document("id",event.guildId());
+            Document query = new Document("id",event.guildId());
             Document doc = Memoria.guilds.find(query).first();
 
             if(doc == null){
-                guild = new ModelGuild(event.guildId());
+                ModelGuild guild = new ModelGuild(event.guildId());
                 guild.getPolls().add(poll);
                 BsonValue a = Memoria.guilds.insertOne(guild.toMongo()).getInsertedId();
                 return;
             }
-            guild = ModelGuild.fromMongo(doc);
+            ModelGuild guild = ModelGuild.fromMongo(doc);
             guild.getPolls().add(poll);
             Memoria.guilds.updateOne(query, new Document("$set",guild.toMongo()));
         });

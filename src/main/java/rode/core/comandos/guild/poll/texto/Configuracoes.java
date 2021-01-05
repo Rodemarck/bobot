@@ -14,9 +14,9 @@ public class Configuracoes extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        PollHelper.getPoll(args, event,(titulo, opcoes, modelGuild, query) -> {
-            if(modelGuild != null){
-                var poll = modelGuild.getPoll(titulo);
+        PollHelper.getPoll(args, event,dp -> {
+            if(dp.guild() != null){
+                var poll = dp.guild().getPoll(dp.titulo());
                 event.reply(poll.config(), message -> {
                     message.editMessage("config").submit();
                     return null;
