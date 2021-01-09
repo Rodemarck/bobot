@@ -104,7 +104,71 @@ public final class PollHelper {
         return false;
     }
 
-    public record DadosPoll(String titulo, LinkedList<String> opcoes, ModelGuild guild, Document query, Poll poll, int index){};
+    public static class DadosPoll{
+        private String titulo;
+        private LinkedList<String> opcoes;
+        private ModelGuild guild;
+        private Document query;
+        private Poll poll;
+        private int index;
+
+        public DadosPoll(String titulo, LinkedList<String> opcoes, ModelGuild guild, Document query, Poll poll, int index) {
+            this.titulo = titulo;
+            this.opcoes = opcoes;
+            this.guild = guild;
+            this.query = query;
+            this.poll = poll;
+            this.index = index;
+        }
+
+        public String titulo() {
+            return titulo;
+        }
+
+        public void titulo(String titulo) {
+            this.titulo = titulo;
+        }
+
+        public LinkedList<String> opcoes() {
+            return opcoes;
+        }
+
+        public void opcoes(LinkedList<String> opcoes) {
+            this.opcoes = opcoes;
+        }
+
+        public ModelGuild guild() {
+            return guild;
+        }
+
+        public void guild(ModelGuild guild) {
+            this.guild = guild;
+        }
+
+        public Document query() {
+            return query;
+        }
+
+        public void query(Document query) {
+            this.query = query;
+        }
+
+        public Poll poll() {
+            return poll;
+        }
+
+        public void poll(Poll poll) {
+            this.poll = poll;
+        }
+
+        public int index() {
+            return index;
+        }
+
+        public void index(int index) {
+            this.index = index;
+        }
+    };
     public interface PollFunction{
         void apply(DadosPoll dp) throws IOException;
     }

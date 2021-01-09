@@ -60,7 +60,7 @@ public class PollReactionAdd extends ComandoGuildReacoes {
                 Memoria.guilds.updateOne(dp.query(), new Document("$set",dp.guild().toMongo()));
                 return;
             }
-        } );
+        });
     }
 
     @Override
