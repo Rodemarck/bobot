@@ -1,4 +1,4 @@
-package rode.core.comandos.guild.poll.texto;
+package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.bson.BsonValue;
@@ -23,8 +23,15 @@ public class AbrePoll extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
+        log.info("start");
         PollHelper.getPoll(args, event, (dp) -> {
+            log.info("callback");
+            if(dp.titulo() == null){
+                event.reply("É preciso um título para a poll.");
+                return;
+            }
             if(dp.guild() != null){
+                log.info("poll encontrada");
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 event.reply("poll", message ->
                         message.editMessage(poll.me()).submit()
@@ -32,19 +39,22 @@ public class AbrePoll extends ComandoGuild {
                 );
                 return;
             }
-
+            if(dp.opcoes() == null){
+                dp.opcoes(new LinkedList<>());
+                log.info("ops vazias? {}", dp.opcoes().isEmpty());
+            }
             if(dp.opcoes().isEmpty()){
+                log.info("opcoes vazias");
                 dp.opcoes().add("sim");
                 dp.opcoes().add("não");
             }
             else{
                 for(String s: dp.opcoes())
                     if(Pattern.matches(".*<@!?\\d+>.*",s)){
-                        event.reply("não pode haver menções em opções de poll");
+                        event.reply("Não pode haver menções em opções de poll");
                         return;
                     }
             }
-            
             if(Pattern.matches(".*<@!?\\d+>.*",dp.titulo())){
                 event.reply("não pode haver menções em título de poll");
                 return;

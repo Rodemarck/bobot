@@ -1,12 +1,10 @@
-package rode.core.comandos.guild.poll.texto;
+package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 import org.bson.Document;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
-import rode.model.Poll;
 import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 import rode.utilitarios.Regex;

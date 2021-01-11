@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.entities.Message;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rode.core.comandos.guild.poll.reacoes.PollReactionAdd;
 import rode.model.ModelGuild;
 import rode.model.Poll;
 import rode.utilitarios.Constantes;
@@ -46,8 +45,10 @@ public final class PollHelper {
 
         if(doc != null){
             ModelGuild g = ModelGuild.fromMongo(doc);
-            pf.apply(new DadosPoll(titulo,args,g,query,null,0));
+            pf.apply(new DadosPoll(titulo,opcoes,g,query,g.getPoll(titulo),0));
+            return;
         }
+        pf.apply(new DadosPoll(titulo,opcoes,null,query,null,0));
 
     }
     public static void getPollFromEmote(LinkedList<String> args, Helper.Reacao helper, PollFunction function) throws IOException {
@@ -77,7 +78,7 @@ public final class PollHelper {
             );
     }
     public static boolean livreSiMesmo(LinkedList<String> args, Helper.Reacao event) throws IOException {
-        return event.getMessage().getAuthor().getId().equals(event.getEvent().getJDA().getSelfUser().getId());
+        return event.getMessage().getAuthor().getId().equals(event.jda().getSelfUser().getId());
     }
     public static boolean livreDono(LinkedList<String> args, Helper.Mensagem event){
         LinkedList<String>args2 = new LinkedList<>(args);
@@ -95,7 +96,7 @@ public final class PollHelper {
             System.out.println("poll = " + poll);
             if(poll.getCriadorId().equals(event.getId()))
                 return true;
-            event.getEvent().getJDA().retrieveUserById(poll.getCriadorId()).submit()
+            event.jda().retrieveUserById(poll.getCriadorId()).submit()
                     .thenCompose(u ->{
                         event.reply("pertence a " + u.getName());
                         return null;

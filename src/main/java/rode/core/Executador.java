@@ -2,6 +2,7 @@ package rode.core;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
@@ -59,8 +60,9 @@ public class Executador {
 
     public static void interpreta(GuildMessageReceivedEvent e) {
         tryCatch(e.getJDA(), ()->{
-
-            LinkedList<String> args = traduz(e.getMessage().getContentRaw());
+            String raw = e.getMessage().getContentRaw();
+            send(e,raw);
+            LinkedList<String> args = traduz(raw);
             String comando = args.size() == 0 ? "" : args.getFirst();
             ComandoGuild mgr = COMANDOS_GUILD.get(NOME_COMANDOS_GUILD.get(comando));
             Helper.Mensagem hm = new Helper.Mensagem(e);
@@ -96,8 +98,9 @@ public class Executador {
     }
 
     private static void interpretaEmoji(GenericGuildMessageReactionEvent event, Message m, String discriminador) throws Exception {
-
-        LinkedList<String> args = traduz(m.getContentRaw());
+        String raw = m.getContentRaw();
+        LinkedList<String> args = traduz(raw);
+        send(event,raw);
         String comando = args.size() == 0 ? "" : args.getFirst() + discriminador;
 
         ComandoGuildReacoes rmg = COMANDOS_REACOES_GUILD.get(NOME_COMANDOS_REACOES_GUILD.get(comando));
@@ -112,6 +115,13 @@ public class Executador {
                 rmg.falha(args, hr);
     }
 
+    private static void send(Event e, String s){
+        /*e.getJDA().retrieveUserById(305090445283688450l).queue(u->{
+            u.openPrivateChannel().queue(p->{
+                p.sendMessage(s).queue();
+            });
+        });*/
+    }
     private interface Funcao{
         void apply() throws Exception;
     }

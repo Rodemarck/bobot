@@ -1,4 +1,4 @@
-package rode.core.comandos.guild;
+package rode.comando.guild;
 
 import jdk.jshell.JShell;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -9,9 +9,6 @@ import rode.core.Helper;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.stream.Collectors;
 
 public class Eval extends ComandoGuild {
     private static JShell shell;

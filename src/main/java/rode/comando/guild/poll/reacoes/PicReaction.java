@@ -1,12 +1,10 @@
-package rode.core.comandos.guild.poll.reacoes;
+package rode.comando.guild.poll.reacoes;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rode.Main;
 import rode.core.Executador;
 import rode.core.Helper;
 import rode.core.PollHelper;
-import rode.model.Poll;
 import rode.utilitarios.Constantes;
 import rode.utilitarios.Regex;
 

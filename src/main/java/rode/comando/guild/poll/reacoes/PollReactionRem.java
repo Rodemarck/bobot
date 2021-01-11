@@ -1,28 +1,30 @@
-package rode.core.comandos.guild.poll.reacoes;
+package rode.comando.guild.poll.reacoes;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rode.core.ComandoGuildReacoes;
 import rode.core.Helper;
 import rode.core.PollHelper;
-import rode.model.Poll;
 import rode.utilitarios.Memoria;
-import rode.utilitarios.Constantes;
 import rode.utilitarios.Regex;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 
 public class PollReactionRem extends ComandoGuildReacoes {
+    private static Logger log = LoggerFactory.getLogger(PollReactionRem.class);
     public PollReactionRem() {
         super("--pol--", null, "poll---");
     }
 
     @Override
     public void executa(LinkedList<String> args, Helper.Reacao event) throws IOException, Exception {
+        log.info("inicio");
         final String tipo = args.getFirst();
         PollHelper.getPollFromEmote(args,event, dp -> {
+            log.info("callback");
             dp.poll().rem(dp.index(), event.getId());
             if(tipo.contains("poll"))
                 event.getMessage().editMessage(dp.poll().me()).submit();

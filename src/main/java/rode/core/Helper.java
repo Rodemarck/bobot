@@ -1,6 +1,7 @@
 package rode.core;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
@@ -19,6 +20,10 @@ public abstract class Helper {
     protected final Message message;
     protected final String id;
 
+
+    public JDA jda(){
+        return event.getJDA();
+    }
 
     protected Helper( GenericGuildMessageEvent event, Message message, String id) {
         this.event = event;

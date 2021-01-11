@@ -1,4 +1,4 @@
-package rode.core.comandos.guild.poll.texto;
+package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import rode.core.ComandoGuild;
@@ -21,7 +21,7 @@ public class MostraVotosPoll extends ComandoGuild {
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setTitle("votação para **{" + dp.titulo() + "}**");
-                poll.getVotos(eb, event.getEvent().getJDA());
+                poll.getVotos(eb, event.jda());
                 event.reply(eb);
                 return;
             }

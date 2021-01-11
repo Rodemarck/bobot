@@ -165,21 +165,34 @@ public class Poll implements Serializable{
         }
     }
     public void remOpcoes(LinkedList<String> opcoes) {
-        for(String s:opcoes){
-            if(this.opcoes.contains(s)){
-                final int index = this.opcoes.indexOf(s);
-                this.opcoes.remove(s);
-                this.valores.remove(index);
-                for(Map.Entry<String,Integer> usuario : ((HashMap<String,Integer>)usuariosId.clone()).entrySet()){
-                    if(usuario.getValue() == index){
-                        usuariosId.remove(usuario.getKey());
+        log.info("remOp");
+        synchronized (this) {
+            this.usuariosId.entrySet().forEach(u -> {
+                log.info("{} -> {}", u.getKey(), u.getValue());
+            });
+            var userClone = ((HashMap<String, Integer>) usuariosId.clone());
+            for (var s : opcoes){
+                if (this.opcoes.contains(s)) {
+                    var index = this.opcoes.indexOf(s);
+                    for (var id : this.usuariosId.entrySet()) {
+                        log.info("procurando por {}", id.getKey());
+                        if (id.getValue() == index) {
+                            log.info("remova {}", id.getValue());
+                            userClone.remove(id.getKey());
+                        } else if (id.getValue() > index)
+                            userClone.put(id.getKey(), id.getValue() - 1);
                     }
-                    if(usuario.getValue() > index){
-                        usuariosId.remove(usuario.getKey());
-                        usuariosId.put(usuario.getKey(), usuario.getValue() - 1);
-                    }
+                    this.opcoes.remove(index);
+                    this.valores.remove(index);
                 }
             }
+            usuariosId.entrySet().clear();
+            userClone.entrySet().forEach(u->
+                usuariosId.put(u.getKey(), u.getValue())
+            );
+            this.usuariosId.entrySet().forEach(u->{
+                log.info("{} -> {}", u.getKey(), u.getValue());
+            });
         }
     }
 
@@ -311,6 +324,7 @@ public class Poll implements Serializable{
     }
     public void getVotos(EmbedBuilder eb, JDA jda) {
         for(Map.Entry<String, Integer> u :usuariosId.entrySet()){
+            System.out.println(opcoes);
             eb.appendDescription("**<@" +u.getKey()+ ">** votou para **" + opcoes.get(u.getValue()) + "**\n\n");
         }
     }

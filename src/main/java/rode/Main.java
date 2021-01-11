@@ -25,6 +25,7 @@ import rode.utilitarios.Memoria;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Hashtable;
 import java.util.regex.Pattern;
 
 
@@ -32,7 +33,6 @@ public class Main {
         private static Logger log = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) throws IOException, InterruptedException {
         jda();
-
 
         /*Memoria.guilds.find().forEach(e->{
             ModelGuild m = ModelGuild.fromMongo(e);
@@ -51,7 +51,7 @@ public class Main {
         log.debug("logando");
         try{
             inicializaComandos();
-            JDABuilder.createDefault(Constantes.env.get("token_teste"))
+            JDABuilder.createDefault(Constantes.env.get("token"))
                     .setActivity(Activity.playing("-tutorial"))
                     .setStatus(OnlineStatus.ONLINE)
                     .addEventListeners(new Controlador())
@@ -61,7 +61,7 @@ public class Main {
         }
     }
     private static void inicializaComandos() {
-        Reflections reflections = new Reflections("rode.core.comandos.guild");
+        Reflections reflections = new Reflections("rode.comando.guild");
         var ignoreList = reflections.getTypesAnnotatedWith(IgnoraComando.class);
         reflections.getSubTypesOf(ComandoGuild.class)
                 .stream().filter(aClass -> !ignoreList.contains(aClass))

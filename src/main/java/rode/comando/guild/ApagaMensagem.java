@@ -1,4 +1,4 @@
-package rode.core.comandos.guild;
+package rode.comando.guild;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -21,7 +21,7 @@ public class ApagaMensagem extends ComandoGuild {
         if(args.size() == 1) {
             event.getEvent().getChannel().retrieveMessageById(args.getFirst()).submit()
                     .thenCompose(message -> {
-                        if (message.getAuthor().getId().equals(event.getEvent().getJDA().getSelfUser().getId()))
+                        if (message.getAuthor().getId().equals(event.jda().getSelfUser().getId()))
                             return message.delete().submit()
                                     .thenCompose(u -> event.getMessage().delete().submit());
                         else
@@ -34,7 +34,7 @@ public class ApagaMensagem extends ComandoGuild {
             event.getEvent().getGuild().getTextChannelById(args.getFirst())
                     .retrieveMessageById(args.getLast()).submit()
                     .thenCompose(message -> {
-                        if (message.getAuthor().getId().equals(event.getEvent().getJDA().getSelfUser().getId()))
+                        if (message.getAuthor().getId().equals(event.jda().getSelfUser().getId()))
                             return message.delete().submit()
                                     .thenCompose(u-> event.getMessage().delete().submit());
                         else

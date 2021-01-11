@@ -1,8 +1,10 @@
-package rode.core.comandos.guild.poll.texto;
+package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
@@ -13,6 +15,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 public class RemoveOpcoesPoll extends ComandoGuild {
+    private static Logger log = LoggerFactory.getLogger(RemoveOpcoesPoll.class);
     public RemoveOpcoesPoll() {
         super("remop", Permission.ADMINISTRATOR,  "rempoll","remop","remoptions","remopções","removeop","removeoptions","removeopções");
     }
@@ -24,7 +27,9 @@ public class RemoveOpcoesPoll extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws IOException, Exception {
+        log.info("inicio");
         PollHelper.getPoll(args, event, dp-> {
+            log.info("callback");
             if(dp.opcoes().isEmpty()){
                 EmbedBuilder eb = new EmbedBuilder();
                 help(eb);
@@ -32,9 +37,10 @@ public class RemoveOpcoesPoll extends ComandoGuild {
                 return;
             }
             if(dp.guild() != null){
+                log.info("não nulo");
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 poll.remOpcoes(dp.opcoes());
-                final Document d = dp.guild().toMongo();
+                Document d = dp.guild().toMongo();
                 Memoria.guilds.updateOne(dp.query(), new Document("$set",d));
                 event.reply(poll.me(), message->
                     PollHelper.addReaction(message,poll.getOpcoes().size())

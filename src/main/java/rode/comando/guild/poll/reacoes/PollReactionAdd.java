@@ -1,4 +1,4 @@
-package rode.core.comandos.guild.poll.reacoes;
+package rode.comando.guild.poll.reacoes;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.bson.Document;
@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import rode.core.ComandoGuildReacoes;
 import rode.core.Helper;
 import rode.core.PollHelper;
-import rode.model.Poll;
 import rode.utilitarios.Memoria;
 import rode.utilitarios.Constantes;
 import rode.utilitarios.Regex;
@@ -25,12 +24,19 @@ public class PollReactionAdd extends ComandoGuildReacoes {
     @Override
     public void executa(LinkedList<String> args, Helper.Reacao event) throws IOException, Exception {
         final String tipo = args.getFirst();
+        log.info("inicio");
         PollHelper.getPollFromEmote(args, event,dp -> {
+            log.info("callback");
             if(dp.poll().getOpcoes().size() > dp.index()){
                 if(dp.poll().hasUser(event.getId())){
                     event.getMessage().removeReaction(event.emoji(), event.getEvent().getUser()).queue(mm->{
                         if(dp.index() == dp.poll().getOriginal(event.getId())){
                             dp.poll().rem(dp.index(),event.getId());
+                            event.jda().retrieveUserById(event.getId()).queue(user->{
+                                event.reply("**" + user.getName() + "** seu voto foi removido de " + Constantes.POOL_votos.get(dp.index()),
+                                        message -> message.delete().submitAfter(5,TimeUnit.SECONDS)
+                                );
+                            });
                             Memoria.guilds.updateOne(dp.query(), new Document("$set",dp.guild().toMongo()));
                             if(tipo.contains("poll"))
                                 event.getMessage().editMessage(dp.poll().me()).submit();
@@ -43,13 +49,17 @@ public class PollReactionAdd extends ComandoGuildReacoes {
                             return;
                         }
                         event.reply("**"+ event.getEvent().getUser().getName()+"** você já votou [**"+ Constantes.POOL_votos.get(dp.poll().getOriginal(event.getId()))+ "**] nessa poll!",message->
-                                message.delete().submitAfter(15, TimeUnit.SECONDS)
+                                message.delete().submitAfter(5, TimeUnit.SECONDS)
                         );
                     });
                     return;
                 }
                 dp.poll().add(dp.index(), event.getId());
-                if(tipo.contains("dp.poll()"))
+                event.jda().retrieveUserById(event.getId()).queue(user->{
+                    event.reply("**" + user.getName() + "** seu voto foi contabilizado para" + Constantes.POOL_votos.get(dp.index()),
+                            message->message.delete().submitAfter(5,TimeUnit.SECONDS));
+                });
+                if(tipo.contains("poll"))
                     event.getMessage().editMessage(dp.poll().me()).submit();
                 else if(tipo.contains("pic")){
                     final var emb = event.getMessage().getEmbeds().get(0);

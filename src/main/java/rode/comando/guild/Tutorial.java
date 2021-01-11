@@ -1,4 +1,4 @@
-package rode.core.comandos.guild;
+package rode.comando.guild;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import rode.core.Executador;

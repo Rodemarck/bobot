@@ -1,4 +1,4 @@
-package rode.core.comandos.guild;
+package rode.comando.guild;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import rode.core.ComandoGuild;
@@ -16,7 +16,7 @@ public class PingGuild extends ComandoGuild {
     }
 
     public void executa(LinkedList<String> args, Helper.Mensagem event) {
-        event.reply("o ping é de mais de **" + event.getEvent().getJDA().getGatewayPing() + "ms**!!");
+        event.reply("o ping é de mais de **" + event.jda().getGatewayPing() + "ms**!!");
     }
 
     public void help(EmbedBuilder me) {
