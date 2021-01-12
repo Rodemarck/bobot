@@ -39,8 +39,8 @@ public class Main {
         private static Logger log = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) throws IOException, InterruptedException {
         Locale.setDefault(new Locale("pt", "BR"));
-        System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("d/m/Y H:m")));
-        //jda();
+        //System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("d/m/Y H:m")));
+        jda();
     }
 
 
@@ -48,7 +48,7 @@ public class Main {
         log.debug("logando");
         try{
             inicializaComandos();
-            JDABuilder.createDefault(Constantes.env.get("token_teste"))
+            JDABuilder.createDefault(Constantes.env.get("token"))
                     .setActivity(Activity.playing("-tutorial"))
                     .setStatus(OnlineStatus.ONLINE)
                     .addEventListeners(new Controlador())
