@@ -6,6 +6,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import rode.model.ModelGuild;
 
 public class Memoria {
     private static MongoClient mongoClient;
@@ -21,5 +22,7 @@ public class Memoria {
             e.printStackTrace();
         }
     }
-    
+    public static void update(Document query, ModelGuild guild){
+        guilds.updateOne(query, new Document("$set",guild.toMongo()));
+    }
 }

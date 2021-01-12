@@ -12,7 +12,9 @@ import rode.model.Poll;
 import rode.utilitarios.Memoria;
 import rode.utilitarios.Regex;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
@@ -26,36 +28,52 @@ public class SetDataPoll  extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        PollHelper.getPoll(args,event,dp -> {
+    public void executa(LinkedList<String> args, Helper.Mensagem helper) throws Exception {
+        PollHelper.getPoll(args,helper,dp -> {
             if(dp.guild() != null){
                 log.info("ue...");
                 Poll poll = dp.guild().getPoll(dp.titulo());
-                String s = args.stream().collect(Collectors.joining()).replace("\\{([^\\}]+)\\}|\\[([^\\]]+)\\]","");
-                LinkedList<LocalDateTime> times = new LinkedList<>();
-                times.addFirst(LocalDateTime.now());
-                LocalDateTime controle = times.getFirst().plusMinutes(0);
+                String s = args.stream().collect(Collectors.joining(" ")).replaceAll("\\{([^\\}]+)\\}|\\[([^\\]]+)\\]"," ");
+                log.info(s);
+                var p = Pattern.compile("\\d+(/|-)\\d+((/|-)\\d+)?(\\s+\\d+:\\d+)?");
+                var m = p.matcher(s);
+                if(m.find()){
+                    var nums = new LinkedList<Integer>();
+                    var texto = m.group();
+                    p = Pattern.compile("\\d+");
+                    m = p.matcher(texto);
+                    while (m.find())
+                        nums.add(Integer.parseInt(m.group()));
 
-
-
-                passaTempo("\\d+(d((ia|ay)s?)?)",s,n -> times.addFirst(times.getFirst().plusDays(n)));
-                passaTempo("\\d+((w(eek)?|s(emana)?)s?)",s,n -> times.addFirst(times.getFirst().plusWeeks(n)));
-                passaTempo("\\d+(h(o(ra|ur))?s?)",s,n -> times.addFirst(times.getFirst().plusHours(n)));
-                passaTempo("\\d+m((inut[eo])s?)?",s,n -> times.addFirst(times.getFirst().plusMinutes(n)));
-
-                if(times.getFirst().equals(controle)){
-                    event.reply("não consegui entender o comando dirieto");
+                    var agora = LocalDateTime.now();
+                    int[] numeros = switch (nums.size()){
+                        case 2 -> new int[]{agora.getYear(),nums.get(1),nums.get(0),12,0};
+                        case 3 -> new int[]{nums.get(2), nums.get(1), nums.get(0), 12, 0};
+                        case 4 -> new int[]{agora.getYear(), nums.get(1), nums.get(0), nums.get(2),nums.get(3)};
+                        case 5 -> new int[]{nums.get(2), nums.get(1), nums.get(0), nums.get(3), nums.get(4)};
+                        default -> null;
+                    };
+                    try{
+                        var data = LocalDateTime.of(numeros[0],numeros[1],numeros[2],numeros[3],numeros[4]);
+                        if(agora.isAfter(data)){
+                            helper.reply("Data inválida.");
+                            return;
+                        }
+                        if(ChronoUnit.MONTHS.between(agora,data) > 2) {
+                            data = agora.plusMonths(2);
+                            helper.reply("O tempo máximo é dois meses");
+                        }
+                        poll.setDataLimite(data);
+                        Memoria.update(dp.query(), dp.guild());
+                        helper.reply(poll.config());
+                    }catch (DateTimeException e){
+                        helper.reply("Data inválida.");
+                        return;
+                    }
+                }else{
+                    helper.reply("Data inválida.");
                     return;
                 }
-
-                if(ChronoUnit.MONTHS.between(controle,times.getFirst()) > 2){
-                    poll.setDataLimite(controle.plusMonths(2));
-                    event.reply("tempo máximo é de 2 meses");
-                }else
-                    poll.setDataLimite(times.getFirst());
-                Memoria.guilds.updateOne(dp.query(), new Document("$set", dp.guild().toMongo()));
-                event.reply("o limite agora é " + poll.getDataLimite().toString());
-                times.clear();
             }
         });
     }
@@ -86,17 +104,17 @@ public class SetDataPoll  extends ComandoGuild {
 
     @Override
     public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("""
+        var agora = LocalDateTime.now();
+        agora.plusWeeks(1);
+        me.appendDescription(String.format("""
                 Comando para adicionar um novo tempo restante para uma poll (enquete).
                 
-                **-data {titulo} 1 semana 2 dias 6 horas 23 minutos**
+                **-data {titulo} %s**
                 
                 Aliases (comandos alternativos) : **date**, **data**.
                 O tempo limite para votação é contado somando o tempo digitado com o horario atual.
                 O tempo maximo que uma poll pode ficar aberta são 2 meses.
-                É possivel utilizar apenas as inicias assim ficaria
-                
-                **-data {titulo} 1s 2d 6h 23m**.
-                """);
+                É possivel utilizar apenas as inicias assim ficaria.
+                """, agora.format(DateTimeFormatter.ofPattern("d/m/Y H:m"))));
     }
 }
