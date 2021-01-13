@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rode.model.ModelMensagem;
 import rode.utilitarios.Constantes;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -57,7 +58,16 @@ public class Executador {
             }
         });
     }
-
+    public static void checa(GuildMessageReceivedEvent e){
+        tryCatch(e.getJDA(),()->{
+            log.info("checando");
+            var raw = e.getMessage().getContentRaw();
+            var hm = new Helper.Mensagem(e);
+            var args = traduz(raw);
+            if(EventLoop.getInstance().mensagem(hm.getEvent().getAuthor().getIdLong()) != null)
+                EventLoop.getInstance().mensagem(hm.getEvent().getAuthor().getIdLong()).executa(args,hm);
+        });
+    }
     public static void interpreta(GuildMessageReceivedEvent e) {
         tryCatch(e.getJDA(), ()->{
             String raw = e.getMessage().getContentRaw();

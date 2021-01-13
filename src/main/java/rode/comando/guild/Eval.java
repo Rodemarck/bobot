@@ -3,15 +3,17 @@ package rode.comando.guild;
 import jdk.jshell.JShell;
 import net.dv8tion.jda.api.EmbedBuilder;
 import rode.core.ComandoGuild;
+import rode.core.EventLoop;
 import rode.core.Executador;
 import rode.core.Helper;
+import rode.model.ModelMensagem;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 
 public class Eval extends ComandoGuild {
-    private static JShell shell;
+    public static JShell shell;
     private static LocalDateTime time;
     public Eval() {
         super("eval", null, "eval", "shell");
@@ -42,9 +44,38 @@ public class Eval extends ComandoGuild {
         synchronized (this){
             time = LocalDateTime.now();
         }
-        String comando = event.getMessage().getContentStripped().substring(5);
+        String comando = event.getMessage().getContentStripped();
+        if(comando.startsWith("-eval"))
+            comando = comando.replaceFirst("-eval","");
+
         try{
-            event.reply(">> " + shell.eval(comando).get(0).value());
+            final var id = event.getEvent().getAuthor().getIdLong();
+            final var gId = event.getEvent().getChannel().getIdLong();
+            if(!comando.isBlank()){
+                event.reply(">> " + shell.eval(comando).get(0).value());
+                return;
+            }
+            final var realComando = comando;
+
+            EventLoop.mensagem(id, new ModelMensagem(id,gId,null) {
+                @Override
+                public void executa(LinkedList<String> args, Helper.Mensagem hm) {
+                    log.info("executando");
+                    if(mensagemId()==gId){
+                        String comando = hm.getMessage().getContentStripped();
+                        if(comando.equals("exit")){
+                            EventLoop.deleta(id);
+                            hm.reply("Console fechado " + event.getEvent().getAuthor().getName() + " .");
+                            return;
+                        }
+                        hm.reply(">> " + shell.eval(comando).get(0).value());
+                        atualiza();
+                    }
+                }
+            });
+            event.reply("Console aberto.");
+            System.out.println("foi porra olha só");
+            System.out.println(EventLoop.mensagem(id));
         } catch (Exception e) {
             if(e.getMessage() != null)
                 event.reply(e.getMessage());
