@@ -1,25 +1,21 @@
 package rode.model;
 
-import lombok.Data;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rode.core.Helper;
 import rode.utilitarios.Constantes;
 import rode.utilitarios.Regex;
 
+import java.awt.*;
 import java.io.*;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.function.Function;
+import java.util.List;
 import java.util.stream.Collectors;
 public class Poll implements Serializable{
     private static Logger log = LoggerFactory.getLogger(Poll.class);
@@ -34,7 +30,7 @@ public class Poll implements Serializable{
 
     public MessageEmbed visualiza(int i) {
         top t = calculaTop();
-        EmbedBuilder eb = new EmbedBuilder();
+        EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
         eb.setTitle(titulo);
         if(Regex.isLink(opcoes.get(i)))
            eb.setImage(opcoes.get(i));
@@ -135,11 +131,11 @@ public class Poll implements Serializable{
 
     public boolean hasUser(String id){
         boolean b = this.usuariosId.containsKey(id);
-        log.info("has user({}) = {}", id, b);
+        log.debug("has user({}) = {}", id, b);
         return b;
 
     }
-    public int getOriginal(String id){
+    public int votouPara(String id){
         return this.usuariosId.get(id);
     }
     public void add(int index, String userId){
@@ -165,19 +161,19 @@ public class Poll implements Serializable{
         }
     }
     public void remOpcoes(LinkedList<String> opcoes) {
-        log.info("remOp");
+        log.debug("remOp");
         synchronized (this) {
             this.usuariosId.entrySet().forEach(u -> {
-                log.info("{} -> {}", u.getKey(), u.getValue());
+                log.debug("{} -> {}", u.getKey(), u.getValue());
             });
             var userClone = ((HashMap<String, Integer>) usuariosId.clone());
             for (var s : opcoes){
                 if (this.opcoes.contains(s)) {
                     var index = this.opcoes.indexOf(s);
                     for (var id : this.usuariosId.entrySet()) {
-                        log.info("procurando por {}", id.getKey());
+                        log.debug("procurando por {}", id.getKey());
                         if (id.getValue() == index) {
-                            log.info("remova {}", id.getValue());
+                            log.debug("remova {}", id.getValue());
                             userClone.remove(id.getKey());
                         } else if (id.getValue() > index)
                             userClone.put(id.getKey(), id.getValue() - 1);
@@ -191,7 +187,7 @@ public class Poll implements Serializable{
                 usuariosId.put(u.getKey(), u.getValue())
             );
             this.usuariosId.entrySet().forEach(u->{
-                log.info("{} -> {}", u.getKey(), u.getValue());
+                log.debug("{} -> {}", u.getKey(), u.getValue());
             });
         }
     }
@@ -223,8 +219,8 @@ public class Poll implements Serializable{
     public MessageEmbed me(){
         top t = calculaTop();
         int n = opcoes.size();
-        log.info("me, total = {}",t.total);
-        EmbedBuilder eb = new EmbedBuilder();
+        log.debug("me, total = {}",t.total);
+        EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
         eb.setTitle(titulo);
         for(int i=0; i<n;i++){
             int numero = (t.total==0)? 0 : Math.round(((float)valores.get(i)/t.total)*100);
@@ -240,12 +236,12 @@ public class Poll implements Serializable{
 
     public MessageEmbed config() {
         top t = calculaTop();
-        EmbedBuilder eb = new EmbedBuilder();
+        EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
         eb.setTitle(titulo);
         eb.appendDescription("criador : <@" + criadorId + "> \n");
         String dara = "";
 
-        log.info("no fim minha dara foi [{}]", dara);
+        log.debug("no fim minha dara foi [{}]", dara);
         if(dataCriacao != null){
             eb.appendDescription("criado no dia : **" +
                     dataCriacao.format(DateTimeFormatter.ofPattern("dd")) +

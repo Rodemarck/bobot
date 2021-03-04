@@ -6,7 +6,10 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import rode.core.PollHelper;
 import rode.model.ModelGuild;
+
+import java.util.function.Consumer;
 
 public class Memoria {
     private static MongoClient mongoClient;
@@ -24,5 +27,17 @@ public class Memoria {
     }
     public static void update(Document query, ModelGuild guild){
         guilds.updateOne(query, new Document("$set",guild.toMongo()));
+    }
+
+    public static void update(PollHelper.DadosPoll dp) {
+        guilds.updateOne(dp.query(), new Document("$set",dp.guild().toMongo()));
+    }
+
+    public static void each(Consumer<ModelGuild> action) {
+        guilds.find().forEach(d->action.accept(ModelGuild.fromMongo(d)));
+    }
+
+    public static ModelGuild guild(String guildId) {
+        return  ModelGuild.fromMongo(guilds.find(new Document("id",guildId)).first());
     }
 }

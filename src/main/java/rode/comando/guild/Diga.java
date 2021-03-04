@@ -27,12 +27,11 @@ public class Diga extends ComandoGuild {
     @Override
     public void helpExtensive(EmbedBuilder me) {
         me.appendDescription("""
-        comando secreto que faz o bot dizer algo.
+        Comando secreto que faz o bot dizer algo. Assim que o comando é entendido pelo bot ele apaga sua mensagem para enganar os fracos.
         
         **-diga aa**
         
-        Aliases (comandos alternativos) : **diga**, **say**
-        assim que o comando é entendido pelo bot ele apaga sua mensagem para enganar os fracos.
+        Aliases (comandos alternativos) : **diga**, **say**.
         """);
     }
 }

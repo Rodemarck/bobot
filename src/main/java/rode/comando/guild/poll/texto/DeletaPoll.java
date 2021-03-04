@@ -25,7 +25,7 @@ public class DeletaPoll extends ComandoGuild {
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 dp.guild().getPolls().remove(poll);
                 Memoria.guilds.updateOne(dp.query(),new Document("$set",dp.guild().toMongo()));
-                event.reply("a poll {**" + dp.titulo() + "**} foi deletada", message -> message.addReaction(Constantes.EMOTES.get("check")).submit());
+                event.reply("a poll {**" + dp.titulo() + "**} foi deletada", message -> message.addReaction(Constantes.emote("check")).submit());
                 return;
             }
             event.reply("a poll {**" + dp.titulo() + "**} não foi encontrada");

@@ -10,7 +10,6 @@ import rode.utilitarios.Memoria;
 import rode.utilitarios.Regex;
 
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class VotarPoll extends ComandoGuild {
@@ -23,46 +22,41 @@ public class VotarPoll extends ComandoGuild {
         PollHelper.getPoll(args, helper, dp -> {
             if(dp.guild() != null){
                 if(!dp.poll().isAberto()){
-                    helper.reply("a poll {**" + dp.poll().getTitulo() + "**} foi fechada", message -> message.delete().submitAfter(5,TimeUnit.SECONDS));
+                    helper.replyTemp("a poll {**" + dp.poll().getTitulo() + "**} foi fechada");
                     return;
                 }
                 String str = args.stream().collect(Collectors.joining());
                 LinkedList<String> votos = Regex.extractInside("\\[([^\\]])\\]",str);
                 if(votos.size() == 0){
-                    helper.reply("seu voto se perdeu!", message -> message.delete().submitAfter(5, TimeUnit.SECONDS));
+                    helper.replyTemp("seu voto se perdeu!");
                     return;
                 }
                 if(Constantes.POOL_votos.contains(votos.getFirst().toLowerCase())){
                     int index = Constantes.POOL_votos.indexOf(votos.getFirst().toLowerCase());
                     if(index < dp.poll().getOpcoes().size()){
                         if(dp.poll().hasUser(helper.getEvent().getAuthor().getId())){
-                            int original = dp.poll().getOriginal(helper.getEvent().getAuthor().getId());
+                            int original = dp.poll().votouPara(helper.getEvent().getAuthor().getId());
                             if(index == original){
                                 helper.getMessage().delete().submit();
                                 dp.poll().rem(index,helper.getId());
-                                helper.reply("**" + helper.getEvent().getAuthor().getName() + "** seu voto foi retirado de com sucesso" , message -> message.delete().submitAfter(5, TimeUnit.SECONDS)) ;
+                                helper.replyTemp("**" + helper.getEvent().getAuthor().getName() + "** seu voto foi retirado de com sucesso"); ;
                                 Memoria.guilds.updateOne(dp.query(), new Document("$set", dp.guild().toMongo()));
                                 return;
                             }
                             else{
-                                helper.reply("**"+ helper.getEvent().getAuthor().getName()+"** você já votou [**"+ Constantes.POOL_votos.get(dp.poll().getOriginal(helper.getId()))+ "**] nessa poll!",message->
-                                        message.delete().submitAfter(15, TimeUnit.SECONDS)
-                                );
+                                helper.replyTemp("**"+ helper.getEvent().getAuthor().getName()+"** você já votou [**"+ Constantes.POOL_votos.get(dp.poll().votouPara(helper.getId()))+ "**] nessa poll!");
                             }
                         }
                         else{
                             helper.getMessage().delete().submit();
                             dp.poll().add(index, helper.getId());
-                            helper.reply("**" + helper.getEvent().getAuthor().getName() + "** voto computado com sucesso ",
-                                    message -> message.delete().submitAfter(5, TimeUnit.SECONDS));
+                            helper.replyTemp("**" + helper.getEvent().getAuthor().getName() + "** voto computado com sucesso ");
                             Memoria.guilds.updateOne(dp.query(), new Document("$set", dp.guild().toMongo()));
                             return;
                         }
                     }
                 }
-                helper.reply("**" + helper.getEvent().getAuthor().getName() + "** pare de trolar,[" + votos.getFirst() + "] não é uma opção para essa poll.", message->
-                        message.delete().submitAfter(15, TimeUnit.SECONDS)
-                );
+                helper.replyTemp("**" + helper.getEvent().getAuthor().getName() + "** pare de trolar,[" + votos.getFirst() + "] não é uma opção para essa poll.");
 
             }
         });

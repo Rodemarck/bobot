@@ -8,9 +8,9 @@ import rode.core.PollHelper;
 import rode.model.Poll;
 import rode.utilitarios.Memoria;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class AdicionaOpcoesPoll extends ComandoGuild {
@@ -23,7 +23,7 @@ public class AdicionaOpcoesPoll extends ComandoGuild {
         PollHelper.getPoll(args, event, dp -> {
             if(dp.guild() != null){
                 if(dp.opcoes().isEmpty()){
-                    EmbedBuilder eb = new EmbedBuilder();
+                    EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
                     eb.setTitle("cade as novas opções??");
                     help(eb);
                     event.reply(eb);
@@ -36,7 +36,7 @@ public class AdicionaOpcoesPoll extends ComandoGuild {
                     }
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 if(!poll.isAberto()){
-                    event.reply("a poll {**" + poll.getTitulo() + "**} foi fechada", message -> message.delete().submitAfter(5, TimeUnit.SECONDS));
+                    event.replyTemp("a poll {**" + poll.getTitulo() + "**} foi fechada");
                     return;
                 }
 

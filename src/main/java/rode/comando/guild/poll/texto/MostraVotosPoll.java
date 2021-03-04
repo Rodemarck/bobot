@@ -6,6 +6,7 @@ import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.model.Poll;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.LinkedList;
 
@@ -19,7 +20,7 @@ public class MostraVotosPoll extends ComandoGuild {
         PollHelper.getPoll(args,event,dp -> {
             if(dp.guild() != null){
                 Poll poll = dp.guild().getPoll(dp.titulo());
-                EmbedBuilder eb = new EmbedBuilder();
+                EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
                 eb.setTitle("votação para **{" + dp.titulo() + "}**");
                 poll.getVotos(eb, event.jda());
                 event.reply(eb);

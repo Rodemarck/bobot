@@ -18,7 +18,7 @@ public class PicReactionAdd extends ComandoGuildReacoes {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Reacao event) throws IOException, Exception {
-        log.info("call");
+        log.trace("chamando ->>" + PicReaction.class.getName());
         PicReaction.executa(args, event,"+++");
     }
 

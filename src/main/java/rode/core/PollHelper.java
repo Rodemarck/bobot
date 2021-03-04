@@ -30,7 +30,7 @@ public final class PollHelper {
         String txt = args.stream().collect(Collectors.joining(" "));
         LinkedList<String> param = Regex.extractInside("\\{([^\\}])+\\}", txt);
         if(param.size() == 0){
-            log.info("não achei nada em {}", txt);
+            log.debug("poll [{}] não encontrada", txt);
             pf.apply(new DadosPoll(null, null,null,null,null,0));
             return;
         }
@@ -53,20 +53,20 @@ public final class PollHelper {
     }
     public static void getPollFromEmote(LinkedList<String> args, Helper.Reacao helper, PollFunction function) throws IOException {
         final String tipo = args.getFirst();
-        log.info("do tipo {}", tipo);
+        log.debug("do tipo {}", tipo);
         if(Constantes.POOL_EMOTES.contains(helper.emoji())) {
             int index = Constantes.POOL_EMOTES.indexOf(helper.emoji());
             String titulo = helper.getMessage().getEmbeds().get(0).getTitle();
             args.add('{' + titulo + '}');
-            log.info("titulo da poll {}", titulo);
+            log.debug("titulo da poll {}", titulo);
             getPoll(args, helper, dp -> {
                 if(dp.guild() == null){
-                    helper.reply("sem registo da poll **" + titulo + "**", message -> message.delete().submitAfter(5,TimeUnit.SECONDS));
+                    helper.replyTemp("sem registo da poll **" + titulo + "**");
                     return;
                 }
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 if(!poll.isAberto()){
-                    helper.reply("a poll {**" + poll.getTitulo() + "**} foi fechada", message -> message.delete().submitAfter(5, TimeUnit.SECONDS));
+                    helper.replyTemp("a poll {**" + poll.getTitulo() + "**} foi fechada");
                     return;
                 }
                 function.apply(new DadosPoll(dp.titulo, dp.opcoes, dp.guild, dp.query, dp.poll, index));
@@ -75,6 +75,7 @@ public final class PollHelper {
         else
             helper.reply("**" + helper.getEvent().getUser().getName() + "** pare de trolar," + helper.emoji() + " não é uma opção para essa poll.", message->
                     message.delete().submitAfter(15, TimeUnit.SECONDS)
+                    .thenRunAsync(()->helper.getMessage().clearReactions(helper.emoji()).submit())
             );
     }
     public static boolean livreSiMesmo(LinkedList<String> args, Helper.Reacao event) throws IOException {
@@ -103,6 +104,32 @@ public final class PollHelper {
                     });
         }
         return false;
+    }
+
+    public static void contaVoto(Helper.Reacao event, int index) {
+        event.jda().retrieveUserById(event.getId()).queue(user->
+            event.replyTemp("**" + user.getName() + "** seu voto foi contabilizado para [**" + Constantes.POOL_votos.get(index) + "**]")
+        );
+    }
+    public static void removeVoto(Helper.Reacao event, int index) {
+        event.jda().retrieveUserById(event.getId()).queue(user->{
+            event.replyTemp("**" + user.getName() + "** seu voto foi removido de [**" + Constantes.POOL_votos.get(index) + "**]");
+        });
+    }
+
+    public static void jaVotou(Helper.Reacao event, int index) {
+        event.replyTemp("**"+ event.getEvent().getUser().getName()+"** você já votou [**"+ Constantes.POOL_votos.get(index)+ "**] nessa poll!");
+    }
+
+    public static void reRender(Helper.Reacao event,String tipo, DadosPoll dp) {
+        if(tipo.contains("poll"))
+            event.getMessage().editMessage(dp.poll().me()).submit();
+        else if(tipo.contains("pic")){
+            final var emb = event.getMessage().getEmbeds().get(0);
+            LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
+            int i = Integer.parseInt(param.getFirst());
+            event.getMessage().editMessage(dp.poll().visualiza(i)).submit();
+        }
     }
 
     public static class DadosPoll{

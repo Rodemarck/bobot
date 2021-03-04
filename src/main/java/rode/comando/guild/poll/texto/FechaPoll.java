@@ -2,7 +2,6 @@ package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import org.bson.Document;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
@@ -10,7 +9,6 @@ import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 
 public class FechaPoll extends ComandoGuild {
     public FechaPoll() {
@@ -22,12 +20,12 @@ public class FechaPoll extends ComandoGuild {
         PollHelper.getPoll(args,event,dp -> {
             if(dp.guild() != null){
                 if(!dp.poll().isAberto()){
-                    event.reply("esta poll já está fechada", message -> message.delete().submitAfter(5, TimeUnit.SECONDS));
+                    event.replyTemp("esta poll já está fechada");
                     return;
                 }
                 dp.poll().fecha();
-                Memoria.guilds.updateOne(dp.query(), new Document("$set",dp.guild().toMongo()));
-                event.reply("a poll {**" + dp.query() + "**} foi fechada", message -> message.addReaction(Constantes.EMOTES.get("check")).submit());
+                Memoria.update(dp);
+                event.reply("a poll {**" + dp.query() + "**} foi fechada", message -> message.addReaction(Constantes.emote("check")).submit());
             }
         });
     }

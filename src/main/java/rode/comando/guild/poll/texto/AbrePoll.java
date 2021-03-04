@@ -23,15 +23,15 @@ public class AbrePoll extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        log.info("start");
+        log.debug("start");
         PollHelper.getPoll(args, event, (dp) -> {
-            log.info("callback");
+            log.debug("callback");
             if(dp.titulo() == null){
                 event.reply("É preciso um título para a poll.");
                 return;
             }
             if(dp.guild() != null){
-                log.info("poll encontrada");
+                log.debug("poll encontrada");
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 event.reply("poll", message ->
                         message.editMessage(poll.me()).submit()
@@ -41,10 +41,10 @@ public class AbrePoll extends ComandoGuild {
             }
             if(dp.opcoes() == null){
                 dp.opcoes(new LinkedList<>());
-                log.info("ops vazias? {}", dp.opcoes().isEmpty());
+                log.debug("ops vazias? {}", dp.opcoes().isEmpty());
             }
             if(dp.opcoes().isEmpty()){
-                log.info("opcoes vazias");
+                log.debug("opcoes vazias");
                 dp.opcoes().add("sim");
                 dp.opcoes().add("não");
             }

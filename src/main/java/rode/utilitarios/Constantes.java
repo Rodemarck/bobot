@@ -3,21 +3,21 @@ package rode.utilitarios;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.awt.*;
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class Constantes {
     public static final Dotenv env = Dotenv.load();
     public static final HashMap<String, String> EMOTES = new HashMap<>(){{
-        put("check","\u1F1FD");
-        put("esquerda","\u2B05");
-        put("direita","\u27A1");
+        put("check","✔");
+        put("esquerda","⬅");
+        put("direita","➡");
     }};
-
-    public static final HashMap<String, String> EMOTES_NOME = new HashMap<>();
     public final static String PREFIXO = "-";
-    public static final List<String> POOL_EMOTES = new ArrayList<>(Arrays.asList("\uD83C\uDDE6", "\uD83C\uDDE7", "\uD83C\uDDE8", "\uD83C\uDDE9", "\uD83C\uDDEA", "\uD83C\uDDEB", "\uD83C\uDDEC", "\uD83C\uDDED", "\uD83C\uDDEE", "\uD83C\uDDEF", "\uD83C\uDDF0", "\uD83C\uDDF1", "\uD83C\uDDF2", "\uD83C\uDDF3", "\uD83C\uDDF4", "\uD83C\uDDF5", "\uD83C\uDDF6", "\uD83C\uDDF7", "\uD83C\uDDF8", "\uD83C\uDDF9", "\uD83C\uDDFA", "\uD83C\uDDFB", "\uD83C\uDDFC", "\uD83C\uDDFD", "\uD83C\uDDFE", "\uD83C\uDDFF", "\u0030", "\u0031", "\u0032", "\u0033", "\u0034", "\u0035", "\u0036", "\u0037", "\u0038", "\u0039", "\uD83D\uDD1F")) ;
+    public final static List<Long> EXCLUDE_CHAT = new ArrayList<>(Arrays.asList(484909251710550027l));
+    public static final List<String> POOL_EMOTES = new ArrayList<>(Arrays.asList("🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴", "🇵", "🇶", "🇷", "🇸", "🇹","✔","⬅","➡")) ;
     public static final List<String> POOL_votos = new ArrayList<>(Arrays.asList("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","e","r","s","t","u","v","w","z","y"));
     public static final Color[][] cores = new Color[][]{
             new Color[]{Color.decode("#FF0000") },
@@ -40,4 +40,11 @@ public class Constantes {
             new Color[]{Color.decode("#FF0000"),Color.decode("#FF5500"),Color.decode("#FFAA00"),Color.decode("#FFFF00"),Color.decode("#AAFF00"),Color.decode("#55FF00"),Color.decode("#00FF00"),Color.decode("#00FF55"),Color.decode("#00FFAA"),Color.decode("#00FFFF"),Color.decode("#00AAFF"),Color.decode("#0055FF"),Color.decode("#0000FF"),Color.decode("#5500FF"),Color.decode("#AA00FF"),Color.decode("#FF00FF"),Color.decode("#FF00AA"),Color.decode("#FF0055")},
             new Color[]{Color.decode("#FF0000"),Color.decode("#FF5100"),Color.decode("#FFA100"),Color.decode("#FFF200"),Color.decode("#BCFF00"),Color.decode("#6BFF00"),Color.decode("#1BFF00"),Color.decode("#00FF36"),Color.decode("#00FF86"),Color.decode("#00FFD7"),Color.decode("#00D7FF"),Color.decode("#0086FF"),Color.decode("#0036FF"),Color.decode("#1B00FF"),Color.decode("#6B00FF"),Color.decode("#BC00FF"),Color.decode("#FF00F2"),Color.decode("#FF00A1"),Color.decode("#FF0051")}
     };
+
+    public static String emote(String name) {
+        return EMOTES.get(name);
+    }
+    public static String emotePoll(int index){
+        return POOL_EMOTES.get(index);
+    }
 }

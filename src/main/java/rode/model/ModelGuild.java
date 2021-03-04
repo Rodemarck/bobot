@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 public class ModelGuild {
     private static Logger log = LoggerFactory.getLogger(ModelGuild.class);
     private String id;
+    private String chat;
     private LinkedList<Poll> polls;
 
     public ModelGuild() {
@@ -19,11 +20,20 @@ public class ModelGuild {
     public ModelGuild(String id) {
         this.id = id;
         this.polls = new LinkedList<>();
+        this.chat = null;
     }
 
 
     public String getId() {
         return id;
+    }
+
+    public String chat() {
+        return chat;
+    }
+
+    public void chat(String chat) {
+        this.chat = chat;
     }
 
     public List<Poll> getPolls() {
@@ -33,11 +43,13 @@ public class ModelGuild {
     public Document toMongo() {
         return new Document()
                 .append("id", id)
+                .append("chat", chat)
                 .append("polls",polls.stream().map(p->p.toMongo()).collect(Collectors.toList()));
     }
 
     public static ModelGuild fromMongo(Document doc){
         ModelGuild g = new ModelGuild(doc.getString("id"));
+        g.chat = doc.getString("chat");
         g.polls.addAll(((List<Document>)doc.get("polls")).stream().map(d->Poll.fromMongo(d)).collect(Collectors.toList()));
         return g;
     }
@@ -45,18 +57,16 @@ public class ModelGuild {
     public Poll getPoll(String titulo){
         for(Poll p:polls) {
             if (p.getTitulo().equalsIgnoreCase(titulo)) {
-                log.info("getPoll = ", p.toString());
                 return p;
             }
         }
-        log.info("getPoll : não encontrdo");
+        log.debug("getPoll : não encontrdo");
         return null;
     }
 
     @Override
     public String toString() {
         return "Guild{" +
-                //"_id=" + _id +
                 ", id=" + id +
                 ", polls=" + polls +
                 '}';

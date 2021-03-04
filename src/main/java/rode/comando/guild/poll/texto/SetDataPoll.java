@@ -2,7 +2,6 @@ package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.ComandoGuild;
@@ -31,10 +30,9 @@ public class SetDataPoll  extends ComandoGuild {
     public void executa(LinkedList<String> args, Helper.Mensagem helper) throws Exception {
         PollHelper.getPoll(args,helper,dp -> {
             if(dp.guild() != null){
-                log.info("ue...");
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 String s = args.stream().collect(Collectors.joining(" ")).replaceAll("\\{([^\\}]+)\\}|\\[([^\\]]+)\\]"," ");
-                log.info(s);
+                log.debug(s);
                 var p = Pattern.compile("\\d+(/|-)\\d+((/|-)\\d+)?(\\s+\\d+:\\d+)?");
                 var m = p.matcher(s);
                 if(m.find()){

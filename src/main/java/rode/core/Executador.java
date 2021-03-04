@@ -2,26 +2,22 @@ package rode.core;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.Event;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rode.model.ModelMensagem;
 import rode.utilitarios.Constantes;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.StringTokenizer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.function.Consumer;
 
 public class Executador {
     private static Logger log = LoggerFactory.getLogger(Executador.class);
@@ -60,30 +56,31 @@ public class Executador {
     }
     public static void checa(GuildMessageReceivedEvent e){
         tryCatch(e.getJDA(),()->{
-            log.info("checando");
+            log.debug("checando ");
             var raw = e.getMessage().getContentRaw();
             var hm = new Helper.Mensagem(e);
             var args = traduz(raw);
-            if(EventLoop.getInstance().mensagem(hm.getEvent().getAuthor().getIdLong()) != null)
-                EventLoop.getInstance().mensagem(hm.getEvent().getAuthor().getIdLong()).executa(args,hm);
+            var mm = EventLoop.getInstance().mensagem(hm.getEvent().getAuthor().getIdLong());
+            if(mm != null)
+                mm.executa(args,hm);
         });
     }
     public static void interpreta(GuildMessageReceivedEvent e) {
         tryCatch(e.getJDA(), ()->{
             String raw = e.getMessage().getContentRaw();
-            send(e,raw);
             LinkedList<String> args = traduz(raw);
             String comando = args.size() == 0 ? "" : args.getFirst();
             ComandoGuild mgr = COMANDOS_GUILD.get(NOME_COMANDOS_GUILD.get(comando));
             Helper.Mensagem hm = new Helper.Mensagem(e);
-            log.info("comando [{} <- ({})] chamado",comando , args);
             if (mgr == null)
                 mgr = COMANDOS_GUILD.get(null);
-            if (mgr != null )
-                if( mgr.livre(args, hm))
+            if (mgr != null ) {
+                log.trace("{} :: [{} <- ({})]",mgr.getClass().getSimpleName(),comando , args);
+                if (mgr.livre(args, hm))
                     mgr.executa(args, hm);
                 else
                     mgr.falha(args, hm);
+            }
         });
     }
     private static LinkedList<String>  traduz(String raw){
@@ -110,28 +107,22 @@ public class Executador {
     private static void interpretaEmoji(GenericGuildMessageReactionEvent event, Message m, String discriminador) throws Exception {
         String raw = m.getContentRaw();
         LinkedList<String> args = traduz(raw);
-        send(event,raw);
         String comando = args.size() == 0 ? "" : args.getFirst() + discriminador;
 
         ComandoGuildReacoes rmg = COMANDOS_REACOES_GUILD.get(NOME_COMANDOS_REACOES_GUILD.get(comando));
-        log.info("comando [{} <- ({})] chamado",comando , discriminador);
+        log.trace("comando [{} <- ({})] chamado",comando , discriminador);
         Helper.Reacao hr = new Helper.Reacao(event,m);
         if(rmg == null)
             rmg = COMANDOS_REACOES_GUILD.get(null);
-        if(rmg != null)
-            if(rmg.livre(args, hr))
+        if(rmg != null) {
+            log.trace("{} :: [{} <- ({})]",rmg.getClass().getSimpleName(),comando , args);
+            if (rmg.livre(args, hr))
                 rmg.executa(args, hr);
-            else
-                rmg.falha(args, hr);
+        }
+        else
+            EventLoop2.reacaoGuild(hr);
     }
 
-    private static void send(Event e, String s){
-        /*e.getJDA().retrieveUserById(305090445283688450l).queue(u->{
-            u.openPrivateChannel().queue(p->{
-                p.sendMessage(s).queue();
-            });
-        });*/
-    }
     private interface Funcao{
         void apply() throws Exception;
     }

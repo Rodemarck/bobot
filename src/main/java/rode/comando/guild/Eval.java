@@ -62,7 +62,7 @@ public class Eval extends ComandoGuild {
             EventLoop.mensagem(id, new ModelMensagem(id,gId,null) {
                 @Override
                 public void executa(LinkedList<String> args, Helper.Mensagem hm) {
-                    log.info("executando");
+                    log.debug("executando");
                     if(mensagemId()==hm.getEvent().getChannel().getIdLong()){
                         String comando = hm.getMessage().getContentStripped();
                         if(comando.equals("exit")){

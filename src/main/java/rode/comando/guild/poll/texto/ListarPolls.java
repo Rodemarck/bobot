@@ -5,11 +5,12 @@ import org.bson.Document;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.model.ModelGuild;
+import rode.model.Poll;
 import rode.utilitarios.Memoria;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.LinkedList;
-import rode.model.Poll;
 
 public class ListarPolls extends ComandoGuild {
 
@@ -23,7 +24,7 @@ public class ListarPolls extends ComandoGuild {
         if(doc != null){
             ModelGuild g = ModelGuild.fromMongo(doc);
 
-            EmbedBuilder eb = new EmbedBuilder();
+            EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
             eb.setTitle("polls abertas");
             for(Poll p: g.getPolls()) {
                 String t = p.getTitulo();

@@ -5,6 +5,7 @@ import rode.core.Executador;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.LinkedList;
 
@@ -20,7 +21,7 @@ public class Tutorial extends ComandoGuild {
         args.poll();
         if(args.isEmpty()){
             if(tutorial == null){
-                tutorial = new EmbedBuilder();
+                tutorial = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
                 tutorial.setTitle("Tutorial do bot","https://cdn.discordapp.com/avatars/305090445283688450/b1af2bade4b94a08e31091db153c4aae.png");
                 tutorial.appendDescription("Tutorial para utilização do bot mais útil do Brasil.\n");
                 tutorial.appendDescription("Para instruções mais detalhadas utilize **-tutorial comando**.\n\n");
@@ -31,7 +32,7 @@ public class Tutorial extends ComandoGuild {
             return;
         }
         if(Executador.NOME_COMANDOS_GUILD.containsKey(args.getFirst())){
-            EmbedBuilder eb = new EmbedBuilder();
+            EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
             eb.setTitle("Tutorial do bot **[" + args.getFirst() + "**]");
             Executador.COMANDOS_GUILD.get(Executador.NOME_COMANDOS_GUILD.get(args.getFirst())).helpExtensive(eb);
             event.reply(eb);

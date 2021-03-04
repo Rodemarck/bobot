@@ -6,7 +6,6 @@ import rode.core.ComandoGuild;
 import rode.core.Helper;
 
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 
 public class ApagaMensagem extends ComandoGuild {
     public ApagaMensagem() {
@@ -25,7 +24,7 @@ public class ApagaMensagem extends ComandoGuild {
                             return message.delete().submit()
                                     .thenCompose(u -> event.getMessage().delete().submit());
                         else
-                            event.reply("tenho vergonha apagar mensagem dos outros...:point_right: :point_left:.", message1 -> message1.delete().submitAfter(5, TimeUnit.SECONDS));
+                            event.replyTemp("tenho vergonha apagar mensagem dos outros...:point_right: :point_left:.");
                         return null;
                     });
             return;
@@ -38,7 +37,7 @@ public class ApagaMensagem extends ComandoGuild {
                             return message.delete().submit()
                                     .thenCompose(u-> event.getMessage().delete().submit());
                         else
-                            event.reply("tenho vergonha apagar mensagem dos outros...:point_right: :point_left:.", message1 -> message1.delete().submitAfter(5, TimeUnit.SECONDS));
+                            event.replyTemp("tenho vergonha apagar mensagem dos outros...:point_right: :point_left:.");
                         return null;
                     });
 

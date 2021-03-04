@@ -1,14 +1,11 @@
 package rode;
 
 
-import jdk.jshell.JShell;
-import jdk.jshell.Snippet;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.utils.Compression;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import org.bson.Document;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,21 +14,11 @@ import rode.core.ComandoGuild;
 import rode.core.ComandoGuildReacoes;
 import rode.core.Executador;
 import rode.core.IgnoraComando;
-import rode.model.ModelGuild;
-import rode.model.Poll;
 import rode.utilitarios.Constantes;
-import rode.utilitarios.Memoria;
-
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.time.DateTimeException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -40,12 +27,15 @@ public class Main {
         private static Logger log = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) throws IOException, InterruptedException {
         Locale.setDefault(new Locale("pt", "BR"));
-        jda();
+        //jda();
+        var p = Pattern.compile("oi");
+        System.out.println(p.matcher("zo-i").find());
     }
 
 
     private static void jda(){
         log.debug("logando");
+
         try{
             inicializaComandos();
             JDABuilder.createDefault(Constantes.env.get("token"))
@@ -53,6 +43,7 @@ public class Main {
                     .setStatus(OnlineStatus.ONLINE)
                     .addEventListeners(new Controlador())
                     .setMemberCachePolicy(MemberCachePolicy.NONE)
+                    .setCompression(Compression.ZLIB)
                     .build();
         } catch (LoginException e) {
             e.printStackTrace();

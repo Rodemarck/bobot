@@ -20,9 +20,9 @@ public class VisualizaFotosPoll extends ComandoGuild {
                 event.reply("pic", message ->
                         message.editMessage(dp.poll().visualiza(0)).submit()
                         .thenCompose(message1 -> {
-                            message1.addReaction(Constantes.EMOTES.get("esquerda")).submit()
-                                .thenRun(()->message1.addReaction(Constantes.EMOTES.get("direita")).submit())
-                                .thenRun(()->PollHelper.addReaction(message1, dp.poll().getOpcoes().size()));
+                            message1.addReaction(Constantes.emote("esquerda")).submit()
+                                .thenRunAsync(()->message1.addReaction(Constantes.emote("direita")).submit())
+                                .thenRunAsync(()->message1.addReaction(Constantes.emote("check")).submit());
                             return null;
                         })
                 );

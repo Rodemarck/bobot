@@ -29,6 +29,7 @@ public class EventLoop implements Runnable{
         }
     }
     private ModelMensagem getMensagem(long id){
+
         synchronized (this){
             if(mensagens.containsKey(id)) {
                 var m = mensagens.get(id);
@@ -46,6 +47,14 @@ public class EventLoop implements Runnable{
             if(!mensagens.containsKey(id))
                 mensagens.put(id,mensagem);
         }
+    }
+    public int memSize(){
+        synchronized (this){
+            return mensagens.size();
+        }
+    }
+    public static int size(){
+        return  getInstance().memSize();
     }
     public static void mensagem(long id, ModelMensagem mensagem){
         getInstance().setMensagem(id,mensagem);

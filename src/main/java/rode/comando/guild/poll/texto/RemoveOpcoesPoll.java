@@ -11,6 +11,7 @@ import rode.core.PollHelper;
 import rode.model.Poll;
 import rode.utilitarios.Memoria;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.LinkedList;
 
@@ -27,17 +28,17 @@ public class RemoveOpcoesPoll extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws IOException, Exception {
-        log.info("inicio");
+        log.debug("inicio");
         PollHelper.getPoll(args, event, dp-> {
-            log.info("callback");
+            log.debug("callback");
             if(dp.opcoes().isEmpty()){
-                EmbedBuilder eb = new EmbedBuilder();
+                EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
                 help(eb);
                 event.reply(eb);
                 return;
             }
             if(dp.guild() != null){
-                log.info("não nulo");
+                log.debug("não nulo");
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 poll.remOpcoes(dp.opcoes());
                 Document d = dp.guild().toMongo();
