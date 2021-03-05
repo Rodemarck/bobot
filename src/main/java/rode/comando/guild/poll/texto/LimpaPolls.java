@@ -18,7 +18,7 @@ public class LimpaPolls extends ComandoGuild {
 
     @Override
     public void help(EmbedBuilder me) {
-        me.appendDescription("**-limpar** enumera polls para serem deletadas.");
+        me.appendDescription("**-limpar** enumera polls para serem deletadas.\n\n");
     }
 
     @Override
@@ -37,7 +37,7 @@ public class LimpaPolls extends ComandoGuild {
         var guild = Memoria.guild(event.guildId());
         if(!guild.getPolls().isEmpty())
             event.reply(new EmbedBuilder().setColor(Color.decode("#C8A2C8")).setTitle("deletar esta poll?").appendDescription("**carregando...**").setFooter("**1/"+(guild.getPolls().size()+1)+"**"), message -> {
-                EventLoop2.addReacao(new ConversaLimpar(message,event.getEvent().getMember(), 20000,event.guildId()));
+                EventLoop2.addReacao(new ConversaLimpar(event));
                 return null;
             });
         else

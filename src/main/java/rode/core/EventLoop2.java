@@ -39,8 +39,8 @@ public final class EventLoop2{
         log.debug("procurando reação");
         synchronized (eventos_reacao){
             var lista = eventos_reacao.stream().filter(loop ->
-                    (loop.mensagem().getId().equals(hr.getMessage().getId()))
-                    && (loop.membro() == null || loop.membro().equals(hr.getId()))
+                    (loop.mensagem().getId().equals(hr.mensagem().getId()))
+                    && (loop.membro() == null || loop.membro().equals(hr.id()))
                     && (loop.permissao() == null || hr.getEvent().getMember().hasPermission(loop.permissao()))
             ).collect(Collectors.toList());
             for(var lop :lista) {
@@ -53,7 +53,7 @@ public final class EventLoop2{
         log.debug("procurando texto");
         synchronized (eventos_texto){
             var lista = eventos_texto.stream().filter(loop->
-                    (loop.membro() == null || loop.membro().equals(hm.getId()))
+                    (loop.membro() == null || loop.membro().equals(hm.id()))
                     && (loop.permissao() == null || hm.getEvent().getMember().hasPermission(loop.permissao()))
             ).collect(Collectors.toList());
             for(var loop:lista){
@@ -66,6 +66,11 @@ public final class EventLoop2{
     public static void addReacao(MensagemReacao reacaoMensagem){
         synchronized (eventos_reacao){
             eventos_reacao.add(reacaoMensagem);
+        }
+    }
+    public static void addTexto(MensagemTexto mensagemTexto){
+        synchronized (eventos_texto){
+            eventos_texto.add(mensagemTexto);
         }
     }
 

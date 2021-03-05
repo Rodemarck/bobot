@@ -42,7 +42,7 @@ public class Tutorial extends ComandoGuild {
     }
     @Override
     public void help(EmbedBuilder me) {
-        me.appendDescription("**-tutorial comando** : exibe uma explicação detalhada de um comando.");
+        me.appendDescription("**-tutorial comando** : exibe uma explicação detalhada de um comando.\n\n");
     }
 
     @Override

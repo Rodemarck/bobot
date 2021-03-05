@@ -56,7 +56,7 @@ public final class PollHelper {
         log.debug("do tipo {}", tipo);
         if(Constantes.POOL_EMOTES.contains(helper.emoji())) {
             int index = Constantes.POOL_EMOTES.indexOf(helper.emoji());
-            String titulo = helper.getMessage().getEmbeds().get(0).getTitle();
+            String titulo = helper.mensagem().getEmbeds().get(0).getTitle();
             args.add('{' + titulo + '}');
             log.debug("titulo da poll {}", titulo);
             getPoll(args, helper, dp -> {
@@ -75,11 +75,11 @@ public final class PollHelper {
         else
             helper.reply("**" + helper.getEvent().getUser().getName() + "** pare de trolar," + helper.emoji() + " não é uma opção para essa poll.", message->
                     message.delete().submitAfter(15, TimeUnit.SECONDS)
-                    .thenRunAsync(()->helper.getMessage().clearReactions(helper.emoji()).submit())
+                    .thenRunAsync(()->helper.mensagem().clearReactions(helper.emoji()).submit())
             );
     }
     public static boolean livreSiMesmo(LinkedList<String> args, Helper.Reacao event) throws IOException {
-        return event.getMessage().getAuthor().getId().equals(event.jda().getSelfUser().getId());
+        return event.mensagem().getAuthor().getId().equals(event.jda().getSelfUser().getId());
     }
     public static boolean livreDono(LinkedList<String> args, Helper.Mensagem event){
         LinkedList<String>args2 = new LinkedList<>(args);
@@ -95,7 +95,7 @@ public final class PollHelper {
             ModelGuild g = ModelGuild.fromMongo(doc);
             Poll poll = g.getPoll(titulo);
             System.out.println("poll = " + poll);
-            if(poll.getCriadorId().equals(event.getId()))
+            if(poll.getCriadorId().equals(event.id()))
                 return true;
             event.jda().retrieveUserById(poll.getCriadorId()).submit()
                     .thenCompose(u ->{
@@ -107,12 +107,12 @@ public final class PollHelper {
     }
 
     public static void contaVoto(Helper.Reacao event, int index) {
-        event.jda().retrieveUserById(event.getId()).queue(user->
+        event.jda().retrieveUserById(event.id()).queue(user->
             event.replyTemp("**" + user.getName() + "** seu voto foi contabilizado para [**" + Constantes.POOL_votos.get(index) + "**]")
         );
     }
     public static void removeVoto(Helper.Reacao event, int index) {
-        event.jda().retrieveUserById(event.getId()).queue(user->{
+        event.jda().retrieveUserById(event.id()).queue(user->{
             event.replyTemp("**" + user.getName() + "** seu voto foi removido de [**" + Constantes.POOL_votos.get(index) + "**]");
         });
     }
@@ -123,12 +123,12 @@ public final class PollHelper {
 
     public static void reRender(Helper.Reacao event,String tipo, DadosPoll dp) {
         if(tipo.contains("poll"))
-            event.getMessage().editMessage(dp.poll().me()).submit();
+            event.mensagem().editMessage(dp.poll().me()).submit();
         else if(tipo.contains("pic")){
-            final var emb = event.getMessage().getEmbeds().get(0);
+            final var emb = event.mensagem().getEmbeds().get(0);
             LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
             int i = Integer.parseInt(param.getFirst());
-            event.getMessage().editMessage(dp.poll().visualiza(i)).submit();
+            event.mensagem().editMessage(dp.poll().visualiza(i)).submit();
         }
     }
 

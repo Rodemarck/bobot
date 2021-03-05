@@ -33,14 +33,14 @@ public class PicReaction {
         log.debug("não é troca");
         final int n = aux;
         PollHelper.getPollFromEmote(args, event, dp->{
-            var emb = event.getMessage().getEmbeds().get(0);
+            var emb = event.mensagem().getEmbeds().get(0);
             LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
             int index = Integer.parseInt(param.getFirst());
             if(n == 0){
-                if(dp.poll().hasUser(event.getId())){
-                    int i = dp.poll().votouPara(event.getId());
+                if(dp.poll().hasUser(event.id())){
+                    int i = dp.poll().votouPara(event.id());
                     if(i == index){
-                        dp.poll().rem(index,event.getId());
+                        dp.poll().rem(index,event.id());
                         Memoria.update(dp);
                         PollHelper.removeVoto(event, index);
                         PollHelper.reRender(event,"pic", dp);
@@ -49,7 +49,7 @@ public class PicReaction {
                     PollHelper.jaVotou(event,i);
                     return;
                 }
-                dp.poll().add(index, event.getId());
+                dp.poll().add(index, event.id());
                 Memoria.update(dp);
                 PollHelper.contaVoto(event, index);
                 PollHelper.reRender(event,"pic", dp);
@@ -60,8 +60,8 @@ public class PicReaction {
                 index = 0;
             else if (index < 0)
                 index = dp.poll().getOpcoes().size() - 1;
-            event.getMessage().editMessage(dp.poll().visualiza(index)).submit();
+            event.mensagem().editMessage(dp.poll().visualiza(index)).submit();
         });
-        final var emb = event.getMessage().getEmbeds().get(0);
+        final var emb = event.mensagem().getEmbeds().get(0);
     }
 }

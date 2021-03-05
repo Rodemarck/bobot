@@ -44,7 +44,7 @@ public class Eval extends ComandoGuild {
         synchronized (this){
             time = LocalDateTime.now();
         }
-        String comando = event.getMessage().getContentStripped();
+        String comando = event.mensagem().getContentStripped();
         if(comando.startsWith("-eval"))
             comando = comando.replaceFirst("-eval","");
         else if(comando.startsWith("-shell"))
@@ -64,7 +64,7 @@ public class Eval extends ComandoGuild {
                 public void executa(LinkedList<String> args, Helper.Mensagem hm) {
                     log.debug("executando");
                     if(mensagemId()==hm.getEvent().getChannel().getIdLong()){
-                        String comando = hm.getMessage().getContentStripped();
+                        String comando = hm.mensagem().getContentStripped();
                         if(comando.equals("exit")){
                             EventLoop.deleta(id);
                             hm.reply("Console fechado " + event.getEvent().getAuthor().getName() + " .");

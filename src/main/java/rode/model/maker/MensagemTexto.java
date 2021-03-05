@@ -12,16 +12,19 @@ import java.util.regex.Pattern;
 public class MensagemTexto extends ModelLoop{
     private HashMap<Pattern, Consumer<Helper.Mensagem>> src;
     private TextChannel canal;
+    private String mensagem;
 
-    public MensagemTexto(String membro, long fim, long delay, Permission permissao) {
+    public MensagemTexto(TextChannel canal, String membro,String mensagem, long fim, long delay, Permission permissao) {
         super(TipoLoop.G_MENSAGEM_TEXTO, EventLoop2.geraId(), membro, System.currentTimeMillis(), fim, delay, permissao);
+        this.canal = canal;
+        this.mensagem = mensagem;
     }
 
     public void run(Helper.Mensagem hm){
         synchronized (this){
             if(ativo()){
                 for(var e: src.entrySet())
-                    if(e.getKey().matcher(hm.getMessage().getContentRaw()).find())
+                    if(e.getKey().matcher(hm.mensagem().getContentRaw()).find())
                         e.getValue().accept(hm);
             }
         }
@@ -29,6 +32,8 @@ public class MensagemTexto extends ModelLoop{
 
     public static boolean expirado(MensagemTexto mensagemTexto) {
         boolean b = System.currentTimeMillis() > mensagemTexto.fim();
+        if(b)
+            mensagemTexto.canal.sendMessage(mensagemTexto.mensagem).submit();
         return b;
     }
 }

@@ -2,6 +2,7 @@ package rode.core;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
@@ -20,16 +21,18 @@ public abstract class Helper {
     protected final GenericGuildMessageEvent event;
     protected final Message message;
     protected final String id;
+    protected final Member member;
 
 
     public JDA jda(){
         return event.getJDA();
     }
 
-    protected Helper( GenericGuildMessageEvent event, Message message, String id) {
+    protected Helper( GenericGuildMessageEvent event, Message message, String id, Member member) {
         this.event = event;
         this.message = message;
         this.id = id;
+        this.member = member;
     }
 
     public void responde(Message mensagem, String str){
@@ -143,14 +146,15 @@ public abstract class Helper {
     public String guildId(){
         return event.getGuild().getId();
     }
-    public Message getMessage() {
+    public Message mensagem() {
         return message;
     }
-
-    public String getId(){
+    public String id(){
         return id;
     }
-
+    public Member membro() {
+        return member;
+    }
 
 
 
@@ -159,7 +163,7 @@ public abstract class Helper {
         private GuildMessageReceivedEvent event;
 
         public Mensagem(GuildMessageReceivedEvent event) {
-            super(event,event.getMessage(),event.getAuthor().getId());
+            super(event,event.getMessage(),event.getAuthor().getId(), event.getMember());
             log.debug("id = [{}]",event.getAuthor().getId());
             this.event = event;
         }
@@ -174,7 +178,7 @@ public abstract class Helper {
         private GenericGuildMessageReactionEvent event;
 
         public Reacao(GenericGuildMessageReactionEvent event, Message message) {
-            super(event,message, event.getUserId());
+            super(event,message, event.getUserId(), event.getMember());
             log.debug("id = [{}]",event.getUserId());
             this.event = event;
         }

@@ -2,13 +2,11 @@ package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import org.bson.Document;
 import rode.core.ComandoGuild;
+import rode.core.EventLoop2;
 import rode.core.Helper;
 import rode.core.PollHelper;
-import rode.model.Poll;
-import rode.utilitarios.Constantes;
-import rode.utilitarios.Memoria;
+import rode.model.maker.MensagemTexto;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -20,6 +18,9 @@ public class DeletaPoll extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem event) throws IOException, Exception {
+
+        EventLoop2.addTexto(new MensagemTexto(event.getEvent().getChannel(), null,"tempo expirado",System.currentTimeMillis()+20000,50,Permission.ADMINISTRATOR));
+        /*
         PollHelper.getPoll(args, event,dp->{
             if(dp.guild() != null){
                 Poll poll = dp.guild().getPoll(dp.titulo());
@@ -29,7 +30,7 @@ public class DeletaPoll extends ComandoGuild {
                 return;
             }
             event.reply("a poll {**" + dp.titulo() + "**} não foi encontrada");
-        });
+        });*/
     }
 
     @Override

@@ -37,19 +37,19 @@ public class VotarPoll extends ComandoGuild {
                         if(dp.poll().hasUser(helper.getEvent().getAuthor().getId())){
                             int original = dp.poll().votouPara(helper.getEvent().getAuthor().getId());
                             if(index == original){
-                                helper.getMessage().delete().submit();
-                                dp.poll().rem(index,helper.getId());
+                                helper.mensagem().delete().submit();
+                                dp.poll().rem(index,helper.id());
                                 helper.replyTemp("**" + helper.getEvent().getAuthor().getName() + "** seu voto foi retirado de com sucesso"); ;
                                 Memoria.guilds.updateOne(dp.query(), new Document("$set", dp.guild().toMongo()));
                                 return;
                             }
                             else{
-                                helper.replyTemp("**"+ helper.getEvent().getAuthor().getName()+"** você já votou [**"+ Constantes.POOL_votos.get(dp.poll().votouPara(helper.getId()))+ "**] nessa poll!");
+                                helper.replyTemp("**"+ helper.getEvent().getAuthor().getName()+"** você já votou [**"+ Constantes.POOL_votos.get(dp.poll().votouPara(helper.id()))+ "**] nessa poll!");
                             }
                         }
                         else{
-                            helper.getMessage().delete().submit();
-                            dp.poll().add(index, helper.getId());
+                            helper.mensagem().delete().submit();
+                            dp.poll().add(index, helper.id());
                             helper.replyTemp("**" + helper.getEvent().getAuthor().getName() + "** voto computado com sucesso ");
                             Memoria.guilds.updateOne(dp.query(), new Document("$set", dp.guild().toMongo()));
                             return;

@@ -24,27 +24,27 @@ public class PollReactionAdd extends ComandoGuildReacoes {
         PollHelper.getPollFromEmote(args, event,dp -> {
             log.debug("callback");
             if(dp.poll().getOpcoes().size() > dp.index()){
-                if(dp.poll().hasUser(event.getId())){
-                    event.getMessage().removeReaction(event.emoji(), event.getEvent().getUser()).queue(mm->{
-                        int v = dp.poll().votouPara(event.getId());
+                if(dp.poll().hasUser(event.id())){
+                    event.mensagem().removeReaction(event.emoji(), event.getEvent().getUser()).queue(mm->{
+                        int v = dp.poll().votouPara(event.id());
                         if(dp.index() == v){
-                            dp.poll().rem(dp.index(),event.getId());
+                            dp.poll().rem(dp.index(),event.id());
                             PollHelper.removeVoto(event,dp.index());
                             Memoria.update(dp);
                             PollHelper.reRender(event,tipo,dp);
                             return;
                         }
                         PollHelper.jaVotou(event,v);
-                        dp.poll().rem(v,event.getId());
+                        dp.poll().rem(v,event.id());
                         PollHelper.removeVoto(event, v);
-                        dp.poll().add(dp.index(),event.getId());
+                        dp.poll().add(dp.index(),event.id());
                         PollHelper.contaVoto(event, dp.index());
                         PollHelper.reRender(event,tipo,dp);
                         Memoria.update(dp);
                     });
                     return;
                 }
-                dp.poll().add(dp.index(), event.getId());
+                dp.poll().add(dp.index(), event.id());
                 Memoria.update(dp);
                 PollHelper.contaVoto(event, dp.index());
                 PollHelper.reRender(event,toString(),dp);

@@ -11,11 +11,16 @@ import java.util.function.Consumer;
 public abstract class MensagemReacao extends ModelLoop{
     private Message mensagem;
     private HashMap<String, Consumer<Helper.Reacao>> src;
-
-    public MensagemReacao(Message mensagem, String membro, long fim, Permission permissao, HashMap<String, Consumer<Helper.Reacao>> src) {
+    private String guildId;
+    private String pic;
+    private String nome;
+    public MensagemReacao(Helper hr, String membro, long fim, Permission permissao, HashMap<String, Consumer<Helper.Reacao>> src) {
         super(TipoLoop.G_MENSAGEM_REACAO, EventLoop2.geraId(), membro, System.currentTimeMillis(), fim, 50,permissao);
-        this.mensagem = mensagem;
+        this.mensagem = hr.mensagem();
         this.src = src;
+        this.guildId = hr.guildId();
+        this.pic = hr.membro().getUser().getAvatarUrl();
+        this.nome = hr.membro().getUser().getAsTag();
     }
 
     public void run( Helper.Reacao helper) {
@@ -28,8 +33,8 @@ public abstract class MensagemReacao extends ModelLoop{
                     }
                 }
             }
-            helper.getMessage().removeReaction(helper.emoji(),helper.getEvent().getUser()).submit();
-            acao();
+            helper.mensagem().removeReaction(helper.emoji(),helper.getEvent().getUser()).submit();
+            render();
         }
     }
 
@@ -51,7 +56,44 @@ public abstract class MensagemReacao extends ModelLoop{
         this.src = src;
     }
 
+    public String guildId() {
+        return guildId;
+    }
+
+    public void guildId(String guildId) {
+        this.guildId = guildId;
+    }
+
+    public String pic() {
+        return pic;
+    }
+
+    public void pic(String pic) {
+        this.pic = pic;
+    }
+
+    public String nome() {
+        return nome;
+    }
+
+    public void nome(String nome) {
+        this.nome = nome;
+    }
+
+    public abstract void rerender();
+
+    private void render(){
+        acao();
+        if(ativo()){
+            fim(System.currentTimeMillis()+20000);
+            rerender();
+        }
+    }
+
     public static boolean expirado(MensagemReacao mensagemReacao) {
-        return System.currentTimeMillis() > mensagemReacao.fim();
+        var b = System.currentTimeMillis() > mensagemReacao.fim();
+        if(b)
+            mensagemReacao.mensagem().delete().submit();
+        return b;
     }
 }

@@ -22,7 +22,7 @@ public class ApagaMensagem extends ComandoGuild {
                     .thenCompose(message -> {
                         if (message.getAuthor().getId().equals(event.jda().getSelfUser().getId()))
                             return message.delete().submit()
-                                    .thenCompose(u -> event.getMessage().delete().submit());
+                                    .thenCompose(u -> event.mensagem().delete().submit());
                         else
                             event.replyTemp("tenho vergonha apagar mensagem dos outros...:point_right: :point_left:.");
                         return null;
@@ -35,7 +35,7 @@ public class ApagaMensagem extends ComandoGuild {
                     .thenCompose(message -> {
                         if (message.getAuthor().getId().equals(event.jda().getSelfUser().getId()))
                             return message.delete().submit()
-                                    .thenCompose(u-> event.getMessage().delete().submit());
+                                    .thenCompose(u-> event.mensagem().delete().submit());
                         else
                             event.replyTemp("tenho vergonha apagar mensagem dos outros...:point_right: :point_left:.");
                         return null;
@@ -47,7 +47,7 @@ public class ApagaMensagem extends ComandoGuild {
 
     @Override
     public boolean livre(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        return super.livre(args, event) || event.getId().equals("305090445283688450");
+        return super.livre(args, event) || event.id().equals("305090445283688450");
     }
 
     @Override

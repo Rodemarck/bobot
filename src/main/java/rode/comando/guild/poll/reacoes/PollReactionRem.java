@@ -25,7 +25,7 @@ public class PollReactionRem extends ComandoGuildReacoes {
         final String tipo = args.getFirst();
         PollHelper.getPollFromEmote(args,event, dp -> {
             log.debug("callback");
-            dp.poll().rem(dp.index(), event.getId());
+            dp.poll().rem(dp.index(), event.id());
             PollHelper.reRender(event,tipo,dp);
             Memoria.update(dp);
             return;
