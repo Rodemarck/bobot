@@ -61,19 +61,19 @@ public final class PollHelper {
             log.debug("titulo da poll {}", titulo);
             getPoll(args, helper, dp -> {
                 if(dp.guild() == null){
-                    helper.replyTemp("sem registo da poll **" + titulo + "**");
+                    helper.replyTemp(String.format(helper.text("helper.404"),titulo));
                     return;
                 }
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 if(!poll.isAberto()){
-                    helper.replyTemp("a poll {**" + poll.getTitulo() + "**} foi fechada");
+                    helper.replyTemp(String.format(helper.text("helper.close"),poll.getTitulo()));
                     return;
                 }
                 function.apply(new DadosPoll(dp.titulo, dp.opcoes, dp.guild, dp.query, dp.poll, index));
             });
         }
         else
-            helper.reply("**" + helper.getEvent().getUser().getName() + "** pare de trolar," + helper.emoji() + " não é uma opção para essa poll.", message->
+            helper.reply(String.format(helper.text("helper.troll"),helper.getEvent().getUser().getName(),helper.emoji()), message->
                     message.delete().submitAfter(15, TimeUnit.SECONDS)
                     .thenRunAsync(()->helper.mensagem().clearReactions(helper.emoji()).submit())
             );
@@ -106,19 +106,19 @@ public final class PollHelper {
         return false;
     }
 
-    public static void contaVoto(Helper.Reacao event, int index) {
-        event.jda().retrieveUserById(event.id()).queue(user->
-            event.replyTemp("**" + user.getName() + "** seu voto foi contabilizado para [**" + Constantes.POOL_votos.get(index) + "**]")
+    public static void contaVoto(Helper.Reacao hr, int index) {
+        hr.jda().retrieveUserById(hr.id()).queue(user->
+            hr.replyTemp(String.format(hr.text("helper.vote"),user.getName(),Constantes.POOL_votos.get(index)))
         );
     }
-    public static void removeVoto(Helper.Reacao event, int index) {
-        event.jda().retrieveUserById(event.id()).queue(user->{
-            event.replyTemp("**" + user.getName() + "** seu voto foi removido de [**" + Constantes.POOL_votos.get(index) + "**]");
+    public static void removeVoto(Helper.Reacao hr, int index) {
+        hr.jda().retrieveUserById(hr.id()).queue(user->{
+            hr.replyTemp(String.format(hr.text("helper.remove"), user.getName(), Constantes.POOL_votos.get(index)));
         });
     }
 
-    public static void jaVotou(Helper.Reacao event, int index) {
-        event.replyTemp("**"+ event.getEvent().getUser().getName()+"** você já votou [**"+ Constantes.POOL_votos.get(index)+ "**] nessa poll!");
+    public static void jaVotou(Helper.Reacao hr, int index) {
+        hr.replyTemp(String.format(hr.text("helper.already"), hr.getEvent().getUser().getName(), Constantes.POOL_votos.get(index)));
     }
 
     public static void reRender(Helper.Reacao hr,String tipo, DadosPoll dp) {

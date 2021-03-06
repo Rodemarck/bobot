@@ -28,11 +28,11 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         var loc = new Locale("pt", "BR");
         Locale.setDefault(loc);
-        jda();
+        //jda();
         Locale ptBR = new Locale("pt","BR");
         var bundle = ResourceBundle.getBundle("messages", ptBR);
 
-        System.out.println(bundle.getString("tutorial.hep.ex"));
+        System.out.println(bundle.getString("corno"));
     }
 
 

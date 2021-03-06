@@ -3,7 +3,6 @@ package rode.core;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 public abstract class Comando {
@@ -20,6 +19,6 @@ public abstract class Comando {
     public abstract void helpExtensive(EmbedBuilder me, ResourceBundle loc);
 
     protected void falha(Helper event){
-        event.reply("o comando **" + comando + "** requer permissão que você não tem");
+        event.reply(String.format(event.text("cmd.fail"),comando,cargo));
     }
 }

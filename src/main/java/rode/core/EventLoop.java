@@ -29,7 +29,6 @@ public class EventLoop implements Runnable{
         }
     }
     private ModelMensagem getMensagem(long id){
-
         synchronized (this){
             if(mensagens.containsKey(id)) {
                 var m = mensagens.get(id);
