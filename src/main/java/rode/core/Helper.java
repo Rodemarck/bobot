@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -19,20 +21,33 @@ import java.util.function.Function;
 public abstract class Helper {
     private static final Logger log = LoggerFactory.getLogger(Helper.class);
     protected final GenericGuildMessageEvent event;
-    protected final Message message;
+    protected Message message;
     protected final String id;
     protected final Member member;
+    protected final ResourceBundle bundle;
 
+    public void mensagem(Message message) {
+        this.message = message;
+    }
 
     public JDA jda(){
         return event.getJDA();
     }
 
-    protected Helper( GenericGuildMessageEvent event, Message message, String id, Member member) {
+    protected Helper( GenericGuildMessageEvent event, Message message, String id, Member member, Locale locale) {
         this.event = event;
         this.message = message;
         this.id = id;
         this.member = member;
+        this.bundle = ResourceBundle.getBundle("messages", locale);
+    }
+
+    public ResourceBundle bundle() {
+        return bundle;
+    }
+
+    public String text(String s){
+        return bundle.getString(s);
     }
 
     public void responde(Message mensagem, String str){
@@ -162,8 +177,8 @@ public abstract class Helper {
         private static Logger log = LoggerFactory.getLogger(Mensagem.class);
         private GuildMessageReceivedEvent event;
 
-        public Mensagem(GuildMessageReceivedEvent event) {
-            super(event,event.getMessage(),event.getAuthor().getId(), event.getMember());
+        public Mensagem(GuildMessageReceivedEvent event,Locale locale) {
+            super(event,event.getMessage(),event.getAuthor().getId(), event.getMember(),locale);
             log.debug("id = [{}]",event.getAuthor().getId());
             this.event = event;
         }
@@ -177,8 +192,8 @@ public abstract class Helper {
         private static Logger log = LoggerFactory.getLogger(Reacao.class);
         private GenericGuildMessageReactionEvent event;
 
-        public Reacao(GenericGuildMessageReactionEvent event, Message message) {
-            super(event,message, event.getUserId(), event.getMember());
+        public Reacao(GenericGuildMessageReactionEvent event, Message message,Locale locale) {
+            super(event,message, event.getUserId(), event.getMember(),locale);
             log.debug("id = [{}]",event.getUserId());
             this.event = event;
         }

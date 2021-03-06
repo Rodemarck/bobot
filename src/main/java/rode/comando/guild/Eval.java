@@ -11,6 +11,7 @@ import rode.model.ModelMensagem;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 public class Eval extends ComandoGuild {
     public static JShell shell;
@@ -40,21 +41,21 @@ public class Eval extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> __, Helper.Mensagem event) throws Exception{
+    public void executa(LinkedList<String> __, Helper.Mensagem hm) throws Exception{
         synchronized (this){
             time = LocalDateTime.now();
         }
-        String comando = event.mensagem().getContentStripped();
+        var comando = hm.mensagem().getContentStripped();
         if(comando.startsWith("-eval"))
             comando = comando.replaceFirst("-eval","");
         else if(comando.startsWith("-shell"))
             comando = comando.replaceFirst("-shell","");
 
         try{
-            final var id = event.getEvent().getAuthor().getIdLong();
-            final var gId = event.getEvent().getChannel().getIdLong();
+            final var id = hm.getEvent().getAuthor().getIdLong();
+            final var gId = hm.getEvent().getChannel().getIdLong();
             if(!comando.isBlank()){
-                event.reply(">> " + shell.eval(comando).get(0).value());
+                hm.reply(">> " + shell.eval(comando).get(0).value());
                 return;
             }
             final var realComando = comando;
@@ -67,7 +68,7 @@ public class Eval extends ComandoGuild {
                         String comando = hm.mensagem().getContentStripped();
                         if(comando.equals("exit")){
                             EventLoop.deleta(id);
-                            hm.reply("Console fechado " + event.getEvent().getAuthor().getName() + " .");
+                            hm.reply(hm.text("eval.exec.close"));
                             return;
                         }
                         hm.reply(">> " + shell.eval(comando).get(0).value());
@@ -75,12 +76,10 @@ public class Eval extends ComandoGuild {
                     }
                 }
             });
-            event.reply("Console aberto.");
-            System.out.println("foi porra olha só");
-            System.out.println(EventLoop.mensagem(id));
+            hm.reply(hm.text("eval.exec.open"));
         } catch (Exception e) {
             if(e.getMessage() != null)
-                event.reply(e.getMessage());
+                hm.reply(e.getMessage());
             throw e;
         }
     }
@@ -91,20 +90,13 @@ public class Eval extends ComandoGuild {
     }
 
     @Override
-    public void help(EmbedBuilder me) {
-        me.appendDescription("**-eval expressão** : retorna o resultado da expressão\n\n");
+    public void help(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("eval.help"));
     }
 
     @Override
-    public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("""
-                comando para executar e retorna o resultado da expressão javashell
-                
-                **-eval 1+1**
-                
-                Aliases (comandos alternativos) : **eval**, **shell**
-                o termino da execução todas as variáveis e Métodos são apagados.
-                """);
+    public void helpExtensive(EmbedBuilder me,ResourceBundle rb) {
+        me.appendDescription(rb.getString("eval.help.ex"));
     }
 
 

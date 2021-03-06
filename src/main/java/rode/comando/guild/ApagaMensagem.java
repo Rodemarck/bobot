@@ -6,6 +6,7 @@ import rode.core.ComandoGuild;
 import rode.core.Helper;
 
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 public class ApagaMensagem extends ComandoGuild {
     public ApagaMensagem() {
@@ -13,31 +14,31 @@ public class ApagaMensagem extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
+    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         args.poll();
         if(args.size() == 0)
             return;
         if(args.size() == 1) {
-            event.getEvent().getChannel().retrieveMessageById(args.getFirst()).submit()
+            hm.getEvent().getChannel().retrieveMessageById(args.getFirst()).submit()
                     .thenCompose(message -> {
-                        if (message.getAuthor().getId().equals(event.jda().getSelfUser().getId()))
+                        if (message.getAuthor().getId().equals(hm.jda().getSelfUser().getId()))
                             return message.delete().submit()
-                                    .thenCompose(u -> event.mensagem().delete().submit());
+                                    .thenCompose(u -> hm.mensagem().delete().submit());
                         else
-                            event.replyTemp("tenho vergonha apagar mensagem dos outros...:point_right: :point_left:.");
+                            hm.replyTemp(hm.text("apaga.exec"));
                         return null;
                     });
             return;
         }
         if(args.size() == 2){
-            event.getEvent().getGuild().getTextChannelById(args.getFirst())
+            hm.getEvent().getGuild().getTextChannelById(args.getFirst())
                     .retrieveMessageById(args.getLast()).submit()
                     .thenCompose(message -> {
-                        if (message.getAuthor().getId().equals(event.jda().getSelfUser().getId()))
+                        if (message.getAuthor().getId().equals(hm.jda().getSelfUser().getId()))
                             return message.delete().submit()
-                                    .thenCompose(u-> event.mensagem().delete().submit());
+                                    .thenCompose(u-> hm.mensagem().delete().submit());
                         else
-                            event.replyTemp("tenho vergonha apagar mensagem dos outros...:point_right: :point_left:.");
+                            hm.replyTemp(hm.text("apaga.exec"));
                         return null;
                     });
 
@@ -46,24 +47,17 @@ public class ApagaMensagem extends ComandoGuild {
     }
 
     @Override
-    public boolean livre(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        return super.livre(args, event) || event.id().equals("305090445283688450");
+    public boolean livre(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+        return super.livre(args, hm) || hm.id().equals("305090445283688450");
     }
 
     @Override
-    public void help(EmbedBuilder me) {
+    public void help(EmbedBuilder me, ResourceBundle rb) {
 
     }
 
     @Override
-    public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("""
-                Comando secreto que faz o bot apagar uma das minhas mensagem
-                
-                **-apagaMensagem id**
-                
-               
-                Pode ser útil para organizar, eu espero.
-                """);
+    public void helpExtensive(EmbedBuilder me,ResourceBundle rb) {
+        me.appendDescription(rb.getString("apaga.help.ex"));
     }
 }

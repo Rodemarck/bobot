@@ -1,11 +1,10 @@
 package rode.utilitarios;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import rode.model.ConfigGuid;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
 
 public class Constantes {
@@ -15,10 +14,14 @@ public class Constantes {
         put("esquerda","⬅");
         put("direita","➡");
     }};
+    private static final HashMap<String, Locale> LOC = new HashMap<>(){{
+        put(null,new Locale("pt","BR"));
+    }};
     public final static String PREFIXO = "-";
     public final static List<Long> EXCLUDE_CHAT = new ArrayList<>(Arrays.asList(484909251710550027l));
     public static final List<String> POOL_EMOTES = new ArrayList<>(Arrays.asList("🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴", "🇵", "🇶", "🇷", "🇸", "🇹","✔","⬅","➡")) ;
     public static final List<String> POOL_votos = new ArrayList<>(Arrays.asList("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","e","r","s","t","u","v","w","z","y"));
+    public static final List<String> LANG_EMOTES = new ArrayList<>(Arrays.asList("\u1F1E7"));
     public static final Color[][] cores = new Color[][]{
             new Color[]{Color.decode("#FF0000") },
             new Color[]{Color.decode("#FF0000"), Color.decode("#00FFFF")},
@@ -46,5 +49,31 @@ public class Constantes {
     }
     public static String emotePoll(int index){
         return POOL_EMOTES.get(index);
+    }
+    public static Locale loc(String id){
+        synchronized (LOC){
+            if(LOC.containsKey(id))
+                return LOC.get(id);
+            else{
+                try{
+                    var config = Memoria.config(id);
+                    var l =  new Locale(config.lingua(),config.pais());
+                    LOC.put(id, l);
+                    return l;
+                }catch (Exception e){
+                    var config = new ConfigGuid(id,"pt","BR");
+                    Memoria.insert(config);
+                    var l = new Locale(config.lingua(),config.pais());
+                    LOC.put(id,l);
+                    return l;
+                }
+            }
+        }
+    }
+
+    public static void loc(String guildId, Locale l) {
+        synchronized (LOC){
+            LOC.put(guildId,l);
+        }
     }
 }

@@ -9,6 +9,7 @@ import rode.utilitarios.Grafico;
 
 import java.io.File;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 public class GraficoPoll extends ComandoGuild {
     public GraficoPoll() {
@@ -16,25 +17,25 @@ public class GraficoPoll extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        PollHelper.getPoll(args, event, dp -> {
+    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+        PollHelper.getPoll(args, hm, dp -> {
             if(dp.guild() != null){
                 Poll poll = dp.guild().getPoll(dp.titulo());
-                File arq = Grafico.poll(poll, event.getEvent().getGuild());
-                event.reply(arq);
+                File arq = Grafico.poll(poll, hm.getEvent().getGuild());
+                hm.reply(arq);
                 return;
             }
-            event.reply("poll {**" + dp.titulo() + "**} não encontrada.");
+            hm.reply(String.format(hm.text("grafico.exec"),dp.titulo()));
         });
     }
 
     @Override
-    public void help(EmbedBuilder me) {
-        me.appendDescription("**-grafico {titulo}** : envia um grafico dos votos da poll.\n\n");
+    public void help(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("grafico.help"));
     }
 
     @Override
-    public void helpExtensive(EmbedBuilder me) {
-        help(me);
+    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
+        help(me,rb);
     }
 }

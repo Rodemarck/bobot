@@ -11,6 +11,7 @@ import rode.utilitarios.Memoria;
 import java.awt.*;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 public class AdicionaOpcoesPoll extends ComandoGuild {
@@ -19,49 +20,43 @@ public class AdicionaOpcoesPoll extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem event) throws IOException, Exception {
-        PollHelper.getPoll(args, event, dp -> {
+    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
+        PollHelper.getPoll(args, hm, dp -> {
             if(dp.guild() != null){
                 if(dp.opcoes().isEmpty()){
                     EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
-                    eb.setTitle("cade as novas opções??");
-                    help(eb);
-                    event.reply(eb);
+                    eb.setTitle(hm.text("opcao.exec.empty"));
+                    help(eb,hm.bundle());
+                    hm.reply(eb);
                     return;
                 }
                 for(String s:dp.opcoes())
                     if(Pattern.matches(".*<@!?\\d+>.*",s)){
-                        event.reply("não pode haver menções nas opções");
+                        hm.reply(hm.text("opcao.exec.mention"));
                         return;
                     }
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 if(!poll.isAberto()){
-                    event.replyTemp("a poll {**" + poll.getTitulo() + "**} foi fechada");
+                    hm.replyTemp(String.format(hm.text("opcao.exec.close"), poll.getTitulo()));
                     return;
                 }
 
                 poll.addOpcoes(dp.opcoes());
                 Memoria.guilds.updateOne(dp.query(),new Document("$set",dp.guild().toMongo()));
-                event.reply(poll.me(),message->PollHelper.addReaction(message, poll.getOpcoes().size()));
+                hm.reply(poll.me(hm.bundle()),message->PollHelper.addReaction(message, poll.getOpcoes().size()));
                 return;
             }
-            event.reply("a poll {**" + dp.titulo() + "**} não foi encontrada" );
+            hm.reply(String.format(hm.text("opcao.exec.404"),dp.titulo()));
         });
     }
 
     @Override
-    public void help(EmbedBuilder me) {
-        me.appendDescription("**-addop {titulo} [opção 1] [opção 2]...** : adiciona opções novas a poll.\n\n");
+    public void help(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("opcao.help"));
     }
 
     @Override
-    public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("""
-                Comando para adiciona opções de uma poll (enquete), se a poll não tiver essas opções.
-                
-                **-addop {título} [opção 1] [opção 2]**
-                
-                Aliases (comandos alternativos) : **addpoll**, **addop**, **addoptions**, **addopções**,**addoveop**, **addoveoptions**, **addoveopções**.
-                """);
+    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("opcao.help.ex"));
         }
 }

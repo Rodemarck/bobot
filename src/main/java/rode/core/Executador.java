@@ -58,7 +58,8 @@ public class Executador {
         tryCatch(e.getJDA(),()->{
             log.debug("checando ");
             var raw = e.getMessage().getContentRaw();
-            var hm = new Helper.Mensagem(e);
+            var l = Constantes.loc(e.getGuild().getId());
+            var hm = new Helper.Mensagem(e,l);
             var args = traduz(raw);
             var mm = EventLoop.getInstance().mensagem(hm.getEvent().getAuthor().getIdLong());
             if(mm != null)
@@ -71,7 +72,8 @@ public class Executador {
             LinkedList<String> args = traduz(raw);
             String comando = args.size() == 0 ? "" : args.getFirst();
             ComandoGuild mgr = COMANDOS_GUILD.get(NOME_COMANDOS_GUILD.get(comando));
-            Helper.Mensagem hm = new Helper.Mensagem(e);
+            var l = Constantes.loc(e.getGuild().getId());
+            Helper.Mensagem hm = new Helper.Mensagem(e,l);
             if (mgr == null)
                 mgr = COMANDOS_GUILD.get(null);
             if (mgr != null ) {
@@ -104,14 +106,15 @@ public class Executador {
         });
     }
 
-    private static void interpretaEmoji(GenericGuildMessageReactionEvent event, Message m, String discriminador) throws Exception {
+    private static void interpretaEmoji(GenericGuildMessageReactionEvent e, Message m, String discriminador) throws Exception {
         String raw = m.getContentRaw();
         LinkedList<String> args = traduz(raw);
         String comando = args.size() == 0 ? "" : args.getFirst() + discriminador;
 
         ComandoGuildReacoes rmg = COMANDOS_REACOES_GUILD.get(NOME_COMANDOS_REACOES_GUILD.get(comando));
         log.trace("comando [{} <- ({})] chamado",comando , discriminador);
-        Helper.Reacao hr = new Helper.Reacao(event,m);
+        var l = Constantes.loc(e.getGuild().getId());
+        Helper.Reacao hr = new Helper.Reacao(e,m,l);
         if(rmg == null)
             rmg = COMANDOS_REACOES_GUILD.get(null);
         if(rmg != null) {

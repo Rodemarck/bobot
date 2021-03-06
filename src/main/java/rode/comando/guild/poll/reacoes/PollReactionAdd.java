@@ -10,6 +10,7 @@ import rode.utilitarios.Memoria;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 public class PollReactionAdd extends ComandoGuildReacoes {
     private static Logger log = LoggerFactory.getLogger(PollReactionAdd.class);
@@ -18,48 +19,48 @@ public class PollReactionAdd extends ComandoGuildReacoes {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Reacao event) throws IOException, Exception {
+    public void executa(LinkedList<String> args, Helper.Reacao hr) throws IOException, Exception {
         final String tipo = args.getFirst();
         log.debug("inicio");
-        PollHelper.getPollFromEmote(args, event,dp -> {
+        PollHelper.getPollFromEmote(args, hr,dp -> {
             log.debug("callback");
             if(dp.poll().getOpcoes().size() > dp.index()){
-                if(dp.poll().hasUser(event.id())){
-                    event.mensagem().removeReaction(event.emoji(), event.getEvent().getUser()).queue(mm->{
-                        int v = dp.poll().votouPara(event.id());
+                if(dp.poll().hasUser(hr.id())){
+                    hr.mensagem().removeReaction(hr.emoji(), hr.getEvent().getUser()).queue(mm->{
+                        int v = dp.poll().votouPara(hr.id());
                         if(dp.index() == v){
-                            dp.poll().rem(dp.index(),event.id());
-                            PollHelper.removeVoto(event,dp.index());
+                            dp.poll().rem(dp.index(),hr.id());
+                            PollHelper.removeVoto(hr,dp.index());
                             Memoria.update(dp);
-                            PollHelper.reRender(event,tipo,dp);
+                            PollHelper.reRender(hr,tipo,dp);
                             return;
                         }
-                        PollHelper.jaVotou(event,v);
-                        dp.poll().rem(v,event.id());
-                        PollHelper.removeVoto(event, v);
-                        dp.poll().add(dp.index(),event.id());
-                        PollHelper.contaVoto(event, dp.index());
-                        PollHelper.reRender(event,tipo,dp);
+                        PollHelper.jaVotou(hr,v);
+                        dp.poll().rem(v,hr.id());
+                        PollHelper.removeVoto(hr, v);
+                        dp.poll().add(dp.index(),hr.id());
+                        PollHelper.contaVoto(hr, dp.index());
+                        PollHelper.reRender(hr,tipo,dp);
                         Memoria.update(dp);
                     });
                     return;
                 }
-                dp.poll().add(dp.index(), event.id());
+                dp.poll().add(dp.index(), hr.id());
                 Memoria.update(dp);
-                PollHelper.contaVoto(event, dp.index());
-                PollHelper.reRender(event,toString(),dp);
+                PollHelper.contaVoto(hr, dp.index());
+                PollHelper.reRender(hr,toString(),dp);
                 return;
             }
         });
     }
 
     @Override
-    public boolean livre(LinkedList<String> args, Helper.Reacao event) throws IOException {
-        return PollHelper.livreSiMesmo(args,event);
+    public boolean livre(LinkedList<String> args, Helper.Reacao hr) throws IOException {
+        return PollHelper.livreSiMesmo(args,hr);
     }
 
     @Override
-    public void help(EmbedBuilder me) {
+    public void help(EmbedBuilder me, ResourceBundle rb) {
 
     }
 }

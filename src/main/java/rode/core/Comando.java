@@ -3,6 +3,9 @@ package rode.core;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 public abstract class Comando {
     public String comando;
     public String[] alias;
@@ -13,8 +16,8 @@ public abstract class Comando {
         this.alias = alias;
         this.cargo = cargo;
     }
-    public abstract void help(EmbedBuilder me);
-    public abstract void helpExtensive(EmbedBuilder me);
+    public abstract void help(EmbedBuilder me, ResourceBundle loc);
+    public abstract void helpExtensive(EmbedBuilder me, ResourceBundle loc);
 
     protected void falha(Helper event){
         event.reply("o comando **" + comando + "** requer permissão que você não tem");

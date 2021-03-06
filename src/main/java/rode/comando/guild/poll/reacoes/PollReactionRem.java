@@ -11,6 +11,7 @@ import rode.utilitarios.Memoria;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 @IgnoraComando
 public class PollReactionRem extends ComandoGuildReacoes {
@@ -20,13 +21,13 @@ public class PollReactionRem extends ComandoGuildReacoes {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Reacao event) throws IOException, Exception {
+    public void executa(LinkedList<String> args, Helper.Reacao hm) throws IOException, Exception {
         log.debug("inicio");
         final String tipo = args.getFirst();
-        PollHelper.getPollFromEmote(args,event, dp -> {
+        PollHelper.getPollFromEmote(args,hm, dp -> {
             log.debug("callback");
-            dp.poll().rem(dp.index(), event.id());
-            PollHelper.reRender(event,tipo,dp);
+            dp.poll().rem(dp.index(), hm.id());
+            PollHelper.reRender(hm,tipo,dp);
             Memoria.update(dp);
             return;
         });
@@ -38,7 +39,7 @@ public class PollReactionRem extends ComandoGuildReacoes {
     }
 
     @Override
-    public void help(EmbedBuilder me) {
+    public void help(EmbedBuilder me, ResourceBundle rb) {
 
     }
 }

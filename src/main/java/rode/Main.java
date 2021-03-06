@@ -20,16 +20,19 @@ import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
-import java.util.regex.Pattern;
+import java.util.ResourceBundle;
 
 
 public class Main {
         private static Logger log = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) throws IOException, InterruptedException {
-        Locale.setDefault(new Locale("pt", "BR"));
-        //jda();
-        var p = Pattern.compile("oi");
-        System.out.println(p.matcher("zo-i").find());
+        var loc = new Locale("pt", "BR");
+        Locale.setDefault(loc);
+        jda();
+        Locale ptBR = new Locale("pt","BR");
+        var bundle = ResourceBundle.getBundle("messages", ptBR);
+
+        System.out.println(bundle.getString("tutorial.hep.ex"));
     }
 
 
@@ -38,7 +41,7 @@ public class Main {
 
         try{
             inicializaComandos();
-            JDABuilder.createDefault(Constantes.env.get("token"))
+            JDABuilder.createDefault(Constantes.env.get("token_teste"))
                     .setActivity(Activity.playing("-tutorial"))
                     .setStatus(OnlineStatus.ONLINE)
                     .addEventListeners(new Controlador())

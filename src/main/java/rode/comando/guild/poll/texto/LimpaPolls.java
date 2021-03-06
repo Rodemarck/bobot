@@ -10,6 +10,7 @@ import rode.utilitarios.Memoria;
 
 import java.awt.*;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 public class LimpaPolls extends ComandoGuild {
     public LimpaPolls() {
@@ -17,30 +18,25 @@ public class LimpaPolls extends ComandoGuild {
     }
 
     @Override
-    public void help(EmbedBuilder me) {
-        me.appendDescription("**-limpar** enumera polls para serem deletadas.\n\n");
+    public void help(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("limpar.help"));
     }
 
     @Override
-    public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("""
-                Comando para enumerar polls para que sejam apagas. Só funciona para o Administrador que executou o comando.
-                
-                **-limpar**.
-                
-                Aliases (comandos alternativos) : **limpar**, **limpa**, **clear**.
-                """);
+    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("limpar.help.ex"));
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        var guild = Memoria.guild(event.guildId());
+    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+        var guild = Memoria.guild(hm.guildId());
         if(!guild.getPolls().isEmpty())
-            event.reply(new EmbedBuilder().setColor(Color.decode("#C8A2C8")).setTitle("deletar esta poll?").appendDescription("**carregando...**").setFooter("**1/"+(guild.getPolls().size()+1)+"**"), message -> {
-                EventLoop2.addReacao(new ConversaLimpar(event));
+            hm.reply(new EmbedBuilder().setColor(Color.decode("#C8A2C8")).setTitle("deletar esta poll?").appendDescription("**carregando...**").setFooter("**1/"+(guild.getPolls().size()+1)+"**"), message -> {
+                hm.mensagem(message);
+                EventLoop2.addReacao(new ConversaLimpar(hm));
                 return null;
             });
         else
-            event.reply("não há polls abertas");
+            hm.reply(hm.text("limpar.exec"));
     }
 }

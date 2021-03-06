@@ -10,6 +10,7 @@ import rode.utilitarios.Memoria;
 import rode.utilitarios.Regex;
 
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class VotarPoll extends ComandoGuild {
@@ -18,66 +19,58 @@ public class VotarPoll extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem helper) throws Exception {
-        PollHelper.getPoll(args, helper, dp -> {
+    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+        PollHelper.getPoll(args, hm, dp -> {
             if(dp.guild() != null){
                 if(!dp.poll().isAberto()){
-                    helper.replyTemp("a poll {**" + dp.poll().getTitulo() + "**} foi fechada");
+                    hm.replyTemp(hm.text("votarP.exec.close"));
                     return;
                 }
                 String str = args.stream().collect(Collectors.joining());
                 LinkedList<String> votos = Regex.extractInside("\\[([^\\]])\\]",str);
                 if(votos.size() == 0){
-                    helper.replyTemp("seu voto se perdeu!");
+                    hm.replyTemp(hm.text("votarP.exec.lost"));
                     return;
                 }
                 if(Constantes.POOL_votos.contains(votos.getFirst().toLowerCase())){
                     int index = Constantes.POOL_votos.indexOf(votos.getFirst().toLowerCase());
                     if(index < dp.poll().getOpcoes().size()){
-                        if(dp.poll().hasUser(helper.getEvent().getAuthor().getId())){
-                            int original = dp.poll().votouPara(helper.getEvent().getAuthor().getId());
+                        if(dp.poll().hasUser(hm.getEvent().getAuthor().getId())){
+                            int original = dp.poll().votouPara(hm.getEvent().getAuthor().getId());
                             if(index == original){
-                                helper.mensagem().delete().submit();
-                                dp.poll().rem(index,helper.id());
-                                helper.replyTemp("**" + helper.getEvent().getAuthor().getName() + "** seu voto foi retirado de com sucesso"); ;
+                                hm.mensagem().delete().submit();
+                                dp.poll().rem(index,hm.id());
+                                hm.replyTemp(String.format(hm.text("votarP.exec.remove"),hm.getEvent().getAuthor().getName()));
                                 Memoria.guilds.updateOne(dp.query(), new Document("$set", dp.guild().toMongo()));
                                 return;
                             }
                             else{
-                                helper.replyTemp("**"+ helper.getEvent().getAuthor().getName()+"** você já votou [**"+ Constantes.POOL_votos.get(dp.poll().votouPara(helper.id()))+ "**] nessa poll!");
+                                hm.replyTemp(String.format(hm.text("votarP.exec.already"), hm.getEvent().getAuthor().getName(), Constantes.POOL_votos.get(dp.poll().votouPara(hm.id()))));
                             }
                         }
                         else{
-                            helper.mensagem().delete().submit();
-                            dp.poll().add(index, helper.id());
-                            helper.replyTemp("**" + helper.getEvent().getAuthor().getName() + "** voto computado com sucesso ");
+                            hm.mensagem().delete().submit();
+                            dp.poll().add(index, hm.id());
+                            hm.replyTemp(String.format(hm.text("votatP.exec.vote"), hm.getEvent().getAuthor().getName()));
                             Memoria.guilds.updateOne(dp.query(), new Document("$set", dp.guild().toMongo()));
                             return;
                         }
                     }
                 }
-                helper.replyTemp("**" + helper.getEvent().getAuthor().getName() + "** pare de trolar,[" + votos.getFirst() + "] não é uma opção para essa poll.");
+                hm.replyTemp(String.format("votarP.exec.troll", hm.getEvent().getAuthor().getName(), votos.getFirst() ));
 
             }
         });
     }
 
     @Override
-    public void help(EmbedBuilder me) {
-        me.appendDescription("**-votar {titulo} [a]** : vota em uma poll.\n\n");
+    public void help(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("votarP.help"));
     }
 
     @Override
-    public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("""
-                Comando para vota em uma poll (enquete).
-                
-                **-votar {titulo} [a]**
-                
-                Aliases (comandos alternativos) : **v**, **votar**, **vote**.
-                Computa um voto para uma poll, sendo permitido apenas um voto por pessoa.
-                Caso queria mudar o voto, vote na mesma opção
-                """);
+    public void helpExtensive(EmbedBuilder me,ResourceBundle rb) {
+        me.appendDescription(rb.getString("votatP.help.ex"));
 
     }
 }

@@ -9,6 +9,7 @@ import rode.core.PollHelper;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 public class PicReactionAdd extends ComandoGuildReacoes {
     private static Logger log = LoggerFactory.getLogger(PicReactionAdd.class);
@@ -17,9 +18,9 @@ public class PicReactionAdd extends ComandoGuildReacoes {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Reacao event) throws IOException, Exception {
+    public void executa(LinkedList<String> args, Helper.Reacao hr) throws IOException, Exception {
         log.trace("chamando ->>" + PicReaction.class.getName());
-        PicReaction.executa(args, event,"+++");
+        PicReaction.executa(args, hr,"+++");
     }
 
     @Override
@@ -29,7 +30,7 @@ public class PicReactionAdd extends ComandoGuildReacoes {
 
 
     @Override
-    public void help(EmbedBuilder me) {
+    public void help(EmbedBuilder me, ResourceBundle rb) {
 
     }
 }

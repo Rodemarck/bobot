@@ -7,7 +7,8 @@ import rode.core.PollHelper;
 import rode.utilitarios.Constantes;
 
 import java.util.LinkedList;
-
+import java.util.ResourceBundle;
+/*
 public class VisualizaFotosPoll extends ComandoGuild {
     public VisualizaFotosPoll() {
         super("vizualizar", null, "vizualiza", "vizualizar", "view");
@@ -31,12 +32,12 @@ public class VisualizaFotosPoll extends ComandoGuild {
     }
 
     @Override
-    public void help(EmbedBuilder me) {
+    public void help(EmbedBuilder me, ResourceBundle rb) {
         me.appendDescription("**-vizualiza {titulo}** : exibe as opções de uma poll, uma a uma.\n\n");
     }
 
     @Override
-    public void helpExtensive(EmbedBuilder me) {
+    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
         me.appendDescription("""
                 Comando para exibir as opções de uma poll de forma mais detalhada
                 
@@ -49,3 +50,4 @@ public class VisualizaFotosPoll extends ComandoGuild {
                 """);
     }
 }
+*/

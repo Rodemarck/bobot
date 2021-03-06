@@ -5,25 +5,26 @@ import rode.core.ComandoGuild;
 import rode.core.Helper;
 
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 public class PingGuild extends ComandoGuild {
     public PingGuild() {
         super("ping", null, "ping","pong");
     }
 
-    public boolean livre(LinkedList<String> args, Helper.Mensagem event) {
+    public boolean livre(LinkedList<String> args, Helper.Mensagem hm) {
         return true;
     }
 
-    public void executa(LinkedList<String> args, Helper.Mensagem event) {
-        event.reply("o ping é de mais de **" + event.jda().getGatewayPing() + "ms**!!");
+    public void executa(LinkedList<String> args, Helper.Mensagem hm) {
+        hm.reply(String.format(hm.text("ping.exec"),hm.jda().getGatewayPing()));
     }
 
-    public void help(EmbedBuilder me) {
-        me.appendDescription("**-ping**: exibe a minha lerdeza.\n\n");
+    public void help(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("ping.help"));
     }
 
-    public void helpExtensive(EmbedBuilder me) {
-        help(me);
+    public void helpExtensive(EmbedBuilder me, ResourceBundle bd) {
+        help(me, bd);
     }
 }

@@ -6,6 +6,7 @@ import rode.core.EventLoop2;
 import rode.core.Helper;
 
 import java.util.HashMap;
+import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 public abstract class MensagemReacao extends ModelLoop{
@@ -29,12 +30,13 @@ public abstract class MensagemReacao extends ModelLoop{
                 for(var e : src.entrySet()) {
                     if (e.getKey().equals(helper.emoji())) {
                         e.getValue().accept(helper);
+                        render(helper.bundle());
                         break;
                     }
                 }
+
             }
             helper.mensagem().removeReaction(helper.emoji(),helper.getEvent().getUser()).submit();
-            render();
         }
     }
 
@@ -80,14 +82,15 @@ public abstract class MensagemReacao extends ModelLoop{
         this.nome = nome;
     }
 
-    public abstract void rerender();
+    public abstract void rerender(ResourceBundle rb);
 
-    private void render(){
+    private void render(ResourceBundle rb){
         acao();
         if(ativo()){
             fim(System.currentTimeMillis()+20000);
-            rerender();
-        }
+            rerender(rb);
+        }else
+            finaliza();
     }
 
     public static boolean expirado(MensagemReacao mensagemReacao) {

@@ -8,6 +8,7 @@ import rode.core.Helper;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 public class PicReactionRem extends ComandoGuildReacoes {
     private static Logger log = LoggerFactory.getLogger(PicReactionRem.class);
@@ -16,16 +17,16 @@ public class PicReactionRem extends ComandoGuildReacoes {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Reacao event) throws IOException, Exception {
+    public void executa(LinkedList<String> args, Helper.Reacao hr) throws IOException, Exception {
         log.trace("chamando ->>" + PicReaction.class);
-        PicReaction.executa(args, event,"---");
+        PicReaction.executa(args, hr,"---");
     }
 
 
 
 
     @Override
-    public void help(EmbedBuilder me) {
+    public void help(EmbedBuilder me, ResourceBundle rb) {
 
     }
 }

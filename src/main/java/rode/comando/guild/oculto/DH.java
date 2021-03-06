@@ -8,6 +8,8 @@ import rode.core.IgnoraComando;
 import rode.utilitarios.Constantes;
 
 import java.util.LinkedList;
+import java.util.ResourceBundle;
+
 @IgnoraComando
 public class DH extends ComandoGuild {
     public DH() {
@@ -21,12 +23,12 @@ public class DH extends ComandoGuild {
     }
 
     @Override
-    public void help(EmbedBuilder me) {
+    public void help(EmbedBuilder me, ResourceBundle rb) {
 
     }
 
     @Override
-    public void helpExtensive(EmbedBuilder me) {
+    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
 
     }
 

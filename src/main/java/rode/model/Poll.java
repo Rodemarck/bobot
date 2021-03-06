@@ -1,7 +1,6 @@
 package rode.model;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.bson.Document;
@@ -43,14 +42,6 @@ public class Poll implements Serializable{
                     """, i,(opcoes.size()-1), valores.get(i), numero)
          ).build();
 
-        /**
-         * return eb.addField("opção", Constantes.POOL_votos.get(i),true)
-         *                 .setFooter(String.format("""
-         *                         %d/%d      %d votos [%.2f %c]
-         *                         """, i,(opcoes.size()-1), valores.add(i), numero, '%')
-         *                 )
-         *                 .build();
-         */
 
     }
 
@@ -216,7 +207,7 @@ public class Poll implements Serializable{
         }
         return new top(pri, priPos, sec,secPos, total);
     }
-    public MessageEmbed me(){
+    public MessageEmbed me(ResourceBundle rb){
         top t = calculaTop();
         int n = opcoes.size();
         log.debug("me, total = {}",t.total);
@@ -226,57 +217,48 @@ public class Poll implements Serializable{
             int numero = (t.total==0)? 0 : Math.round(((float)valores.get(i)/t.total)*100);
             eb.appendDescription(Constantes.POOL_EMOTES.get(i) + ": " + ((i==t.priPos)? ("**" + opcoes.get(i) + "**"):opcoes.get(i) )+ "\t[" + (numero) + "%]\n\n");
         }
-        eb.appendDescription(isAberto()? "situação: " : "teminou em: ");
+        eb.appendDescription(isAberto()? rb.getString("poll.state") : rb.getString("poll.end"));
         if(t.pri == t.sec)
-            eb.appendDescription("**empate**");
+            eb.appendDescription(rb.getString("poll.vote.drawn"));
         else
-            eb.appendDescription("**" + opcoes.get(t.priPos) + "** ganhando por " + (t.pri-t.sec) +" votos");
+
+            eb.appendDescription(String.format(rb.getString("poll.vote.win"),opcoes.get(t.priPos),(t.pri-t.sec)));
         return eb.build();
     }
 
-    public MessageEmbed config() {
+    public MessageEmbed config(ResourceBundle rb) {
         top t = calculaTop();
         EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
         eb.setTitle(titulo);
-        eb.appendDescription("criador : <@" + criadorId + "> \n");
+        eb.appendDescription(rb.getString("poll.creator"));
         String dara = "";
 
         log.debug("no fim minha dara foi [{}]", dara);
         if(dataCriacao != null){
-            eb.appendDescription("criado no dia : **" +
-                    dataCriacao.format(DateTimeFormatter.ofPattern("dd")) +
-                    " de " + dataCriacao.format(DateTimeFormatter.ofPattern("MMMM")) +
-                    " de " + dataCriacao.format(DateTimeFormatter.ofPattern("YYYY")) +
-                    ", as " + dataCriacao.format(DateTimeFormatter.ofPattern("HH:mm")) + "**\n"
-            );
+            eb.appendDescription(String.format("%s"+rb.getString("poll.date.format")+'\n',rb.getString("poll.create"),dataCriacao.format(DateTimeFormatter.ofPattern("dd")),dataCriacao.format(DateTimeFormatter.ofPattern("MMMM")),dataCriacao.format(DateTimeFormatter.ofPattern("YYYY")), dataCriacao.format(DateTimeFormatter.ofPattern("HH:mm"))));
         }
 
-        eb.appendDescription("aberta: ");
+        eb.appendDescription(rb.getString("poll.open"));
 
         if(dataLimite == null)
-            eb.appendDescription("**sim.**\n");
+            eb.appendDescription(String.format("**%s**\n",rb.getString("poll.yes")));
         else{
             if(LocalDateTime.now().isBefore(dataLimite)){
-                eb.appendDescription("**sim.**\n");
-                eb.appendDescription("data limite de votação : ");
+                eb.appendDescription(String.format("**%s**\n",rb.getString("poll.yes")));
+                eb.appendDescription(rb.getString("poll.date.limit"));
             }
             else{
-                eb.appendDescription("**não.**\n");
-                eb.appendDescription("data encerramento da votação: ");
+                eb.appendDescription(String.format("**%s**\n",rb.getString("poll.no")));
+                eb.appendDescription(rb.getString("poll.date.close"));
             }
-            eb.appendDescription("**" +
-                    dataLimite.format(DateTimeFormatter.ofPattern("dd")) +
-                    " de " + dataLimite.format(DateTimeFormatter.ofPattern("MMMM")) +
-                    " de " + dataLimite.format(DateTimeFormatter.ofPattern("YYYY")) +
-                    ", as " + dataLimite.format(DateTimeFormatter.ofPattern("HH:mm")) + "**\n"
-            );
+            eb.appendDescription(String.format(rb.getString("poll.date.format"),dataLimite.format(DateTimeFormatter.ofPattern("dd")), dataLimite.format(DateTimeFormatter.ofPattern("MMMM")),dataLimite.format(DateTimeFormatter.ofPattern("YYYY")),dataLimite.format(DateTimeFormatter.ofPattern("HH:mm"))));
         }
-        eb.appendDescription("resultado: ");
+        eb.appendDescription(rb.getString("poll.vote.resultado"));
 
         if (t.pri == t.sec)
-            eb.appendDescription("**empate**\n");
+            eb.appendDescription(rb.getString("poll.vote.drawn"));
         else
-            eb.appendDescription("**" + opcoes.get(t.priPos) + "** ganhando por " + (t.pri - t.sec) + " votos\n");
+            eb.appendDescription(String.format(rb.getString("poll.vote.win"), opcoes.get(t.priPos) ,(t.pri - t.sec)));
         return eb.build();
     }
 
@@ -318,10 +300,10 @@ public class Poll implements Serializable{
         }
         return votos;
     }
-    public void getVotos(EmbedBuilder eb, JDA jda) {
+    public void getVotos(EmbedBuilder eb, ResourceBundle rb) {
         for(Map.Entry<String, Integer> u :usuariosId.entrySet()){
             System.out.println(opcoes);
-            eb.appendDescription("**<@" +u.getKey()+ ">** votou para **" + opcoes.get(u.getValue()) + "**\n\n");
+            eb.appendDescription(String.format(rb.getString("poll.vote.to"),u.getKey(), opcoes.get(u.getValue())));
         }
     }
 

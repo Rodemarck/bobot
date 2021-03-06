@@ -121,14 +121,14 @@ public final class PollHelper {
         event.replyTemp("**"+ event.getEvent().getUser().getName()+"** você já votou [**"+ Constantes.POOL_votos.get(index)+ "**] nessa poll!");
     }
 
-    public static void reRender(Helper.Reacao event,String tipo, DadosPoll dp) {
+    public static void reRender(Helper.Reacao hr,String tipo, DadosPoll dp) {
         if(tipo.contains("poll"))
-            event.mensagem().editMessage(dp.poll().me()).submit();
+            hr.mensagem().editMessage(dp.poll().me(hr.bundle)).submit();
         else if(tipo.contains("pic")){
-            final var emb = event.mensagem().getEmbeds().get(0);
+            final var emb = hr.mensagem().getEmbeds().get(0);
             LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
             int i = Integer.parseInt(param.getFirst());
-            event.mensagem().editMessage(dp.poll().visualiza(i)).submit();
+            hr.mensagem().editMessage(dp.poll().visualiza(i)).submit();
         }
     }
 

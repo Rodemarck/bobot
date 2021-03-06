@@ -9,6 +9,7 @@ import rode.model.Poll;
 import java.awt.*;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 public class MostraVotosPoll extends ComandoGuild {
     public MostraVotosPoll() {
@@ -16,33 +17,27 @@ public class MostraVotosPoll extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem event) throws IOException, Exception {
-        PollHelper.getPoll(args,event,dp -> {
+    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
+        PollHelper.getPoll(args,hm,dp -> {
             if(dp.guild() != null){
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
-                eb.setTitle("votação para **{" + dp.titulo() + "}**");
-                poll.getVotos(eb, event.jda());
-                event.reply(eb);
+                eb.setTitle(String.format(hm.text("votos.exec.title"),dp.titulo()));
+                poll.getVotos(eb, hm.bundle());
+                hm.reply(eb);
                 return;
             }
-            event.reply("poll **{" + dp.titulo() + "}** não encontrada");
+            hm.reply(String.format(hm.text("votos.exec.404"),dp.titulo()));
         });
     }
 
     @Override
-    public void help(EmbedBuilder me) {
-        me.appendDescription("**-votos {titulo}** : mostra os votos de uma poll.\n\n");
+    public void help(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("votos.help"));
     }
 
     @Override
-    public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("""
-                Comando para listar todos os membros que votaram e seus respectivos votos de uma poll (enquete) especifica.
-                                
-                **-votos {titulo}***.
-                                
-                Aliases (comandos alternativos) : **votos**, **votes**, **vpoll**
-                """);
+    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("votos.help.ex"));
     }
 }

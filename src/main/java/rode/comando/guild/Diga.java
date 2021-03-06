@@ -5,6 +5,7 @@ import rode.core.ComandoGuild;
 import rode.core.Helper;
 
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class Diga extends ComandoGuild {
@@ -13,25 +14,19 @@ public class Diga extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        event.getEvent().getMessage().delete().queue();
+    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+        hm.getEvent().getMessage().delete().queue();
         args.poll();
-        event.reply(args.stream().collect(Collectors.joining(" ")));
+        hm.reply(args.stream().collect(Collectors.joining(" ")));
     }
 
     @Override
-    public void help(EmbedBuilder me) {
+    public void help(EmbedBuilder me, ResourceBundle rb) {
 
     }
 
     @Override
-    public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("""
-        Comando secreto que faz o bot dizer algo. Assim que o comando é entendido pelo bot ele apaga sua mensagem para enganar os fracos.
-        
-        **-diga aa**
-        
-        Aliases (comandos alternativos) : **diga**, **say**.
-        """);
+    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("say.help.ex"));
     }
 }

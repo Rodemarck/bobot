@@ -11,6 +11,7 @@ import rode.utilitarios.Memoria;
 import java.awt.*;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 public class ListarPolls extends ComandoGuild {
 
@@ -19,8 +20,8 @@ public class ListarPolls extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem event) throws IOException, Exception {
-        Document doc = Memoria.guilds.find(new Document("id", event.guildId())).first();
+    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
+        Document doc = Memoria.guilds.find(new Document("id", hm.guildId())).first();
         if(doc != null){
             ModelGuild g = ModelGuild.fromMongo(doc);
 
@@ -28,27 +29,21 @@ public class ListarPolls extends ComandoGuild {
             eb.setTitle("polls abertas");
             for(Poll p: g.getPolls()) {
                 String t = p.getTitulo();
-                eb.appendDescription("{**" + t + "**} feita por **<@" + p.getCriadorId() + ">**\n\n");
+                eb.appendDescription(String.format(hm.text("list.exec.line"), t, p.getCriadorId()));
             }
-            event.reply(eb);
+            hm.reply(eb);
             return;
         }
-        event.reply("nenhuma poll achada.");
+        hm.reply(hm.text("list.exec.empty"));
     }
 
     @Override
-    public void help(EmbedBuilder me) {
-        me.appendDescription("**-listar**: lista todas as polls existentes.\n\n");
+    public void help(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("list.help"));
     }
 
     @Override
-    public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("""
-                Comando para listar todas as polls (enquetes) abertas neste servidor.
-                
-                **-listar**.
-                
-                Aliases (comandos alternativos) : **lpoll**, **list**, **listar**, **listpoll**, **listarpoll**
-                """);
+    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("list.help.ex"));
     }
 }

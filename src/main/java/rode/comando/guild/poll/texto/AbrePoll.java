@@ -13,6 +13,7 @@ import rode.model.Poll;
 import rode.utilitarios.*;
 
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 public class AbrePoll extends ComandoGuild {
@@ -22,19 +23,19 @@ public class AbrePoll extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
+    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         log.debug("start");
-        PollHelper.getPoll(args, event, (dp) -> {
+        PollHelper.getPoll(args, hm, (dp) -> {
             log.debug("callback");
             if(dp.titulo() == null){
-                event.reply("É preciso um título para a poll.");
+                hm.reply(hm.text("abre.exec.title"));
                 return;
             }
             if(dp.guild() != null){
                 log.debug("poll encontrada");
                 Poll poll = dp.guild().getPoll(dp.titulo());
-                event.reply("poll", message ->
-                        message.editMessage(poll.me()).submit()
+                hm.reply("poll", message ->
+                        message.editMessage(poll.me(hm.bundle())).submit()
                                 .thenCompose(message1 -> PollHelper.addReaction(message1,poll.getOpcoes().size()))
                 );
                 return;
@@ -45,30 +46,30 @@ public class AbrePoll extends ComandoGuild {
             }
             if(dp.opcoes().isEmpty()){
                 log.debug("opcoes vazias");
-                dp.opcoes().add("sim");
-                dp.opcoes().add("não");
+                dp.opcoes().add(hm.text("poll.yes"));
+                dp.opcoes().add(hm.text("poll.no"));
             }
             else{
                 for(String s: dp.opcoes())
                     if(Pattern.matches(".*<@!?\\d+>.*",s)){
-                        event.reply("Não pode haver menções em opções de poll");
+                        hm.reply(hm.text("abre.exec.opmention"));
                         return;
                     }
             }
             if(Pattern.matches(".*<@!?\\d+>.*",dp.titulo())){
-                event.reply("não pode haver menções em título de poll");
+                hm.reply(hm.text("abre.exec.timention"));
                 return;
             }
-            final Poll  poll = new Poll(dp.titulo(),dp.opcoes(), event.getEvent());
-            event.reply("poll", message ->
-                    message.editMessage(poll.me()).submit()
+            final Poll  poll = new Poll(dp.titulo(),dp.opcoes(), hm.getEvent());
+            hm.reply("poll", message ->
+                    message.editMessage(poll.me(hm.bundle())).submit()
                             .thenCompose(message1 -> PollHelper.addReaction(message1,poll.getOpcoes().size()))
             );
-            Document query = new Document("id",event.guildId());
+            Document query = new Document("id",hm.guildId());
             Document doc = Memoria.guilds.find(query).first();
 
             if(doc == null){
-                ModelGuild guild = new ModelGuild(event.guildId());
+                ModelGuild guild = new ModelGuild(hm.guildId());
                 guild.getPolls().add(poll);
                 BsonValue a = Memoria.guilds.insertOne(guild.toMongo()).getInsertedId();
                 return;
@@ -81,22 +82,12 @@ public class AbrePoll extends ComandoGuild {
 
 
     @Override
-    public void help(EmbedBuilder me) {
-        me.appendDescription("**-poll {titulo} [opção 1] [opção 2] ...**: cria uma poll.\n\n");
+    public void help(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("abre.help"));
     }
 
     @Override
-    public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("""
-                Comando para abrir uma nova poll (enquete) no servidor.
-                
-                **-poll {titulo} [opção 1] [opção 2] ...**
-                
-                Aliases (comandos alternativos) : **poll**, **enquete**, **enq**.
-                Se não for informado nenhuma opção, por padrão será adicionado as opções **sim** e **não**.
-                O limite de opções é 20.
-                É possível votar em apenas uma opção por vez, reagindo à um dos emojis correspondentes a opção, ou utilizando o comando **votar**.
-                Para retirar seu voto, basta votar novamente na mesma opção.
-                """);
+    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("abre.help.ex"));
     }
 }

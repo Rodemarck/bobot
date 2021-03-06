@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -27,8 +28,8 @@ public class SetDataPoll  extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem helper) throws Exception {
-        PollHelper.getPoll(args,helper,dp -> {
+    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+        PollHelper.getPoll(args,hm,dp -> {
             if(dp.guild() != null){
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 String s = args.stream().collect(Collectors.joining(" ")).replaceAll("\\{([^\\}]+)\\}|\\[([^\\]]+)\\]"," ");
@@ -54,22 +55,22 @@ public class SetDataPoll  extends ComandoGuild {
                     try{
                         var data = LocalDateTime.of(numeros[0],numeros[1],numeros[2],numeros[3],numeros[4]);
                         if(agora.isAfter(data)){
-                            helper.reply("Data inválida.");
+                            hm.reply(hm.text("data.exec.invalid"));
                             return;
                         }
                         if(ChronoUnit.MONTHS.between(agora,data) > 2) {
                             data = agora.plusMonths(2);
-                            helper.reply("O tempo máximo é dois meses");
+                            hm.reply(hm.text("data.exec.max"));
                         }
                         poll.setDataLimite(data);
                         Memoria.update(dp.query(), dp.guild());
-                        helper.reply(poll.config());
+                        hm.reply(poll.config(hm.bundle()));
                     }catch (DateTimeException e){
-                        helper.reply("Data inválida.");
+                        hm.reply(hm.text("data.exec.invalid"));
                         return;
                     }
                 }else{
-                    helper.reply("Data inválida.");
+                    hm.reply(hm.text("data.exec.invalid"));
                     return;
                 }
             }
@@ -96,23 +97,14 @@ public class SetDataPoll  extends ComandoGuild {
         void apply(long n);
     }
     @Override
-    public void help(EmbedBuilder me) {
-        me.appendDescription("**-data {titulo} 1 dia** : define tempo restante para encerrar a poll.\n\n");
+    public void help(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("data.help"));
     }
 
     @Override
-    public void helpExtensive(EmbedBuilder me) {
+    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
         var agora = LocalDateTime.now();
         agora.plusWeeks(1);
-        me.appendDescription(String.format("""
-                Comando para adicionar um novo tempo restante para uma poll (enquete).
-                
-                **-data {titulo} %s**
-                
-                Aliases (comandos alternativos) : **date**, **data**.
-                O tempo limite para votação é contado somando o tempo digitado com o horario atual.
-                O tempo maximo que uma poll pode ficar aberta são 2 meses.
-                É possivel utilizar apenas as inicias assim ficaria.
-                """, agora.format(DateTimeFormatter.ofPattern("d/m/Y H:m"))));
+        me.appendDescription(String.format(String.format("data.help.ex"), agora.format(DateTimeFormatter.ofPattern("d/m/Y H:m"))));
     }
 }

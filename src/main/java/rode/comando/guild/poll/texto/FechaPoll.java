@@ -9,6 +9,7 @@ import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 public class FechaPoll extends ComandoGuild {
     public FechaPoll() {
@@ -16,16 +17,16 @@ public class FechaPoll extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        PollHelper.getPoll(args,event,dp -> {
+    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+        PollHelper.getPoll(args,hm,dp -> {
             if(dp.guild() != null){
                 if(!dp.poll().isAberto()){
-                    event.replyTemp("esta poll já está fechada");
+                    hm.replyTemp(String.format(hm.text("fecha.exec.already"),dp.titulo()));
                     return;
                 }
                 dp.poll().fecha();
                 Memoria.update(dp);
-                event.reply("a poll {**" + dp.query() + "**} foi fechada", message -> message.addReaction(Constantes.emote("check")).submit());
+                hm.reply(String.format(hm.text("fecha.exec.close"),dp.titulo()), message -> message.addReaction(Constantes.emote("check")).submit());
             }
         });
     }
@@ -36,19 +37,13 @@ public class FechaPoll extends ComandoGuild {
     }
 
     @Override
-    public void help(EmbedBuilder me) {
-        me.appendDescription("**-fechar {titulo}** : fecha uma poll.\n\n");
+    public void help(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("fecha.help"));
     }
 
     @Override
-    public void helpExtensive(EmbedBuilder me) {
-        me.appendDescription("""
-                Comando para fechar uma poll (enquete)
-                
-                **-fecha {titulo}**
-                
-                Aliases (comandos alternativos) : **fecha**, **close**
-                """);
+    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
+        me.appendDescription(rb.getString("fecha.help.ex"));
 
     }
 }

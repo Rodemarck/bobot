@@ -13,6 +13,7 @@ import rode.utilitarios.Memoria;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.ResourceBundle;
 
 public class ConversaLimpar extends MensagemReacao {
     private static Logger log = LoggerFactory.getLogger(ConversaLimpar.class);
@@ -25,7 +26,7 @@ public class ConversaLimpar extends MensagemReacao {
         log.debug("membro id =[" + membro() + "]");
         var guild = Memoria.guild(guildId());
         atualiza(guild);
-        rerender();
+        rerender(hr.bundle());
     }
 
 
@@ -44,15 +45,15 @@ public class ConversaLimpar extends MensagemReacao {
             }
     }
 
-    public void rerender(){
+    public void rerender(ResourceBundle rb){
         var guild = Memoria.guild(guildId());
         var eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"))
-                .setTitle("Deletar a poll");
+                .setTitle(rb.getString("limpa.delete"));
         for(int i=0;i<guild.getPolls().size();i++){
             var p = guild.getPolls().get(i);
             eb.appendDescription(Constantes.POOL_EMOTES.get(i) + " : **" + p.getTitulo()+"** , criada por <@"+p.getCriadorId()+">.\n\n");
         }
-        eb.setFooter("uso exclusivo de " + nome(),pic());
+        eb.setFooter(String.format(rb.getString("limpa.exclusive"),nome()),pic());
         mensagem().editMessage(eb.build()).submit()
         .thenRun(()->atualiza(guild));
 
