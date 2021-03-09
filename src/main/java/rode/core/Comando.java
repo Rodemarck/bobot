@@ -19,6 +19,7 @@ public abstract class Comando {
     public abstract void helpExtensive(EmbedBuilder me, ResourceBundle loc);
 
     protected void falha(Helper event){
+
         event.reply(String.format(event.text("cmd.fail"),comando,cargo));
     }
 }

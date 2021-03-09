@@ -128,7 +128,7 @@ public final class PollHelper {
             final var emb = hr.mensagem().getEmbeds().get(0);
             LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
             int i = Integer.parseInt(param.getFirst());
-            hr.mensagem().editMessage(dp.poll().visualiza(i)).submit();
+            hr.mensagem().editMessage(dp.poll().visualiza(i,hr.bundle)).submit();
         }
     }
 

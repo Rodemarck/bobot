@@ -17,22 +17,18 @@ import rode.core.IgnoraComando;
 import rode.utilitarios.Constantes;
 
 import javax.security.auth.login.LoginException;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 
 public class Main {
-        private static Logger log = LoggerFactory.getLogger(Main.class);
-    public static void main(String[] args) throws IOException, InterruptedException {
+    private static final Logger log = LoggerFactory.getLogger(Main.class);
+    public static void main(String[] args) {
         var loc = new Locale("pt", "BR");
         Locale.setDefault(loc);
-        //jda();
-        Locale ptBR = new Locale("pt","BR");
-        var bundle = ResourceBundle.getBundle("messages", ptBR);
-
-        System.out.println(bundle.getString("corno"));
+        jda();
+        //var rb = ResourceBundle.getBundle("messages",loc);
+        //System.out.println(rb.getString("corno"));
     }
 
 
@@ -41,8 +37,8 @@ public class Main {
 
         try{
             inicializaComandos();
-            JDABuilder.createDefault(Constantes.env.get("token_teste"))
-                    .setActivity(Activity.playing("-tutorial"))
+            JDABuilder.createLight(Constantes.env.get("token_teste"))
+                    .setActivity(Activity.playing("-help"))
                     .setStatus(OnlineStatus.ONLINE)
                     .addEventListeners(new Controlador())
                     .setMemberCachePolicy(MemberCachePolicy.NONE)
@@ -53,7 +49,7 @@ public class Main {
         }
     }
     private static void inicializaComandos() {
-        Reflections reflections = new Reflections("rode.comando.guild");
+        var reflections = new Reflections("rode.comando.guild");
         var ignoreList = reflections.getTypesAnnotatedWith(IgnoraComando.class);
         reflections.getSubTypesOf(ComandoGuild.class)
                 .stream().filter(aClass -> !ignoreList.contains(aClass))
@@ -65,7 +61,7 @@ public class Main {
 
 
     public static void cadastraComando(Class<? extends ComandoGuild> clazz) {
-        ComandoGuild comando = null;
+        ComandoGuild comando;
         try {
             comando = clazz.getConstructor().newInstance();
         } catch (InstantiationException|IllegalAccessException|InvocationTargetException|NoSuchMethodException e) {
@@ -78,7 +74,7 @@ public class Main {
             Executador.NOME_COMANDOS_GUILD.put(s,id_comando);
     }
     private static void cadastraComandoReacao(Class<? extends ComandoGuildReacoes> clazz) {
-        ComandoGuildReacoes comando = null;
+        ComandoGuildReacoes comando;
         try {
             comando = clazz.getConstructor().newInstance();
         } catch (InstantiationException|IllegalAccessException|InvocationTargetException|NoSuchMethodException e) {

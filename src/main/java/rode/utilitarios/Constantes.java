@@ -1,6 +1,7 @@
 package rode.utilitarios;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import net.dv8tion.jda.api.EmbedBuilder;
 import rode.model.ConfigGuid;
 
 import java.awt.*;
@@ -14,14 +15,12 @@ public class Constantes {
         put("esquerda","⬅");
         put("direita","➡");
     }};
-    private static final HashMap<String, Locale> LOC = new HashMap<>(){{
-        put(null,new Locale("pt","BR"));
-    }};
+    private static final HashMap<Locale,HashMap<String, EmbedBuilder>>BUILDERS = new HashMap<>();
+    private static final HashMap<String, Locale> LOC = new HashMap<>();
     public final static String PREFIXO = "-";
     public final static List<Long> EXCLUDE_CHAT = new ArrayList<>(Arrays.asList(484909251710550027l));
     public static final List<String> POOL_EMOTES = new ArrayList<>(Arrays.asList("🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴", "🇵", "🇶", "🇷", "🇸", "🇹","✔","⬅","➡")) ;
     public static final List<String> POOL_votos = new ArrayList<>(Arrays.asList("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","e","r","s","t","u","v","w","z","y"));
-    public static final List<String> LANG_EMOTES = new ArrayList<>(Arrays.asList("\u1F1E7"));
     public static final Color[][] cores = new Color[][]{
             new Color[]{Color.decode("#FF0000") },
             new Color[]{Color.decode("#FF0000"), Color.decode("#00FFFF")},
@@ -76,4 +75,24 @@ public class Constantes {
             LOC.put(guildId,l);
         }
     }
+    public static EmbedBuilder builder(Locale loc, String cmd){
+        synchronized (BUILDERS){
+            if(BUILDERS.containsKey(loc))
+                return BUILDERS.get(loc).get(cmd);
+            BUILDERS.put(loc,new HashMap<>());
+            return null;
+        }
+    }
+    public static void addBuilder(Locale loc, String cmd,EmbedBuilder eb){
+        synchronized (BUILDERS){
+            if(BUILDERS.containsKey(loc)) {
+                BUILDERS.get(loc).put(cmd, eb);
+                return;
+            }
+            BUILDERS.put(loc,new HashMap<>(){{
+                put(cmd,eb);
+            }});
+        }
+    }
+
 }

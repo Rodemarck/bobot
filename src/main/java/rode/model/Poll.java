@@ -27,7 +27,7 @@ public class Poll implements Serializable{
     private LocalDateTime dataLimite;
     private LocalDateTime dataCriacao;
 
-    public MessageEmbed visualiza(int i) {
+    public MessageEmbed visualiza(int i,ResourceBundle rb) {
         top t = calculaTop();
         EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
         eb.setTitle(titulo);
@@ -36,10 +36,10 @@ public class Poll implements Serializable{
         else
             eb.appendDescription(opcoes.get(i));
         float numero = (t.total==0)? 0 : (((float)valores.get(i)/t.total)*100);
-        return eb.addField("opção", Constantes.POOL_votos.get(i),true)
+        return eb.addField(rb.getString("poll.op"), Constantes.POOL_votos.get(i),true)
                 .setFooter(String.format("""
-                    %d/%d                %d votos [%.2f %%]
-                    """, i,(opcoes.size()-1), valores.get(i), numero)
+                    %1$d/%2$d                %3$d %5$s [%4$.2f %%]
+                    """, i,(opcoes.size()-1), valores.get(i), numero,rb.getString("poll.vote"))
          ).build();
 
 
@@ -221,7 +221,6 @@ public class Poll implements Serializable{
         if(t.pri == t.sec)
             eb.appendDescription(rb.getString("poll.vote.drawn"));
         else
-
             eb.appendDescription(String.format(rb.getString("poll.vote.win"),opcoes.get(t.priPos),(t.pri-t.sec)));
         return eb.build();
     }
@@ -287,7 +286,6 @@ public class Poll implements Serializable{
                 ", opcoes=" + opcoes +
                 ", valores=" + valores +
                 ", usuariosId=" + usuariosId +
-                //", testes="+ testes+
                 '}';
     }
 

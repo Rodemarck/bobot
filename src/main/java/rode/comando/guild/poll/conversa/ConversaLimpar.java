@@ -48,12 +48,12 @@ public class ConversaLimpar extends MensagemReacao {
     public void rerender(ResourceBundle rb){
         var guild = Memoria.guild(guildId());
         var eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"))
-                .setTitle(rb.getString("limpa.delete"));
+                .setTitle(rb.getString("limpar.delete"));
         for(int i=0;i<guild.getPolls().size();i++){
             var p = guild.getPolls().get(i);
             eb.appendDescription(Constantes.POOL_EMOTES.get(i) + " : **" + p.getTitulo()+"** , criada por <@"+p.getCriadorId()+">.\n\n");
         }
-        eb.setFooter(String.format(rb.getString("limpa.exclusive"),nome()),pic());
+        eb.setFooter(String.format(rb.getString("limpar.exclusive"),nome()),pic());
         mensagem().editMessage(eb.build()).submit()
         .thenRun(()->atualiza(guild));
 

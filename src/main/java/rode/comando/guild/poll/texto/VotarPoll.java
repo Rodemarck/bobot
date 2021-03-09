@@ -51,7 +51,7 @@ public class VotarPoll extends ComandoGuild {
                         else{
                             hm.mensagem().delete().submit();
                             dp.poll().add(index, hm.id());
-                            hm.replyTemp(String.format(hm.text("votatP.exec.vote"), hm.getEvent().getAuthor().getName()));
+                            hm.replyTemp(String.format(hm.text("votarP.exec.vote"), hm.getEvent().getAuthor().getName()));
                             Memoria.guilds.updateOne(dp.query(), new Document("$set", dp.guild().toMongo()));
                             return;
                         }
@@ -70,7 +70,7 @@ public class VotarPoll extends ComandoGuild {
 
     @Override
     public void helpExtensive(EmbedBuilder me,ResourceBundle rb) {
-        me.appendDescription(rb.getString("votatP.help.ex"));
+        me.appendDescription(rb.getString("votarP.help.ex"));
 
     }
 }

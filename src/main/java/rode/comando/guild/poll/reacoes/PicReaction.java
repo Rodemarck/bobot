@@ -14,45 +14,45 @@ import java.util.LinkedList;
 
 public class PicReaction {
     private static Logger log = LoggerFactory.getLogger(PicReaction.class);
-    public static void executa(LinkedList<String> args, Helper.Reacao event, String discriminator) throws IOException, Exception {
+    public static void executa(LinkedList<String> args, Helper.Reacao hr, String discriminator) throws IOException, Exception {
         int aux;
         log.debug("verificando seta");
-        if(event.emoji().equals(Constantes.emote("esquerda")))
+        if(hr.emoji().equals(Constantes.emote("esquerda")))
             aux = -1;
-        else if(event.emoji().equals(Constantes.emote("direita")))
+        else if(hr.emoji().equals(Constantes.emote("direita")))
             aux = 1;
-        else if(event.emoji().equals(Constantes.emote("check")))
+        else if(hr.emoji().equals(Constantes.emote("check")))
             aux = 0;
         else{
 
             Executador.COMANDOS_REACOES_GUILD.get(
                     Executador.NOME_COMANDOS_REACOES_GUILD.get("poll" + discriminator)
-            ).executa(args,event);
+            ).executa(args,hr);
             return;
         }
         log.debug("não é troca");
         final int n = aux;
-        PollHelper.getPollFromEmote(args, event, dp->{
-            var emb = event.mensagem().getEmbeds().get(0);
+        PollHelper.getPollFromEmote(args, hr, dp->{
+            var emb = hr.mensagem().getEmbeds().get(0);
             LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
             int index = Integer.parseInt(param.getFirst());
             if(n == 0){
-                if(dp.poll().hasUser(event.id())){
-                    int i = dp.poll().votouPara(event.id());
+                if(dp.poll().hasUser(hr.id())){
+                    int i = dp.poll().votouPara(hr.id());
                     if(i == index){
-                        dp.poll().rem(index,event.id());
+                        dp.poll().rem(index,hr.id());
                         Memoria.update(dp);
-                        PollHelper.removeVoto(event, index);
-                        PollHelper.reRender(event,"pic", dp);
+                        PollHelper.removeVoto(hr, index);
+                        PollHelper.reRender(hr,"pic", dp);
                         return;
                     }
-                    PollHelper.jaVotou(event,i);
+                    PollHelper.jaVotou(hr,i);
                     return;
                 }
-                dp.poll().add(index, event.id());
+                dp.poll().add(index, hr.id());
                 Memoria.update(dp);
-                PollHelper.contaVoto(event, index);
-                PollHelper.reRender(event,"pic", dp);
+                PollHelper.contaVoto(hr, index);
+                PollHelper.reRender(hr,"pic", dp);
                 return;
             }
             index = (index + n);
@@ -60,8 +60,8 @@ public class PicReaction {
                 index = 0;
             else if (index < 0)
                 index = dp.poll().getOpcoes().size() - 1;
-            event.mensagem().editMessage(dp.poll().visualiza(index)).submit();
+            hr.mensagem().editMessage(dp.poll().visualiza(index,hr.bundle())).submit();
         });
-        final var emb = event.mensagem().getEmbeds().get(0);
+        final var emb = hr.mensagem().getEmbeds().get(0);
     }
 }

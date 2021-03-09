@@ -1,12 +1,12 @@
 package rode.controller;
 
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.ExceptionEvent;
+import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.hooks.EventListener;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,14 +17,13 @@ import rode.utilitarios.Constantes;
 
 import java.time.LocalDateTime;
 
-public class Controlador extends ListenerAdapter {
+public class Controlador implements EventListener {
     private static Logger log = LoggerFactory.getLogger(Main.class);
     private static LocalDateTime ultimaMsg;
     private boolean pre(Message message) {
         return message.getContentRaw().startsWith(Constantes.PREFIXO);
     }
 
-    @Override
     public void onReady(@NotNull ReadyEvent event) {
         ultimaMsg = LocalDateTime.now();
         event.getJDA().retrieveUserById(305090445283688450l).submit()
@@ -34,7 +33,6 @@ public class Controlador extends ListenerAdapter {
                 .thenRunAsync(()->EventLoop.getInstance());
     }
 
-    @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         if (!event.getAuthor().isBot() ) {
             if (pre(event.getMessage()))
@@ -44,7 +42,6 @@ public class Controlador extends ListenerAdapter {
         }
     }
 
-    @Override
     public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
         event.getJDA().retrieveUserById(event.getUserId()).submit()
             .thenCompose(user -> {
@@ -54,7 +51,6 @@ public class Controlador extends ListenerAdapter {
             });
     }
 
-    @Override
     public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent event) {
         if(event.getMember() == null){
             event.getJDA().retrieveUserById(event.getUserId()).submit()
@@ -69,10 +65,10 @@ public class Controlador extends ListenerAdapter {
     }
 
     @Override
-    public void onException(@NotNull ExceptionEvent event) {
-        event.getJDA().retrieveUserById(305090445283688450l).submit()
-                .thenCompose(u -> u.openPrivateChannel().submit())
-                .thenCompose(pv->pv.sendMessage(event.getCause().getMessage()).submit());
+    public void onEvent(@NotNull GenericEvent event) {
+        if(event instanceof GuildMessageReceivedEvent e) onGuildMessageReceived(e);
+        else if(event instanceof GuildMessageReactionAddEvent e) onGuildMessageReactionAdd(e);
+        else if(event instanceof GuildMessageReactionRemoveEvent e) onGuildMessageReactionRemove(e);
+        else if(event instanceof ReadyEvent e) onReady(e);
     }
-
 }
