@@ -28,8 +28,8 @@ public class ListarPolls extends ComandoGuild {
             EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
             eb.setTitle("polls abertas");
             for(Poll p: g.getPolls()) {
-                String t = p.getTitulo();
-                eb.appendDescription(String.format(hm.text("list.exec.line"), t, p.getCriadorId()));
+                String t = p.titulo();
+                eb.appendDescription(String.format(hm.text("list.exec.line"), t, p.criadorId()));
             }
             hm.reply(eb);
             return;

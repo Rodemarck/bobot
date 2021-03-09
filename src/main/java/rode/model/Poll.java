@@ -24,6 +24,7 @@ public class Poll implements Serializable{
     private List<Integer> valores;
     private HashMap<String,Integer> usuariosId;
 
+
     private LocalDateTime dataLimite;
     private LocalDateTime dataCriacao;
 
@@ -45,21 +46,7 @@ public class Poll implements Serializable{
 
     }
 
-    private class top {
-        int pri;
-        int priPos;
-        int sec;
-        int secPos;
-        int total;
 
-        public top(int pri, int priPos, int sec, int secPos, int total) {
-            this.pri = pri;
-            this.priPos = priPos;
-            this.sec = sec;
-            this.secPos = secPos;
-            this.total = total;
-        }
-    };
 
     public Poll(String titulo, LinkedList<String> opcoes, GuildMessageReceivedEvent event) {
         this.criadorId = event.getAuthor().getId();
@@ -183,7 +170,7 @@ public class Poll implements Serializable{
         }
     }
 
-    public boolean isAberto(){
+    public boolean aberto(){
         return dataLimite == null || LocalDateTime.now().isBefore(dataLimite);
     }
 
@@ -217,7 +204,7 @@ public class Poll implements Serializable{
             int numero = (t.total==0)? 0 : Math.round(((float)valores.get(i)/t.total)*100);
             eb.appendDescription(Constantes.POOL_EMOTES.get(i) + ": " + ((i==t.priPos)? ("**" + opcoes.get(i) + "**"):opcoes.get(i) )+ "\t[" + (numero) + "%]\n\n");
         }
-        eb.appendDescription(isAberto()? rb.getString("poll.state") : rb.getString("poll.end"));
+        eb.appendDescription(aberto()? rb.getString("poll.state") : rb.getString("poll.end"));
         if(t.pri == t.sec)
             eb.appendDescription(rb.getString("poll.vote.drawn"));
         else
@@ -262,19 +249,19 @@ public class Poll implements Serializable{
     }
 
 
-    public String getTitulo() {
+    public String titulo() {
         return titulo;
     }
 
-    public List<String> getOpcoes() {
+    public List<String> opcoes() {
         return opcoes;
     }
 
-    public List<Integer> getValores() {
+    public List<Integer> valores() {
         return valores;
     }
 
-    public String getCriadorId() {
+    public String criadorId() {
         return criadorId;
     }
 
@@ -305,11 +292,11 @@ public class Poll implements Serializable{
         }
     }
 
-    public HashMap<String, Integer> getUsuariosId() {
+    public HashMap<String, Integer> usuariosId() {
         return usuariosId;
     }
 
-    public LocalDateTime getDataLimite() {
+    public LocalDateTime dataLimite() {
         return dataLimite;
     }
 
@@ -317,11 +304,12 @@ public class Poll implements Serializable{
         this.dataLimite = dataLimite;
     }
 
-    public LocalDateTime getDataCriacao() {
+    public LocalDateTime dataCriacao() {
         return dataCriacao;
     }
 
-    public void setDataCriacao(LocalDateTime dataCriacao) {
+    public void dataCriacao(LocalDateTime dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
+    private record top(int pri,int priPos,int sec,int secPos,int total){};
 }

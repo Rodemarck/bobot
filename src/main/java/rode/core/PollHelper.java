@@ -65,8 +65,8 @@ public final class PollHelper {
                     return;
                 }
                 Poll poll = dp.guild().getPoll(dp.titulo());
-                if(!poll.isAberto()){
-                    helper.replyTemp(String.format(helper.text("helper.close"),poll.getTitulo()));
+                if(!poll.aberto()){
+                    helper.replyTemp(String.format(helper.text("helper.close"),poll.titulo()));
                     return;
                 }
                 function.apply(new DadosPoll(dp.titulo, dp.opcoes, dp.guild, dp.query, dp.poll, index));
@@ -95,9 +95,9 @@ public final class PollHelper {
             ModelGuild g = ModelGuild.fromMongo(doc);
             Poll poll = g.getPoll(titulo);
             System.out.println("poll = " + poll);
-            if(poll.getCriadorId().equals(event.id()))
+            if(poll.criadorId().equals(event.id()))
                 return true;
-            event.jda().retrieveUserById(poll.getCriadorId()).submit()
+            event.jda().retrieveUserById(poll.criadorId()).submit()
                     .thenCompose(u ->{
                         event.reply("pertence a " + u.getName());
                         return null;

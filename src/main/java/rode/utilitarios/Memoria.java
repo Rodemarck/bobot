@@ -39,7 +39,7 @@ public class Memoria {
     public static void update(ConfigGuid cg){
         configs.updateOne(new Document("id",cg.id()),new Document("$set",cg.toMongo()));
     }
-    public static void each(Consumer<ModelGuild> action) {
+    public static void eachPoll(Consumer<ModelGuild> action) {
         guilds.find().forEach(d->action.accept(ModelGuild.fromMongo(d)));
     }
 

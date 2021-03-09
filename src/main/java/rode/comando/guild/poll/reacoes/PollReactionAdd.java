@@ -24,7 +24,7 @@ public class PollReactionAdd extends ComandoGuildReacoes {
         log.debug("inicio");
         PollHelper.getPollFromEmote(args, hr,dp -> {
             log.debug("callback");
-            if(dp.poll().getOpcoes().size() > dp.index()){
+            if(dp.poll().opcoes().size() > dp.index()){
                 if(dp.poll().hasUser(hr.id())){
                     hr.mensagem().removeReaction(hr.emoji(), hr.getEvent().getUser()).queue(mm->{
                         int v = dp.poll().votouPara(hr.id());

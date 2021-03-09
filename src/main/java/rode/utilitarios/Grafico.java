@@ -1,6 +1,5 @@
 package rode.utilitarios;
 
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
@@ -14,7 +13,6 @@ import rode.model.Poll;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Grafico {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
@@ -27,7 +25,7 @@ public class Grafico {
 
 
         JFreeChart chart = ChartFactory.createRingChart(
-                poll.getTitulo(), pieDataset, false, false, false);
+                poll.titulo(), pieDataset, false, false, false);
 
         File f = new File(System.currentTimeMillis() + ".png");
         ChartUtilities.saveChartAsPNG(f, chart, 500, 350);

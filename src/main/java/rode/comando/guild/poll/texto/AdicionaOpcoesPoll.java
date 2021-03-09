@@ -36,14 +36,14 @@ public class AdicionaOpcoesPoll extends ComandoGuild {
                         return;
                     }
                 Poll poll = dp.guild().getPoll(dp.titulo());
-                if(!poll.isAberto()){
-                    hm.replyTemp(String.format(hm.text("opcao.exec.close"), poll.getTitulo()));
+                if(!poll.aberto()){
+                    hm.replyTemp(String.format(hm.text("opcao.exec.close"), poll.titulo()));
                     return;
                 }
 
                 poll.addOpcoes(dp.opcoes());
                 Memoria.guilds.updateOne(dp.query(),new Document("$set",dp.guild().toMongo()));
-                hm.reply(poll.me(hm.bundle()),message->PollHelper.addReaction(message, poll.getOpcoes().size()));
+                hm.reply(poll.me(hm.bundle()),message->PollHelper.addReaction(message, poll.opcoes().size()));
                 return;
             }
             hm.reply(String.format(hm.text("opcao.exec.404"),dp.titulo()));

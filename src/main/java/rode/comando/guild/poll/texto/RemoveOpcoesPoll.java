@@ -45,7 +45,7 @@ public class RemoveOpcoesPoll extends ComandoGuild {
                 Document d = dp.guild().toMongo();
                 Memoria.guilds.updateOne(dp.query(), new Document("$set",d));
                 hm.reply(poll.me(hm.bundle()), message->
-                    PollHelper.addReaction(message,poll.getOpcoes().size())
+                    PollHelper.addReaction(message,poll.opcoes().size())
                 );
                 return;
             }

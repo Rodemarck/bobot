@@ -3,6 +3,7 @@ package rode.model;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rode.utilitarios.Memoria;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class ModelGuild {
 
     public Poll getPoll(String titulo){
         for(Poll p:polls) {
-            if (p.getTitulo().equalsIgnoreCase(titulo)) {
+            if (p.titulo().equalsIgnoreCase(titulo)) {
                 return p;
             }
         }
@@ -70,5 +71,14 @@ public class ModelGuild {
                 ", id=" + id +
                 ", polls=" + polls +
                 '}';
+    }
+
+    public static void notifica(ModelGuild modelGuild) {
+        var lista = new LinkedList<Poll>();
+        for(var p:modelGuild.polls)
+            if(!p.aberto())
+                lista.add(p);
+        if(!lista.isEmpty())
+            Memoria.config(modelGuild.id);
     }
 }

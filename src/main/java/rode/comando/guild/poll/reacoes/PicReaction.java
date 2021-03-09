@@ -56,10 +56,10 @@ public class PicReaction {
                 return;
             }
             index = (index + n);
-            if(index >= dp.poll().getOpcoes().size())
+            if(index >= dp.poll().opcoes().size())
                 index = 0;
             else if (index < 0)
-                index = dp.poll().getOpcoes().size() - 1;
+                index = dp.poll().opcoes().size() - 1;
             hr.mensagem().editMessage(dp.poll().visualiza(index,hr.bundle())).submit();
         });
         final var emb = hr.mensagem().getEmbeds().get(0);

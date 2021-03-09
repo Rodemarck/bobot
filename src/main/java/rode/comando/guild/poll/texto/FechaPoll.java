@@ -20,7 +20,7 @@ public class FechaPoll extends ComandoGuild {
     public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         PollHelper.getPoll(args,hm,dp -> {
             if(dp.guild() != null){
-                if(!dp.poll().isAberto()){
+                if(!dp.poll().aberto()){
                     hm.replyTemp(String.format(hm.text("fecha.exec.already"),dp.titulo()));
                     return;
                 }

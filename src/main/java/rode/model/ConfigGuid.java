@@ -6,6 +6,8 @@ public class ConfigGuid {
     private String id;
     private String lingua;
     private String pais;
+    private String pollChanell;
+    private boolean mencao;
 
     public ConfigGuid(String id, String lingua, String pais) {
         this.id = id;

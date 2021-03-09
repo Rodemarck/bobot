@@ -22,7 +22,7 @@ public class VotarPoll extends ComandoGuild {
     public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         PollHelper.getPoll(args, hm, dp -> {
             if(dp.guild() != null){
-                if(!dp.poll().isAberto()){
+                if(!dp.poll().aberto()){
                     hm.replyTemp(hm.text("votarP.exec.close"));
                     return;
                 }
@@ -34,7 +34,7 @@ public class VotarPoll extends ComandoGuild {
                 }
                 if(Constantes.POOL_votos.contains(votos.getFirst().toLowerCase())){
                     int index = Constantes.POOL_votos.indexOf(votos.getFirst().toLowerCase());
-                    if(index < dp.poll().getOpcoes().size()){
+                    if(index < dp.poll().opcoes().size()){
                         if(dp.poll().hasUser(hm.getEvent().getAuthor().getId())){
                             int original = dp.poll().votouPara(hm.getEvent().getAuthor().getId());
                             if(index == original){

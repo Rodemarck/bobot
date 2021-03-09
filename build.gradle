@@ -5,6 +5,7 @@ plugins {
 }
 mainClassName  = 'rode.Main'
 project.targetCompatibility = 15
+targetCompatibility = 15
 
 task stage(dependsOn: ['build', 'clean','oi'])
 
@@ -17,7 +18,17 @@ tasks.register('sexo') {
 repositories {
     jcenter()
 }
+tasks.withType(JavaCompile) {
+    options.compilerArgs += "--enable-preview"
+}
 
+tasks.withType(Test) {
+    jvmArgs += "--enable-preview"
+}
+
+tasks.withType(JavaExec) {
+    jvmArgs += '--enable-preview'
+}
 dependencies {
     implementation 'net.dv8tion:JDA:4.2.0_223'
 

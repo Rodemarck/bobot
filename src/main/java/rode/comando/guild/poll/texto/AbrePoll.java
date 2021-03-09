@@ -36,7 +36,7 @@ public class AbrePoll extends ComandoGuild {
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 hm.reply("poll", message ->
                         message.editMessage(poll.me(hm.bundle())).submit()
-                                .thenCompose(message1 -> PollHelper.addReaction(message1,poll.getOpcoes().size()))
+                                .thenCompose(message1 -> PollHelper.addReaction(message1,poll.opcoes().size()))
                 );
                 return;
             }
@@ -63,7 +63,7 @@ public class AbrePoll extends ComandoGuild {
             final Poll  poll = new Poll(dp.titulo(),dp.opcoes(), hm.getEvent());
             hm.reply("poll", message ->
                     message.editMessage(poll.me(hm.bundle())).submit()
-                            .thenCompose(message1 -> PollHelper.addReaction(message1,poll.getOpcoes().size()))
+                            .thenCompose(message1 -> PollHelper.addReaction(message1,poll.opcoes().size()))
             );
             Document query = new Document("id",hm.guildId());
             Document doc = Memoria.guilds.find(query).first();

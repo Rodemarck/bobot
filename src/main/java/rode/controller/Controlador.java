@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.Main;
 import rode.core.EventLoop;
+import rode.core.EventLoop2;
 import rode.core.Executador;
 import rode.utilitarios.Constantes;
 
@@ -19,18 +20,18 @@ import java.time.LocalDateTime;
 
 public class Controlador implements EventListener {
     private static Logger log = LoggerFactory.getLogger(Main.class);
-    private static LocalDateTime ultimaMsg;
     private boolean pre(Message message) {
         return message.getContentRaw().startsWith(Constantes.PREFIXO);
     }
 
     public void onReady(@NotNull ReadyEvent event) {
-        ultimaMsg = LocalDateTime.now();
         event.getJDA().retrieveUserById(305090445283688450l).submit()
                 .thenCompose(user -> user.openPrivateChannel().submit())
                 .thenCompose(privateChannel -> privateChannel.sendMessage("olá...??").submit())
                 .thenCompose(m->m.addReaction(Constantes.emote("check")).submit())
-                .thenRunAsync(()->EventLoop.getInstance());
+                .thenRunAsync(()->{
+                    EventLoop2.getInstance(event.getJDA());
+                });
     }
 
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
