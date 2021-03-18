@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.ComandoGuildReacoes;
 import rode.core.Helper;
-import rode.core.IgnoraComando;
+import rode.core.Anotacoes.IgnoraComando;
 import rode.core.PollHelper;
 import rode.utilitarios.Memoria;
 

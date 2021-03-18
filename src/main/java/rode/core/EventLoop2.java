@@ -4,8 +4,6 @@ import net.dv8tion.jda.api.JDA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.aviso.Aviso;
-import rode.model.ModelGuild;
-import rode.model.Poll;
 import rode.model.maker.MensagemReacao;
 import rode.model.maker.MensagemTexto;
 import rode.utilitarios.Constantes;
@@ -30,9 +28,13 @@ public final class EventLoop2 implements Runnable{
     private EventLoop2(JDA jda){
         EventLoop2.jda = jda;
         run();
+        Executador.poolExecutor.submit(()->{
+            Memoria.eachConfig(cf->cf.avisos().forEach(EventLoop2::addAviso));
+        });
     }
 
     public static EventLoop2 getInstance(JDA j) {
+        log.info("instancia");
         if(instance == null)
             instance = new EventLoop2(j);
         return instance;
@@ -97,15 +99,16 @@ public final class EventLoop2 implements Runnable{
         }
         synchronized (eventos_avisos){
             log.debug("eventos_avisos = " + eventos_avisos.size());
-            eventos_avisos.removeIf(Aviso::expirado);
+            //eventos_avisos.removeIf(Aviso::expirado);
         }
     }
     public static void checaPolls(){
-        Executador.poolExecutor.submit(()->Memoria.eachPoll(ModelGuild::notifica));
+        Executador.poolExecutor.submit(()->Memoria.eachPoll(m->m.notifica(jda)));
     }
 
     @Override
     public void run() {
+        log.info("event Loop iniciado");
         var b = false;
         while (true){
             try{Thread.sleep(delay);}

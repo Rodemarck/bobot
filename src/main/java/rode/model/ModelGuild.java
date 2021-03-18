@@ -1,5 +1,6 @@
 package rode.model;
 
+import net.dv8tion.jda.api.JDA;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,12 +74,15 @@ public class ModelGuild {
                 '}';
     }
 
-    public static void notifica(ModelGuild modelGuild) {
+    public void notifica(JDA jda) {
         var lista = new LinkedList<Poll>();
-        for(var p:modelGuild.polls)
+        for(var p:polls)
             if(!p.aberto())
                 lista.add(p);
-        if(!lista.isEmpty())
-            Memoria.config(modelGuild.id);
+        if(!lista.isEmpty()) {
+            var c = Memoria.config(id);
+            var canal = jda.getTextChannelById(c.canalPoll());
+
+        }
     }
 }

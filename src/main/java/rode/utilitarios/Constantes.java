@@ -5,8 +5,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import rode.model.ConfigGuid;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class Constantes {
     public static final Dotenv env = Dotenv.load();
@@ -14,13 +14,26 @@ public class Constantes {
         put("check","✔");
         put("esquerda","⬅");
         put("direita","➡");
+        put("br","🇧🇷");
+        put("en","🇺🇸");
+        put("0","0️⃣");
+        put("1","1️⃣");
+        put("2","2️⃣");
+        put("3","3️⃣");
+        put("4","4️⃣");
+        put("5","5️⃣");
+        put("6","6️⃣");
+        put("7","7️⃣");
+        put("8","8️⃣");
+        put("9","9️⃣");
+        put("10","🔟");
+
     }};
     private static final HashMap<Locale,HashMap<String, EmbedBuilder>>BUILDERS = new HashMap<>();
     private static final HashMap<String, Locale> LOC = new HashMap<>();
     public final static String PREFIXO = "-";
-    public final static List<Long> EXCLUDE_CHAT = new ArrayList<>(Arrays.asList(484909251710550027l));
-    public static final List<String> POOL_EMOTES = new ArrayList<>(Arrays.asList("🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴", "🇵", "🇶", "🇷", "🇸", "🇹","✔","⬅","➡")) ;
-    public static final List<String> POOL_votos = new ArrayList<>(Arrays.asList("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","e","r","s","t","u","v","w","z","y"));
+    public static final List<String> POOL_EMOTES = new ArrayList<>(Arrays.asList("🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴", "🇵", "🇶", "🇷", "🇸", "🇹","✔","⬅","➡","🇧🇷","🇺🇸","0️⃣","1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟")) ;
+    public static final List<String> LETRAS = new ArrayList<>(Arrays.asList("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","e","r","s","t","u","v","w","z","y"));
     public static final Color[][] cores = new Color[][]{
             new Color[]{Color.decode("#FF0000") },
             new Color[]{Color.decode("#FF0000"), Color.decode("#00FFFF")},
@@ -42,7 +55,6 @@ public class Constantes {
             new Color[]{Color.decode("#FF0000"),Color.decode("#FF5500"),Color.decode("#FFAA00"),Color.decode("#FFFF00"),Color.decode("#AAFF00"),Color.decode("#55FF00"),Color.decode("#00FF00"),Color.decode("#00FF55"),Color.decode("#00FFAA"),Color.decode("#00FFFF"),Color.decode("#00AAFF"),Color.decode("#0055FF"),Color.decode("#0000FF"),Color.decode("#5500FF"),Color.decode("#AA00FF"),Color.decode("#FF00FF"),Color.decode("#FF00AA"),Color.decode("#FF0055")},
             new Color[]{Color.decode("#FF0000"),Color.decode("#FF5100"),Color.decode("#FFA100"),Color.decode("#FFF200"),Color.decode("#BCFF00"),Color.decode("#6BFF00"),Color.decode("#1BFF00"),Color.decode("#00FF36"),Color.decode("#00FF86"),Color.decode("#00FFD7"),Color.decode("#00D7FF"),Color.decode("#0086FF"),Color.decode("#0036FF"),Color.decode("#1B00FF"),Color.decode("#6B00FF"),Color.decode("#BC00FF"),Color.decode("#FF00F2"),Color.decode("#FF00A1"),Color.decode("#FF0051")}
     };
-
     public static String emote(String name) {
         return EMOTES.get(name);
     }
@@ -94,5 +106,4 @@ public class Constantes {
             }});
         }
     }
-
 }

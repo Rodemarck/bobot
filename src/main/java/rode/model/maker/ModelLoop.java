@@ -91,6 +91,6 @@ public abstract class ModelLoop {
 
     public void finaliza(){
         ativo(false);
-        //EventLoop2.checa();
+        EventLoop2.checa();
     }
 }

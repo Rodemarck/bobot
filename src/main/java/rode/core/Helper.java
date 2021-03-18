@@ -34,7 +34,11 @@ public abstract class Helper {
         return event.getJDA();
     }
 
-    protected Helper( GenericGuildMessageEvent event, Message message, String id, Member member, Locale locale) {
+    public GenericGuildMessageEvent event() {
+        return event;
+    }
+
+    protected Helper(GenericGuildMessageEvent event, Message message, String id, Member member, Locale locale) {
         this.event = event;
         this.message = message;
         this.id = id;

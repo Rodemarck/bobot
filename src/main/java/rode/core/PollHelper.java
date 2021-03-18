@@ -21,7 +21,7 @@ public final class PollHelper {
     private PollHelper(){}
     public static CompletionStage<Void> addReaction(Message m, int n){
         for(int i=0; i<n; i++){
-            m.addReaction(Constantes.POOL_EMOTES.get(i)).submit();
+            m.addReaction(Constantes.emotePoll(i)).submit();
         }
         return null;
     }
@@ -108,17 +108,17 @@ public final class PollHelper {
 
     public static void contaVoto(Helper.Reacao hr, int index) {
         hr.jda().retrieveUserById(hr.id()).queue(user->
-            hr.replyTemp(String.format(hr.text("helper.vote"),user.getName(),Constantes.POOL_votos.get(index)))
+            hr.replyTemp(String.format(hr.text("helper.vote"),user.getName(),Constantes.LETRAS.get(index)))
         );
     }
     public static void removeVoto(Helper.Reacao hr, int index) {
         hr.jda().retrieveUserById(hr.id()).queue(user->{
-            hr.replyTemp(String.format(hr.text("helper.remove"), user.getName(), Constantes.POOL_votos.get(index)));
+            hr.replyTemp(String.format(hr.text("helper.remove"), user.getName(), Constantes.LETRAS.get(index)));
         });
     }
 
     public static void jaVotou(Helper.Reacao hr, int index) {
-        hr.replyTemp(String.format(hr.text("helper.already"), hr.getEvent().getUser().getName(), Constantes.POOL_votos.get(index)));
+        hr.replyTemp(String.format(hr.text("helper.already"), hr.getEvent().getUser().getName(), Constantes.LETRAS.get(index)));
     }
 
     public static void reRender(Helper.Reacao hr,String tipo, DadosPoll dp) {

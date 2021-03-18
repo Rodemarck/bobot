@@ -37,7 +37,7 @@ public class Poll implements Serializable{
         else
             eb.appendDescription(opcoes.get(i));
         float numero = (t.total==0)? 0 : (((float)valores.get(i)/t.total)*100);
-        return eb.addField(rb.getString("poll.op"), Constantes.POOL_votos.get(i),true)
+        return eb.addField(rb.getString("poll.op"), Constantes.LETRAS.get(i),true)
                 .setFooter(String.format("""
                     %1$d/%2$d                %3$d %5$s [%4$.2f %%]
                     """, i,(opcoes.size()-1), valores.get(i), numero,rb.getString("poll.vote"))
@@ -90,7 +90,6 @@ public class Poll implements Serializable{
                 d.getString("dataCriacao") == null? null:LocalDateTime.parse(d.getString("dataCriacao")),
                 d.getString("dataLimite") == null? null:LocalDateTime.parse(d.getString("dataLimite"))
                     );
-
     }
     public Document toMongo() {
         return new Document()
@@ -202,7 +201,7 @@ public class Poll implements Serializable{
         eb.setTitle(titulo);
         for(int i=0; i<n;i++){
             int numero = (t.total==0)? 0 : Math.round(((float)valores.get(i)/t.total)*100);
-            eb.appendDescription(Constantes.POOL_EMOTES.get(i) + ": " + ((i==t.priPos)? ("**" + opcoes.get(i) + "**"):opcoes.get(i) )+ "\t[" + (numero) + "%]\n\n");
+            eb.appendDescription(Constantes.emotePoll(i) + ": " + ((i==t.priPos)? ("**" + opcoes.get(i) + "**"):opcoes.get(i) )+ "\t[" + (numero) + "%]\n\n");
         }
         eb.appendDescription(aberto()? rb.getString("poll.state") : rb.getString("poll.end"));
         if(t.pri == t.sec)
@@ -227,14 +226,14 @@ public class Poll implements Serializable{
         eb.appendDescription(rb.getString("poll.open"));
 
         if(dataLimite == null)
-            eb.appendDescription(String.format("**%s**\n",rb.getString("poll.yes")));
+            eb.appendDescription("**"+rb.getString("poll.yes")+"**");
         else{
             if(LocalDateTime.now().isBefore(dataLimite)){
-                eb.appendDescription(String.format("**%s**\n",rb.getString("poll.yes")));
+                eb.appendDescription("**"+rb.getString("poll.yes")+"**");
                 eb.appendDescription(rb.getString("poll.date.limit"));
             }
             else{
-                eb.appendDescription(String.format("**%s**\n",rb.getString("poll.no")));
+                eb.appendDescription("**"+rb.getString("poll.no")+"**");
                 eb.appendDescription(rb.getString("poll.date.close"));
             }
             eb.appendDescription(String.format(rb.getString("poll.date.format"),dataLimite.format(DateTimeFormatter.ofPattern("dd")), dataLimite.format(DateTimeFormatter.ofPattern("MMMM")),dataLimite.format(DateTimeFormatter.ofPattern("YYYY")),dataLimite.format(DateTimeFormatter.ofPattern("HH:mm"))));
@@ -311,5 +310,59 @@ public class Poll implements Serializable{
     public void dataCriacao(LocalDateTime dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
-    private record top(int pri,int priPos,int sec,int secPos,int total){};
+    private class top{
+        private int pri;
+        private int priPos;
+        private int sec;
+        private int secPos;
+        private int total;
+
+        public top(int pri, int priPos, int sec, int secPos, int total) {
+            this.pri = pri;
+            this.priPos = priPos;
+            this.sec = sec;
+            this.secPos = secPos;
+            this.total = total;
+        }
+
+        public int pri() {
+            return pri;
+        }
+
+        public void pri(int pri) {
+            this.pri = pri;
+        }
+
+        public int priPos() {
+            return priPos;
+        }
+
+        public void priPos(int priPos) {
+            this.priPos = priPos;
+        }
+
+        public int sec() {
+            return sec;
+        }
+
+        public void sec(int sec) {
+            this.sec = sec;
+        }
+
+        public int secPos() {
+            return secPos;
+        }
+
+        public void secPos(int secPos) {
+            this.secPos = secPos;
+        }
+
+        public int total() {
+            return total;
+        }
+
+        public void total(int total) {
+            this.total = total;
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import rode.core.Anotacoes.EComandoPoll;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
@@ -8,6 +9,7 @@ import rode.core.PollHelper;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
+@EComandoPoll
 public class Configuracoes extends ComandoGuild {
     public Configuracoes() {
         super("configuracao", null, "config","configuracao","configuração","def","definicoes","definições","configuracoes","configurações","settings");

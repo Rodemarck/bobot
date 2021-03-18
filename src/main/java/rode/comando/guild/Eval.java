@@ -2,6 +2,7 @@ package rode.comando.guild;
 
 import jdk.jshell.JShell;
 import net.dv8tion.jda.api.EmbedBuilder;
+import rode.core.Anotacoes.EcomandoGeral;
 import rode.core.ComandoGuild;
 import rode.core.EventLoop;
 import rode.core.Executador;
@@ -13,6 +14,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
+@EcomandoGeral
 public class Eval extends ComandoGuild {
     public static JShell shell;
     private static LocalDateTime time;

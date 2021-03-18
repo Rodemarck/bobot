@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rode.core.Anotacoes.EComandoPoll;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
@@ -20,6 +21,7 @@ import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@EComandoPoll
 public class SetDataPoll  extends ComandoGuild {
     private static Logger log = LoggerFactory.getLogger(SetDataPoll.class);
 

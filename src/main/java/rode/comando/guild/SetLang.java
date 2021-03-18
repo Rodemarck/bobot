@@ -4,10 +4,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rode.core.Anotacoes.EcomandoGeral;
 import rode.core.ComandoGuild;
 import rode.core.EventLoop2;
 import rode.core.Helper;
-import rode.model.ConfigGuid;
 import rode.model.maker.MensagemReacao;
 import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+@EcomandoGeral
 public class SetLang extends ComandoGuild {
     private static Logger log = LoggerFactory.getLogger(SetLang.class);
     public SetLang() {
@@ -50,11 +51,11 @@ public class SetLang extends ComandoGuild {
         public ConversaLingua(Helper hr) {
             super(hr, null, System.currentTimeMillis()+120000, Permission.ADMINISTRATOR, new HashMap<>());
             src(new HashMap<>(){{
-                put(Constantes.POOL_EMOTES.get(0), x->mudaIdioma(new ConfigGuid(guildId(),"pt","BR")));
-                put(Constantes.POOL_EMOTES.get(1),x->mudaIdioma(new ConfigGuid(guildId(), "en","US")));
+                put(Constantes.emote("br"), x->mudaIdioma(guildId(),"pt","BR"));
+                put(Constantes.emote("en"),x->mudaIdioma(guildId(), "en","US"));
             }});
-            mensagem().addReaction(Constantes.POOL_EMOTES.get(0)).submit();
-            mensagem().addReaction(Constantes.POOL_EMOTES.get(1)).submit();
+            mensagem().addReaction(Constantes.emote("br")).submit();
+            mensagem().addReaction(Constantes.emote("en")).submit();
             rb = hr.bundle();
             rerender(rb);
         }
@@ -68,15 +69,20 @@ public class SetLang extends ComandoGuild {
         public void rerender(ResourceBundle bundle) {
             var eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
             eb.setTitle(rb.getString("lingua.titulo"));
-            eb.appendDescription(String.format("%s : %s",Constantes.POOL_EMOTES.get(0) ,rb.getString("lingua.br")));
-            eb.appendDescription(String.format("%s : %s",Constantes.POOL_EMOTES.get(1),rb.getString("lingua.us")));
+            eb.appendDescription(rb.getString("lingua.br"));
+            eb.appendDescription(rb.getString("lingua.us"));
             mensagem().editMessage(eb.build()).submit();
         }
-        private void mudaIdioma(ConfigGuid cg){
-            var l = new Locale(cg.lingua(), cg.pais());
-            rb = ResourceBundle.getBundle("messages", l);
-            Constantes.loc(guildId(),l);
-            Memoria.update(cg);
+        private void mudaIdioma(String id, String lingua, String pais){
+            Memoria.usandoConfig(id,cg->{
+                if(cg.lingua().equals(lingua) && cg.pais().equals(pais))
+                    return;
+                cg.lingua(lingua);
+                cg.pais(pais);
+                var l = new Locale(lingua, pais);
+                rb = ResourceBundle.getBundle("messages", l);
+                Constantes.loc(guildId(),l);
+            });
         }
     }
 }

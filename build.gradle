@@ -4,20 +4,12 @@ plugins {
     id'com.github.johnrengelman.shadow' version '6.0.0'
 }
 mainClassName  = 'rode.Main'
-project.targetCompatibility = 15
-targetCompatibility = 15
 
-task stage(dependsOn: ['build', 'clean','oi'])
+task stage(dependsOn: ['build', 'clean'])
 
-tasks.register('sexo') {
-    doLast {
-        def a = 'oi'
-        println a
-    }
-}
 repositories {
     jcenter()
-}
+}/*
 tasks.withType(JavaCompile) {
     options.compilerArgs += "--enable-preview"
 }
@@ -28,7 +20,7 @@ tasks.withType(Test) {
 
 tasks.withType(JavaExec) {
     jvmArgs += '--enable-preview'
-}
+}*/
 dependencies {
     implementation 'net.dv8tion:JDA:4.2.0_223'
 

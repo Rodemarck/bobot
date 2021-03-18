@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import rode.core.ComandoGuild;
 import rode.core.EventLoop;
 import rode.core.Helper;
-import rode.core.IgnoraComando;
+import rode.core.Anotacoes.IgnoraComando;
 import rode.utilitarios.Constantes;
 
 import java.util.LinkedList;

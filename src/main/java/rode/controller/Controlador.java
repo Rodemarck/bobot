@@ -11,12 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.Main;
-import rode.core.EventLoop;
 import rode.core.EventLoop2;
 import rode.core.Executador;
 import rode.utilitarios.Constantes;
-
-import java.time.LocalDateTime;
 
 public class Controlador implements EventListener {
     private static Logger log = LoggerFactory.getLogger(Main.class);
@@ -29,7 +26,7 @@ public class Controlador implements EventListener {
                 .thenCompose(user -> user.openPrivateChannel().submit())
                 .thenCompose(privateChannel -> privateChannel.sendMessage("olá...??").submit())
                 .thenCompose(m->m.addReaction(Constantes.emote("check")).submit())
-                .thenRunAsync(()->{
+                .thenRun(()->{
                     EventLoop2.getInstance(event.getJDA());
                 });
     }
@@ -67,9 +64,9 @@ public class Controlador implements EventListener {
 
     @Override
     public void onEvent(@NotNull GenericEvent event) {
-        if(event instanceof GuildMessageReceivedEvent e) onGuildMessageReceived(e);
-        else if(event instanceof GuildMessageReactionAddEvent e) onGuildMessageReactionAdd(e);
-        else if(event instanceof GuildMessageReactionRemoveEvent e) onGuildMessageReactionRemove(e);
-        else if(event instanceof ReadyEvent e) onReady(e);
+        if(event instanceof GuildMessageReceivedEvent) onGuildMessageReceived((GuildMessageReceivedEvent)event);
+        else if(event instanceof GuildMessageReactionAddEvent) onGuildMessageReactionAdd((GuildMessageReactionAddEvent)event);
+        else if(event instanceof GuildMessageReactionRemoveEvent) onGuildMessageReactionRemove((GuildMessageReactionRemoveEvent)event);
+        else if(event instanceof ReadyEvent) onReady((ReadyEvent)event);
     }
 }

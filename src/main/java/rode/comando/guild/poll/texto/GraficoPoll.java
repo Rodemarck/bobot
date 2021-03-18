@@ -1,6 +1,7 @@
 package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import rode.core.Anotacoes.EComandoPoll;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
@@ -11,6 +12,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
+@EComandoPoll
 public class GraficoPoll extends ComandoGuild {
     public GraficoPoll() {
         super("grafico", null, "grafico","grpah","gpoll");

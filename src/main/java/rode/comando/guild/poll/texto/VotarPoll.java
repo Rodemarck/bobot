@@ -2,6 +2,7 @@ package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.bson.Document;
+import rode.core.Anotacoes.EComandoPoll;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
@@ -12,7 +13,7 @@ import rode.utilitarios.Regex;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-
+@EComandoPoll
 public class VotarPoll extends ComandoGuild {
     public VotarPoll() {
         super("votar", null, "v","votar", "vote");
@@ -32,8 +33,8 @@ public class VotarPoll extends ComandoGuild {
                     hm.replyTemp(hm.text("votarP.exec.lost"));
                     return;
                 }
-                if(Constantes.POOL_votos.contains(votos.getFirst().toLowerCase())){
-                    int index = Constantes.POOL_votos.indexOf(votos.getFirst().toLowerCase());
+                if(Constantes.LETRAS.contains(votos.getFirst().toLowerCase())){
+                    int index = Constantes.LETRAS.indexOf(votos.getFirst().toLowerCase());
                     if(index < dp.poll().opcoes().size()){
                         if(dp.poll().hasUser(hm.getEvent().getAuthor().getId())){
                             int original = dp.poll().votouPara(hm.getEvent().getAuthor().getId());
@@ -45,7 +46,7 @@ public class VotarPoll extends ComandoGuild {
                                 return;
                             }
                             else{
-                                hm.replyTemp(String.format(hm.text("votarP.exec.already"), hm.getEvent().getAuthor().getName(), Constantes.POOL_votos.get(dp.poll().votouPara(hm.id()))));
+                                hm.replyTemp(String.format(hm.text("votarP.exec.already"), hm.getEvent().getAuthor().getName(), Constantes.LETRAS.get(dp.poll().votouPara(hm.id()))));
                             }
                         }
                         else{

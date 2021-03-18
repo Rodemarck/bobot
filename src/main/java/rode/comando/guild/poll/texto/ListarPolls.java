@@ -2,6 +2,7 @@ package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.bson.Document;
+import rode.core.Anotacoes.EComandoPoll;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.model.ModelGuild;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
+@EComandoPoll
 public class ListarPolls extends ComandoGuild {
 
     public ListarPolls() {

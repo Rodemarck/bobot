@@ -2,12 +2,14 @@ package rode.comando.guild;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import rode.core.Anotacoes.EcomandoGeral;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
+@EcomandoGeral
 public class ApagaMensagem extends ComandoGuild {
     public ApagaMensagem() {
         super("apagaMensagem", Permission.ADMINISTRATOR, "apagaMensagem");

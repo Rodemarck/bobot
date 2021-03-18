@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.Permission;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rode.core.Anotacoes.EComandoPoll;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
+@EComandoPoll
 public class RemoveOpcoesPoll extends ComandoGuild {
     private static Logger log = LoggerFactory.getLogger(RemoveOpcoesPoll.class);
     public RemoveOpcoesPoll() {

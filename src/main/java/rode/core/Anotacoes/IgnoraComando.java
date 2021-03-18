@@ -1,4 +1,4 @@
-package rode.core;
+package rode.core.Anotacoes;
 
 public @interface IgnoraComando {
 }

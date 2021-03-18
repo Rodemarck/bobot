@@ -2,6 +2,7 @@ package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import rode.core.Anotacoes.EComandoPoll;
 import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
@@ -11,6 +12,7 @@ import rode.utilitarios.Memoria;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
+@EComandoPoll
 public class FechaPoll extends ComandoGuild {
     public FechaPoll() {
         super("fecha", Permission.ADMINISTRATOR, "fecha","close");

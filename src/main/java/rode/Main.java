@@ -10,10 +10,10 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.controller.Controlador;
+import rode.core.Anotacoes.IgnoraComando;
 import rode.core.ComandoGuild;
 import rode.core.ComandoGuildReacoes;
 import rode.core.Executador;
-import rode.core.IgnoraComando;
 import rode.utilitarios.Constantes;
 
 import javax.security.auth.login.LoginException;
@@ -23,21 +23,19 @@ import java.util.Locale;
 
 public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
-    public static void main(String[] args) {
+    public static void main(String[] args){
         var loc = new Locale("pt", "BR");
         Locale.setDefault(loc);
         jda();
-        //var rb = ResourceBundle.getBundle("messages",loc);
-        //System.out.println(rb.getString("corno"));
     }
+
 
 
     private static void jda(){
         log.debug("logando");
-
         try{
             inicializaComandos();
-            JDABuilder.createLight(Constantes.env.get("token_teste"))
+            JDABuilder.createLight(Constantes.env.get("token"))
                     .setActivity(Activity.playing("-help"))
                     .setStatus(OnlineStatus.ONLINE)
                     .addEventListeners(new Controlador())
@@ -50,6 +48,7 @@ public class Main {
     }
     private static void inicializaComandos() {
         var reflections = new Reflections("rode.comando.guild");
+
         var ignoreList = reflections.getTypesAnnotatedWith(IgnoraComando.class);
         reflections.getSubTypesOf(ComandoGuild.class)
                 .stream().filter(aClass -> !ignoreList.contains(aClass))

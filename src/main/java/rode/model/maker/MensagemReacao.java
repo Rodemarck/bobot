@@ -1,10 +1,12 @@
 package rode.model.maker;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import rode.core.EventLoop2;
 import rode.core.Helper;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -15,9 +17,10 @@ public abstract class MensagemReacao extends ModelLoop{
     private String guildId;
     private String pic;
     private String nome;
+
     public MensagemReacao(Helper hr, String membro, long fim, Permission permissao, HashMap<String, Consumer<Helper.Reacao>> src) {
-        super(TipoLoop.G_MENSAGEM_REACAO, EventLoop2.geraId(), membro, System.currentTimeMillis(), fim, 50,permissao);
-        this.mensagem = hr.mensagem();
+        super(TipoLoop.G_MENSAGEM_REACAO, EventLoop2.geraId(), membro, System.currentTimeMillis(), fim, 20000,permissao);
+        this.mensagem =hr.event().getChannel().sendMessage(new EmbedBuilder().setColor(Color.decode("#C8A2C8")).setTitle(hr.text("embed.load")).build()).complete();
         this.src = src;
         this.guildId = hr.guildId();
         this.pic = hr.membro().getUser().getAvatarUrl();
@@ -87,16 +90,19 @@ public abstract class MensagemReacao extends ModelLoop{
     private void render(ResourceBundle rb){
         acao();
         if(ativo()){
-            fim(System.currentTimeMillis()+20000);
+            fim(System.currentTimeMillis()+delay());
             rerender(rb);
         }else
             finaliza();
     }
 
     public static boolean expirado(MensagemReacao mensagemReacao) {
+        if(!mensagemReacao.ativo())
+            return true;
         var b = System.currentTimeMillis() > mensagemReacao.fim();
-        if(b)
+        if(b) {
             mensagemReacao.mensagem().delete().submit();
+        }
         return b;
     }
 }

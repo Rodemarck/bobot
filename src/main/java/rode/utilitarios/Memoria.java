@@ -46,12 +46,20 @@ public class Memoria {
     public static ModelGuild guild(String guildId) {
         return  ModelGuild.fromMongo(guilds.find(new Document("id",guildId)).first());
     }
-
+    public static void usandoConfig(String id, Consumer<ConfigGuid> f){
+        var c = config(id);
+        f.accept(c);
+        update(c);
+    }
     public static ConfigGuid config(String id) {
         return ConfigGuid.fromMongo(configs.find(new Document("id",id)).first());
     }
 
     public static void insert(ConfigGuid config) {
         configs.insertOne(config.toMongo());
+    }
+
+    public static void eachConfig(Consumer<ConfigGuid> action) {
+        guilds.find().forEach(d->action.accept(ConfigGuid.fromMongo(d)));
     }
 }
