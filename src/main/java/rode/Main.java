@@ -4,8 +4,6 @@ package rode;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.utils.Compression;
-import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,27 +16,23 @@ import rode.utilitarios.Constantes;
 
 import javax.security.auth.login.LoginException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Locale;
 
 
 public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args){
-        var loc = new Locale("pt", "BR");
-        Locale.setDefault(loc);
         jda();
+
     }
 
     private static void jda(){
         log.debug("logando");
         try{
             inicializaComandos();
-            JDABuilder.createLight(Constantes.env.get("token"))
+            JDABuilder.createLight(Constantes.env.get("token_teste"))
                     .setActivity(Activity.playing("-help"))
                     .setStatus(OnlineStatus.ONLINE)
                     .addEventListeners(new Controlador())
-                    .setMemberCachePolicy(MemberCachePolicy.NONE)
-                    .setCompression(Compression.ZLIB)
                     .build();
         } catch (LoginException e) {
             e.printStackTrace();

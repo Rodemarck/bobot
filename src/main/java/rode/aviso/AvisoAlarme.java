@@ -1,11 +1,10 @@
 package rode.aviso;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import org.bson.Document;
+import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 
-import java.awt.*;
 import java.time.LocalDateTime;
 
 public class AvisoAlarme extends Aviso{
@@ -37,11 +36,11 @@ public class AvisoAlarme extends Aviso{
 
     @Override
     public boolean acao(JDA jda) {
-        var eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"))
+        var eb = Constantes.builder()
                 .setTitle(titulo())
                 .addField("criado por","<@" + id() + ">",true)
                 .appendDescription(mensagem());
-        jda.getTextChannelById(canal()).sendMessage(eb.build()).submit();
+        jda.getTextChannelById(canal()).sendMessage(eb.build()).queue();
         horario(horario().plusSeconds(espasamento));
         --repeticao;
         Memoria.usandoConfig(guildId(),conf->{

@@ -3,13 +3,17 @@ plugins {
     id'application'
     id'com.github.johnrengelman.shadow' version '6.0.0'
 }
+sourceCompatibility = 11
+targetCompatibility = 11
 mainClassName  = 'rode.Main'
 
 task stage(dependsOn: ['build', 'clean'])
 
 repositories {
     jcenter()
-}/*
+}
+
+/*
 tasks.withType(JavaCompile) {
     options.compilerArgs += "--enable-preview"
 }
@@ -22,7 +26,7 @@ tasks.withType(JavaExec) {
     jvmArgs += '--enable-preview'
 }*/
 dependencies {
-    implementation 'net.dv8tion:JDA:4.2.0_223'
+    implementation 'net.dv8tion:JDA:4.2.0_242'
 
     // https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver
     implementation 'org.mongodb:mongodb-driver-legacy:4.0.5'

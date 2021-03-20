@@ -7,9 +7,9 @@ import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.model.ModelGuild;
 import rode.model.Poll;
+import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
@@ -27,7 +27,7 @@ public class ListarPolls extends ComandoGuild {
         if(doc != null){
             ModelGuild g = ModelGuild.fromMongo(doc);
 
-            EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
+            EmbedBuilder eb = Constantes.builder();
             eb.setTitle("polls abertas");
             for(Poll p: g.getPolls()) {
                 String t = p.titulo();

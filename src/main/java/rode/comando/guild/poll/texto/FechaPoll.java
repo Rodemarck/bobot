@@ -28,7 +28,7 @@ public class FechaPoll extends ComandoGuild {
                 }
                 dp.poll().fecha();
                 Memoria.update(dp);
-                hm.reply(String.format(hm.text("fecha.exec.close"),dp.titulo()), message -> message.addReaction(Constantes.emote("check")).submit());
+                hm.reply(String.format(hm.text("fecha.exec.close"),dp.titulo()), message -> message.addReaction(Constantes.emote("check")).queue());
             }
         });
     }

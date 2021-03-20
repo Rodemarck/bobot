@@ -1,22 +1,12 @@
 package rode.comando.guild;
 
-import jdk.jshell.JShell;
-import net.dv8tion.jda.api.EmbedBuilder;
 import rode.core.Anotacoes.EcomandoGeral;
-import rode.core.ComandoGuild;
-import rode.core.EventLoop;
-import rode.core.Executador;
-import rode.core.Helper;
-import rode.model.ModelMensagem;
-
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.LinkedList;
-import java.util.ResourceBundle;
+import rode.core.Anotacoes.IgnoraComando;
 
 @EcomandoGeral
-public class Eval extends ComandoGuild {
-    public static JShell shell;
+@IgnoraComando
+public class Eval /*extends ComandoGuild */{
+    /*public static JShell shell;
     private static LocalDateTime time;
     public Eval() {
         super("eval", null, "eval", "shell");
@@ -101,5 +91,5 @@ public class Eval extends ComandoGuild {
         me.appendDescription(rb.getString("eval.help.ex"));
     }
 
-
+*/
 }

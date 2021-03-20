@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.JDA;
 import rode.aviso.Aviso;
 import rode.core.Anotacoes.EcomandoGeral;
 import rode.core.ComandoGuild;
-import rode.core.EventLoop2;
+import rode.core.EventLoop;
 import rode.core.Helper;
 
 import java.time.LocalDateTime;
@@ -30,11 +30,11 @@ public class Sexo extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
-        EventLoop2.addAviso(new Aviso(hm.getEvent().getChannel().getId(), LocalDateTime.now().plusSeconds(20)) {
+        EventLoop.addAviso(new Aviso(hm.getEvent().getChannel().getId(), LocalDateTime.now().plusSeconds(20)) {
             @Override
             public boolean acao(JDA jda) {
                 jda.getTextChannelById(canal())
-                .sendMessage("viado do caralho").submit();
+                .sendMessage("viado do caralho").queue();
                 return true;
             }
         });

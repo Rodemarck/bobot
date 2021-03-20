@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.Main;
-import rode.core.EventLoop2;
+import rode.core.EventLoop;
 import rode.core.Executador;
 import rode.utilitarios.Constantes;
 
@@ -24,42 +24,42 @@ public class Controlador implements EventListener {
     public void onReady(@NotNull ReadyEvent event) {
         event.getJDA().retrieveUserById(305090445283688450l).submit()
                 .thenCompose(user -> user.openPrivateChannel().submit())
-                .thenCompose(privateChannel -> privateChannel.sendMessage("olá...??").submit())
-                .thenCompose(m->m.addReaction(Constantes.emote("check")).submit())
-                .thenRun(()->{
-                    EventLoop2.getInstance(event.getJDA());
-                });
+                .thenCompose(privateChannel -> privateChannel.sendMessage("olá...?? agr é sério...").submit())
+                .thenCompose(m->m.addReaction(Constantes.emote("check")).submit());
+        Executador.poolExecutor.submit(()->{
+            EventLoop.getInstance(event.getJDA());
+        });
     }
 
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-        if (!event.getAuthor().isBot() ) {
+        if (!event.getAuthor().isBot()) {
             if (pre(event.getMessage()))
-                Executador.interpreta(event);
+                Executador.interpreta(event,event.getAuthor());
             else
                 Executador.checa(event);
         }
     }
 
     public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
-        event.getJDA().retrieveUserById(event.getUserId()).submit()
-            .thenCompose(user -> {
-                if(!event.getMember().getUser().isBot())
-                    Executador.interpreta(event);
-                return null;
+        if(event.getUser() != null) {
+            if (!event.getUser().isBot())
+                Executador.interpreta(event, event.getUser());
+        }else
+            event.getJDA().retrieveUserById(event.getUserIdLong()).queue(u->{
+                if (!u.isBot())
+                    Executador.interpreta(event, u);
             });
-    }
+   }
 
     public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent event) {
-        if(event.getMember() == null){
-            event.getJDA().retrieveUserById(event.getUserId()).submit()
-                    .thenCompose(user -> {
-                        if(!event.getMember().getUser().isBot())
-                            Executador.interpreta(event);
-                        return null;
-                    });
-        }
-        else if(!event.getMember().getUser().isBot())
-            Executador.interpreta(event);
+        if(event.getUser() != null) {
+            if (!event.getUser().isBot())
+                Executador.interpreta(event, event.getUser());
+        }else
+            event.getJDA().retrieveUserById(event.getUserIdLong()).queue(u->{
+                if (!u.isBot())
+                    Executador.interpreta(event, u);
+            });
     }
 
     @Override
@@ -68,5 +68,6 @@ public class Controlador implements EventListener {
         else if(event instanceof GuildMessageReactionAddEvent) onGuildMessageReactionAdd((GuildMessageReactionAddEvent)event);
         else if(event instanceof GuildMessageReactionRemoveEvent) onGuildMessageReactionRemove((GuildMessageReactionRemoveEvent)event);
         else if(event instanceof ReadyEvent) onReady((ReadyEvent)event);
+
     }
 }

@@ -4,12 +4,12 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import org.reflections.Reflections;
 import rode.core.Anotacoes.EComandoPoll;
 import rode.core.Anotacoes.EcomandoGeral;
+import rode.core.Anotacoes.IgnoraComando;
 import rode.core.ComandoGuild;
 import rode.core.Executador;
 import rode.core.Helper;
 import rode.utilitarios.Constantes;
 
-import java.awt.*;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -29,11 +29,12 @@ public class Tutorial extends ComandoGuild {
         if(args.isEmpty()){
             if(tutorial.get(loc) == null){
 
-                var tuto = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
+                var tuto = Constantes.builder();
                 tuto.setTitle(hm.text("tutorial.title"),"https://cdn.discordapp.com/avatars/305090445283688450/b1af2bade4b94a08e31091db153c4aae.png");
                 tuto.appendDescription(hm.text("tutorial.descri"));
                 tuto.appendDescription(hm.text("tutorial.comando.poll"));
                 var reflections = new Reflections("rode.comando.guild");
+
                 reflexao(reflections,tuto,hm.bundle(),EComandoPoll.class);
                 tuto.appendDescription(hm.text("tutorial.comando.geral"));
                 reflexao(reflections,tuto,hm.bundle(),EcomandoGeral.class);
@@ -48,7 +49,7 @@ public class Tutorial extends ComandoGuild {
                 hm.reply(b);
                 return;
             }
-            var eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
+            var eb = Constantes.builder();
             eb.setTitle(String.format(hm.text("tutorial.cmd.title"),args.getFirst()));
             Executador.COMANDOS_GUILD.get(Executador.NOME_COMANDOS_GUILD.get(args.getFirst())).helpExtensive(eb, hm.bundle());
             Constantes.addBuilder(loc,args.getFirst(),eb);
@@ -58,7 +59,8 @@ public class Tutorial extends ComandoGuild {
         hm.reply(String.format(hm.text("tutorial.cmd.404"), args.getFirst() ));
     }
     private void reflexao(Reflections reflexao,EmbedBuilder eb,ResourceBundle rb,Class<? extends Annotation> a){
-        reflexao.getTypesAnnotatedWith(a).stream().sorted(Comparator.comparing(Class::getName)).forEach(c->{
+        var ignoreList = reflexao.getTypesAnnotatedWith(IgnoraComando.class);
+        reflexao.getTypesAnnotatedWith(a).stream().sorted(Comparator.comparing(Class::getName)).filter(aClass -> !ignoreList.contains(aClass)).forEach(c->{
             try {
                 c.getMethod("help", EmbedBuilder.class, ResourceBundle.class).invoke(c.getConstructor().newInstance(),eb,rb);
             } catch (NoSuchMethodException|InstantiationException|IllegalAccessException|InvocationTargetException e) {

@@ -114,31 +114,6 @@ public class CampoMinado {
         return finalizado;
     }
 
-    public static class Ponto{
-        private int x;
-        private int y;
-
-        public Ponto(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public int x() {
-            return x;
-        }
-
-        public void x(int x) {
-            this.x = x;
-        }
-
-        public int y() {
-            return y;
-        }
-
-        public void y(int y) {
-            this.y = y;
-        }
-    }
     private int round(int i) {
         return Math.min(Math.max(0,i), 9);
     }

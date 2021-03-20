@@ -2,8 +2,8 @@
 <configuration info="true">
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%blue(%d{HH:mm:ss.SSS}):: %cyan(%-20.-20logger{1})  [%green(%-4.-6level)]  %red(%msg) %n</pattern>
+        <encoder><!-- %blue(%d{HH:mm:ss.SSS}):: %cyan(%-20.-20logger{1})  [%green(%-4.-6level)]  %red(%msg) %n!-->
+            <pattern>%d{HH:mm:ss.SSS}:: %-20.-20logger{1}  [%-4.-6level] %msg %n</pattern>
         </encoder>
     </appender>
     <logger name="rode.*" level="ALL"/>
@@ -19,6 +19,7 @@
     <logger name="net.dv8tion.jda.internal.entities.EntityBuilder" level="INFO"/>
     <logger name="net.dv8tion.jda.api.JDA" level="INFO"/>
     <logger name="org.reflections.Reflections" level="INFO"/>
+    <logger name="rode.core.EventLoop" level="INFO"/>
 
     <root level="ALL">
         <appender-ref ref="STDOUT" />

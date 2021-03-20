@@ -1,26 +1,28 @@
 package rode.model.maker;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
-import rode.core.EventLoop2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import rode.core.EventLoop;
 import rode.core.Helper;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 public abstract class MensagemReacao extends ModelLoop{
+    private static Logger log = LoggerFactory.getLogger(MensagemReacao.class);
     private Message mensagem;
     private HashMap<String, Consumer<Helper.Reacao>> src;
     private String guildId;
     private String pic;
     private String nome;
 
-    public MensagemReacao(Helper hr, String membro, long fim, Permission permissao, HashMap<String, Consumer<Helper.Reacao>> src) {
-        super(TipoLoop.G_MENSAGEM_REACAO, EventLoop2.geraId(), membro, System.currentTimeMillis(), fim, 20000,permissao);
-        this.mensagem =hr.event().getChannel().sendMessage(new EmbedBuilder().setColor(Color.decode("#C8A2C8")).setTitle(hr.text("embed.load")).build()).complete();
+    public MensagemReacao(Helper hr,Message msg, String membro, long fim, Permission permissao, HashMap<String, Consumer<Helper.Reacao>> src) {
+        super(TipoLoop.G_MENSAGEM_REACAO, EventLoop.geraId(), membro, System.currentTimeMillis(), fim, 20000,permissao);
+        log.info("MensagemReacao<Init>");
+        this.mensagem =msg;//hr.event().getChannel().sendMessage(Constantes.builder().setTitle(hr.text("embed.load")).build()).complete();
         this.src = src;
         this.guildId = hr.guildId();
         this.pic = hr.membro().getUser().getAvatarUrl();
@@ -39,7 +41,7 @@ public abstract class MensagemReacao extends ModelLoop{
                 }
 
             }
-            helper.mensagem().removeReaction(helper.emoji(),helper.getEvent().getUser()).submit();
+            helper.mensagem().removeReaction(helper.emoji(),helper.membro().getUser()).queue();
         }
     }
 
@@ -101,7 +103,7 @@ public abstract class MensagemReacao extends ModelLoop{
             return true;
         var b = System.currentTimeMillis() > mensagemReacao.fim();
         if(b) {
-            mensagemReacao.mensagem().delete().submit();
+            mensagemReacao.mensagem().delete().queue();
         }
         return b;
     }

@@ -21,7 +21,7 @@ public final class PollHelper {
     private PollHelper(){}
     public static CompletionStage<Void> addReaction(Message m, int n){
         for(int i=0; i<n; i++){
-            m.addReaction(Constantes.emotePoll(i)).submit();
+            m.addReaction(Constantes.emotePoll(i)).queue();
         }
         return null;
     }
@@ -74,8 +74,8 @@ public final class PollHelper {
         }
         else
             helper.reply(String.format(helper.text("helper.troll"),helper.getEvent().getUser().getName(),helper.emoji()), message->
-                    message.delete().submitAfter(15, TimeUnit.SECONDS)
-                    .thenRunAsync(()->helper.mensagem().clearReactions(helper.emoji()).submit())
+                    message.delete().queueAfter(15, TimeUnit.SECONDS,x->
+                            helper.mensagem().clearReactions(helper.emoji()).queue())
             );
     }
     public static boolean livreSiMesmo(LinkedList<String> args, Helper.Reacao event) throws IOException {
@@ -97,11 +97,9 @@ public final class PollHelper {
             System.out.println("poll = " + poll);
             if(poll.criadorId().equals(event.id()))
                 return true;
-            event.jda().retrieveUserById(poll.criadorId()).submit()
-                    .thenCompose(u ->{
-                        event.reply("pertence a " + u.getName());
-                        return null;
-                    });
+            event.jda().retrieveUserById(poll.criadorId()).queue(u ->{
+                event.reply("pertence a " + u.getName());
+            });
         }
         return false;
     }
@@ -123,12 +121,12 @@ public final class PollHelper {
 
     public static void reRender(Helper.Reacao hr,String tipo, DadosPoll dp) {
         if(tipo.contains("poll"))
-            hr.mensagem().editMessage(dp.poll().me(hr.bundle)).submit();
+            hr.mensagem().editMessage(dp.poll().me(hr.bundle)).queue();
         else if(tipo.contains("pic")){
             final var emb = hr.mensagem().getEmbeds().get(0);
             LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
             int i = Integer.parseInt(param.getFirst());
-            hr.mensagem().editMessage(dp.poll().visualiza(i,hr.bundle)).submit();
+            hr.mensagem().editMessage(dp.poll().visualiza(i,hr.bundle)).queue();
         }
     }
 

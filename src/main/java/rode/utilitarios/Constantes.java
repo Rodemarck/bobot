@@ -106,4 +106,10 @@ public class Constantes {
             }});
         }
     }
+    public static EmbedBuilder builder(ResourceBundle rb){
+        return builder().setTitle(rb.getString("embed.load"));
+    }
+    public static EmbedBuilder builder(){
+        return new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
+    }
 }

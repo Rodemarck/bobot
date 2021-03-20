@@ -39,7 +39,7 @@ public class VotarPoll extends ComandoGuild {
                         if(dp.poll().hasUser(hm.getEvent().getAuthor().getId())){
                             int original = dp.poll().votouPara(hm.getEvent().getAuthor().getId());
                             if(index == original){
-                                hm.mensagem().delete().submit();
+                                hm.mensagem().delete().queue();
                                 dp.poll().rem(index,hm.id());
                                 hm.replyTemp(String.format(hm.text("votarP.exec.remove"),hm.getEvent().getAuthor().getName()));
                                 Memoria.guilds.updateOne(dp.query(), new Document("$set", dp.guild().toMongo()));
@@ -50,7 +50,7 @@ public class VotarPoll extends ComandoGuild {
                             }
                         }
                         else{
-                            hm.mensagem().delete().submit();
+                            hm.mensagem().delete().queue();
                             dp.poll().add(index, hm.id());
                             hm.replyTemp(String.format(hm.text("votarP.exec.vote"), hm.getEvent().getAuthor().getName()));
                             Memoria.guilds.updateOne(dp.query(), new Document("$set", dp.guild().toMongo()));

@@ -21,28 +21,23 @@ public class ApagaMensagem extends ComandoGuild {
         if(args.size() == 0)
             return;
         if(args.size() == 1) {
-            hm.getEvent().getChannel().retrieveMessageById(args.getFirst()).submit()
-                    .thenCompose(message -> {
-                        if (message.getAuthor().getId().equals(hm.jda().getSelfUser().getId()))
-                            return message.delete().submit()
-                                    .thenCompose(u -> hm.mensagem().delete().submit());
-                        else
-                            hm.replyTemp(hm.text("apaga.exec"));
-                        return null;
-                    });
-            return;
+            hm.getEvent().getChannel().retrieveMessageById(args.getFirst()).queue(message -> {
+                if (message.getAuthor().getId().equals(hm.jda().getSelfUser().getId()))
+                    message.delete().queue(u ->
+                            hm.mensagem().delete().queue()
+                    );
+                else
+                    hm.replyTemp(hm.text("apaga.exec"));
+            });
         }
         if(args.size() == 2){
             hm.getEvent().getGuild().getTextChannelById(args.getFirst())
-                    .retrieveMessageById(args.getLast()).submit()
-                    .thenCompose(message -> {
-                        if (message.getAuthor().getId().equals(hm.jda().getSelfUser().getId()))
-                            return message.delete().submit()
-                                    .thenCompose(u-> hm.mensagem().delete().submit());
-                        else
-                            hm.replyTemp(hm.text("apaga.exec"));
-                        return null;
-                    });
+                    .retrieveMessageById(args.getLast()).queue(message -> {
+                if (message.getAuthor().getId().equals(hm.jda().getSelfUser().getId()))
+                    message.delete().queue(u-> hm.mensagem().delete().queue());
+                else
+                    hm.replyTemp(hm.text("apaga.exec"));
+            });
 
             return;
         }

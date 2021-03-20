@@ -2,7 +2,7 @@ package rode.model.maker;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
-import rode.core.EventLoop2;
+import rode.core.EventLoop;
 import rode.core.Helper;
 
 import java.util.HashMap;
@@ -15,7 +15,7 @@ public class MensagemTexto extends ModelLoop{
     private String mensagem;
 
     public MensagemTexto(TextChannel canal, String membro,String mensagem, long fim, long delay, Permission permissao) {
-        super(TipoLoop.G_MENSAGEM_TEXTO, EventLoop2.geraId(), membro, System.currentTimeMillis(), fim, delay, permissao);
+        super(TipoLoop.G_MENSAGEM_TEXTO, EventLoop.geraId(), membro, System.currentTimeMillis(), fim, delay, permissao);
         this.canal = canal;
         this.mensagem = mensagem;
     }
@@ -33,7 +33,7 @@ public class MensagemTexto extends ModelLoop{
     public static boolean expirado(MensagemTexto mensagemTexto) {
         boolean b = System.currentTimeMillis() > mensagemTexto.fim();
         if(b)
-            mensagemTexto.canal.sendMessage(mensagemTexto.mensagem).submit();
+            mensagemTexto.canal.sendMessage(mensagemTexto.mensagem).queue();
         return b;
     }
 }
