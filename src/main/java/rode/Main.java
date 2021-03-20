@@ -29,8 +29,6 @@ public class Main {
         jda();
     }
 
-
-
     private static void jda(){
         log.debug("logando");
         try{
