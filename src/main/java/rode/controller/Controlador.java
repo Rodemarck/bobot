@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.Main;
-import rode.core.EventLoop2;
+import rode.core.EventLoop;
 import rode.core.Executador;
 import rode.utilitarios.Constantes;
 
@@ -27,7 +27,7 @@ public class Controlador implements EventListener {
                 .thenCompose(privateChannel -> privateChannel.sendMessage("olá...?? agr é sério...").submit())
                 .thenCompose(m->m.addReaction(Constantes.emote("check")).submit());
         Executador.poolExecutor.submit(()->{
-            EventLoop2.getInstance(event.getJDA());
+            EventLoop.getInstance(event.getJDA());
         });
     }
 
@@ -68,5 +68,6 @@ public class Controlador implements EventListener {
         else if(event instanceof GuildMessageReactionAddEvent) onGuildMessageReactionAdd((GuildMessageReactionAddEvent)event);
         else if(event instanceof GuildMessageReactionRemoveEvent) onGuildMessageReactionRemove((GuildMessageReactionRemoveEvent)event);
         else if(event instanceof ReadyEvent) onReady((ReadyEvent)event);
+
     }
 }

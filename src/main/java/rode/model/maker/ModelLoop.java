@@ -3,7 +3,7 @@ package rode.model.maker;
 import net.dv8tion.jda.api.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rode.core.EventLoop2;
+import rode.core.EventLoop;
 
 
 public abstract class ModelLoop {
@@ -95,6 +95,6 @@ public abstract class ModelLoop {
 
     public void finaliza(){
         ativo(false);
-        EventLoop2.checa();
+        EventLoop.checa();
     }
 }

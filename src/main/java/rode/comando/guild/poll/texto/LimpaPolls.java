@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.Anotacoes.EComandoPoll;
 import rode.core.ComandoGuild;
-import rode.core.EventLoop2;
+import rode.core.EventLoop;
 import rode.core.Helper;
 import rode.model.ModelGuild;
 import rode.model.maker.MensagemReacao;
@@ -40,7 +40,7 @@ public class LimpaPolls extends ComandoGuild {
         if(!guild.getPolls().isEmpty()){
             hm.reply(Constantes.builder(hm.bundle()),msg->{
                 hm.mensagem(msg);
-                EventLoop2.addReacao(new ConversaLimpar(hm));
+                EventLoop.addReacao(new ConversaLimpar(hm));
             });
         }
         else

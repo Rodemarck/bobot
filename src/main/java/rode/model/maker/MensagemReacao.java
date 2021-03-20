@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rode.core.EventLoop2;
+import rode.core.EventLoop;
 import rode.core.Helper;
 
 import java.util.HashMap;
@@ -20,7 +20,7 @@ public abstract class MensagemReacao extends ModelLoop{
     private String nome;
 
     public MensagemReacao(Helper hr,Message msg, String membro, long fim, Permission permissao, HashMap<String, Consumer<Helper.Reacao>> src) {
-        super(TipoLoop.G_MENSAGEM_REACAO, EventLoop2.geraId(), membro, System.currentTimeMillis(), fim, 20000,permissao);
+        super(TipoLoop.G_MENSAGEM_REACAO, EventLoop.geraId(), membro, System.currentTimeMillis(), fim, 20000,permissao);
         log.info("MensagemReacao<Init>");
         this.mensagem =msg;//hr.event().getChannel().sendMessage(Constantes.builder().setTitle(hr.text("embed.load")).build()).complete();
         this.src = src;

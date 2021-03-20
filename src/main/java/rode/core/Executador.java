@@ -57,15 +57,12 @@ public class Executador {
     public static void checa(GuildMessageReceivedEvent e){
         tryCatch(e.getJDA(),()->{
             log.debug("checando ");
-            var raw = e.getMessage().getContentRaw();
             var l = Constantes.loc(e.getGuild().getId());
             var hm = new Helper.Mensagem(e,l);
-            var args = traduz(raw);
-            var mm = EventLoop.getInstance().mensagem(hm.getEvent().getAuthor().getIdLong());
-            if(mm != null)
-                mm.executa(args,hm);
+            EventLoop.textoGuild(hm);
         });
     }
+
     public static void interpreta(GuildMessageReceivedEvent e, User user) {
         tryCatch(e.getJDA(), () -> {
             String raw = e.getMessage().getContentRaw();
@@ -83,6 +80,8 @@ public class Executador {
                 else
                     mgr.falha(args, hm);
             }
+            else
+                EventLoop.textoGuild(hm);
         });
     }
     private static LinkedList<String>  traduz(String raw){
@@ -124,7 +123,7 @@ public class Executador {
                     rmg.executa(args, hr);
             }
             else if(discriminador.equals("+++"))
-                EventLoop2.reacaoGuild(hr);
+                EventLoop.reacaoGuild(hr);
         });
 
     }

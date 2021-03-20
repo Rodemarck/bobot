@@ -19,6 +19,7 @@
     <logger name="net.dv8tion.jda.internal.entities.EntityBuilder" level="INFO"/>
     <logger name="net.dv8tion.jda.api.JDA" level="INFO"/>
     <logger name="org.reflections.Reflections" level="INFO"/>
+    <logger name="rode.core.EventLoop" level="INFO"/>
 
     <root level="ALL">
         <appender-ref ref="STDOUT" />

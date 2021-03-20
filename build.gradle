@@ -26,7 +26,7 @@ tasks.withType(JavaExec) {
     jvmArgs += '--enable-preview'
 }*/
 dependencies {
-    implementation 'net.dv8tion:JDA:4.2.0_241'
+    implementation 'net.dv8tion:JDA:4.2.0_242'
 
     // https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver
     implementation 'org.mongodb:mongodb-driver-legacy:4.0.5'

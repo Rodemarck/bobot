@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.ComandoGuild;
-import rode.core.EventLoop2;
+import rode.core.EventLoop;
 import rode.core.Helper;
 import rode.model.CampoMinado;
 import rode.model.maker.MensagemReacao;
@@ -33,7 +33,7 @@ public class CriaCampoMinado extends ComandoGuild {
     public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         hm.reply(Constantes.builder(hm.bundle()),msg->{
             hm.mensagem(msg);
-            EventLoop2.addReacao(new ConversaCampo(hm));
+            EventLoop.addReacao(new ConversaCampo(hm));
         });
     }
     public static class ConversaCampo extends MensagemReacao{

@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.Anotacoes.EcomandoGeral;
 import rode.core.ComandoGuild;
-import rode.core.EventLoop2;
+import rode.core.EventLoop;
 import rode.core.Helper;
 import rode.model.maker.MensagemReacao;
 import rode.utilitarios.Constantes;
@@ -41,7 +41,7 @@ public class SetLang extends ComandoGuild {
             log.info("alterando mensagem");
             hm.mensagem(msg);
             log.info("add evento");
-            EventLoop2.addReacao(new ConversaLingua(hm));
+            EventLoop.addReacao(new ConversaLingua(hm));
         },err->{
             log.error(err.getMessage());
         });

@@ -22,6 +22,7 @@ public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args){
         jda();
+
     }
 
 
@@ -30,7 +31,7 @@ public class Main {
         log.debug("logando");
         try{
             inicializaComandos();
-            JDABuilder.createLight(Constantes.env.get("token"))
+            JDABuilder.createLight(Constantes.env.get("token_teste"))
                     .setActivity(Activity.playing("-help"))
                     .setStatus(OnlineStatus.ONLINE)
                     .addEventListeners(new Controlador())

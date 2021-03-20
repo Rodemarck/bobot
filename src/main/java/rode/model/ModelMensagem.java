@@ -2,7 +2,6 @@ package rode.model;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rode.comando.guild.poll.texto.AbrePoll;
 import rode.core.EventLoop;
 import rode.core.Helper;
 
