@@ -2,8 +2,8 @@
 <configuration info="true">
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%blue(%d{HH:mm:ss.SSS}):: %cyan(%-20.-20logger{1})  [%green(%-4.-6level)]  %red(%msg) %n</pattern>
+        <encoder><!-- %blue(%d{HH:mm:ss.SSS}):: %cyan(%-20.-20logger{1})  [%green(%-4.-6level)]  %red(%msg) %n!-->
+            <pattern>%d{HH:mm:ss.SSS}:: %-20.-20logger{1}  [%-4.-6level] %msg %n</pattern>
         </encoder>
     </appender>
     <logger name="rode.*" level="ALL"/>

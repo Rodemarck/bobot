@@ -10,9 +10,9 @@ import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.model.Poll;
+import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
@@ -35,7 +35,7 @@ public class RemoveOpcoesPoll extends ComandoGuild {
         PollHelper.getPoll(args, hm, dp-> {
             log.debug("callback");
             if(dp.opcoes().isEmpty()){
-                EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
+                var eb = Constantes.builder();
                 help(eb,hm.bundle());
                 hm.reply(eb);
                 return;

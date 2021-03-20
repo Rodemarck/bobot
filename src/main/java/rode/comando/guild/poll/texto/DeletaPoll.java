@@ -30,7 +30,7 @@ public class DeletaPoll extends ComandoGuild {
                 var poll = dp.guild().getPoll(dp.titulo());
                 dp.guild().getPolls().remove(poll);
                 Memoria.guilds.updateOne(dp.query(),new Document("$set",dp.guild().toMongo()));
-                hm.reply(String.format(hm.text("del.exec.delete"), dp.titulo()), message -> message.addReaction(Constantes.emote("check")).submit());
+                hm.reply(String.format(hm.text("del.exec.delete"), dp.titulo()), message -> message.addReaction(Constantes.emote("check")).queue());
                 return;
             }
             hm.reply(String.format(hm.text("del.exec.404"), dp.titulo()));

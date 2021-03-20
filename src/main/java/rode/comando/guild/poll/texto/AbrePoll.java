@@ -36,9 +36,11 @@ public class AbrePoll extends ComandoGuild {
             if(dp.guild() != null){
                 log.debug("poll encontrada");
                 Poll poll = dp.guild().getPoll(dp.titulo());
-                hm.reply("poll", message ->
-                        message.editMessage(poll.me(hm.bundle())).submit()
-                                .thenCompose(message1 -> PollHelper.addReaction(message1,poll.opcoes().size()))
+                hm.reply("poll", message -> {
+                            log.info("poll respondida");
+                            hm.reply("carregando");
+                            message.editMessage(poll.me(hm.bundle())).queue();
+                        }
                 );
                 return;
             }
@@ -64,8 +66,9 @@ public class AbrePoll extends ComandoGuild {
             }
             final Poll  poll = new Poll(dp.titulo(),dp.opcoes(), hm.getEvent());
             hm.reply("poll", message ->
-                    message.editMessage(poll.me(hm.bundle())).submit()
-                            .thenCompose(message1 -> PollHelper.addReaction(message1,poll.opcoes().size()))
+                    message.editMessage(poll.me(hm.bundle())).queue(message1 ->
+                            PollHelper.addReaction(message1,poll.opcoes().size())
+                    )
             );
             Document query = new Document("id",hm.guildId());
             Document doc = Memoria.guilds.find(query).first();

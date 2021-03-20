@@ -47,12 +47,13 @@ public class SetDataPoll  extends ComandoGuild {
                         nums.add(Integer.parseInt(m.group()));
 
                     var agora = LocalDateTime.now();
-                    int[] numeros = switch (nums.size()){
-                        case 2 -> new int[]{agora.getYear(),nums.get(1),nums.get(0),12,0};
-                        case 3 -> new int[]{nums.get(2), nums.get(1), nums.get(0), 12, 0};
-                        case 4 -> new int[]{agora.getYear(), nums.get(1), nums.get(0), nums.get(2),nums.get(3)};
-                        case 5 -> new int[]{nums.get(2), nums.get(1), nums.get(0), nums.get(3), nums.get(4)};
-                        default -> null;
+                    int[] numeros;
+                    switch (nums.size()){
+                        case 2: numeros = new int[]{agora.getYear(),nums.get(1),nums.get(0),12,0};break;
+                        case 3: numeros = new int[]{nums.get(2), nums.get(1), nums.get(0), 12, 0};break;
+                        case 4: numeros = new int[]{agora.getYear(), nums.get(1), nums.get(0), nums.get(2),nums.get(3)};break;
+                        case 5: numeros = new int[]{nums.get(2), nums.get(1), nums.get(0), nums.get(3), nums.get(4)};break;
+                        default: numeros = null;
                     };
                     try{
                         var data = LocalDateTime.of(numeros[0],numeros[1],numeros[2],numeros[3],numeros[4]);

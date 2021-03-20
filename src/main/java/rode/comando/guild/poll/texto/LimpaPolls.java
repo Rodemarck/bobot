@@ -14,7 +14,6 @@ import rode.model.maker.MensagemReacao;
 import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
@@ -38,8 +37,12 @@ public class LimpaPolls extends ComandoGuild {
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         var guild = Memoria.guild(hm.guildId());
-        if(!guild.getPolls().isEmpty())
-            EventLoop2.addReacao(new ConversaLimpar(hm));
+        if(!guild.getPolls().isEmpty()){
+            hm.reply(Constantes.builder(hm.bundle()),msg->{
+                hm.mensagem(msg);
+                EventLoop2.addReacao(new ConversaLimpar(hm));
+            });
+        }
         else
             hm.reply(hm.text("limpar.exec"));
     }
@@ -51,7 +54,7 @@ public class LimpaPolls extends ComandoGuild {
 
 
         public ConversaLimpar(Helper hr) {
-            super(hr, hr.membro().getUser().getId(), System.currentTimeMillis()+20000,Permission.ADMINISTRATOR,new HashMap<>());
+            super(hr,hr.mensagem(), hr.membro().getUser().getId(), System.currentTimeMillis()+20000,Permission.ADMINISTRATOR,new HashMap<>());
             log.debug("membro id =[" + membro() + "]");
             var guild = Memoria.guild(guildId());
             atualiza(guild);
@@ -76,15 +79,14 @@ public class LimpaPolls extends ComandoGuild {
 
         public void rerender(ResourceBundle rb){
             var guild = Memoria.guild(guildId());
-            var eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"))
+            var eb = Constantes.builder()
                     .setTitle(rb.getString("limpar.delete"));
             for(int i=0;i<guild.getPolls().size();i++){
                 var p = guild.getPolls().get(i);
                 eb.appendDescription(Constantes.emotePoll(i) + " : **" + p.titulo()+"** , criada por <@"+p.criadorId()+">.\n\n");
             }
             eb.setFooter(String.format(rb.getString("limpar.exclusive"),nome()),pic());
-            mensagem().editMessage(eb.build()).submit()
-            .thenRun(()->atualiza(guild));
+            mensagem().editMessage(eb.build()).queue(q->atualiza(guild));
 
         }
 
@@ -93,7 +95,7 @@ public class LimpaPolls extends ComandoGuild {
                 src( new HashMap<>(){{
                     for (int i = 0; i < guild.getPolls().size(); i++) {
                         final int finalI = i;
-                        mensagem().addReaction(Constantes.emotePoll(i)).submit();
+                        mensagem().addReaction(Constantes.emotePoll(i)).queue();
                         put(Constantes.emotePoll(i), r -> pagina(guild.getPolls().get(finalI).titulo()));
                     }
                 }});

@@ -1,10 +1,13 @@
 package rode.model.maker;
 
 import net.dv8tion.jda.api.Permission;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rode.core.EventLoop2;
 
 
 public abstract class ModelLoop {
+    private static Logger log = LoggerFactory.getLogger(ModelLoop.class);
     private TipoLoop tipo;
     private long id;
     private String membro;
@@ -15,6 +18,7 @@ public abstract class ModelLoop {
     private Permission permissao;
 
     public ModelLoop(TipoLoop tipo, long id, String membro, long inicio, long fim, long delay, Permission permissao) {
+        log.info("ModelLoop<Init>");
         this.tipo = tipo;
         this.id = id;
         this.membro = membro;

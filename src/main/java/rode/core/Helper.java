@@ -14,16 +14,15 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 public abstract class Helper {
     private static final Logger log = LoggerFactory.getLogger(Helper.class);
     protected final GenericGuildMessageEvent event;
     protected Message message;
     protected final String id;
-    protected final Member member;
+    protected Member member;
     protected final ResourceBundle bundle;
 
     public void mensagem(Message message) {
@@ -53,113 +52,109 @@ public abstract class Helper {
     public String text(String s){
         return bundle.getString(s);
     }
-
-    public void responde(Message mensagem, String str){
-        mensagem.reply(str).submit();
-    }
-    public void responde(Message mensagem,EmbedBuilder eb){
-        mensagem.reply(eb.build()).submit();
-        this.event.getChannel().sendMessage(eb.build()).submit();
-    }
-    public void responde(Message mensagem,MessageEmbed me){
-        mensagem.reply(me).submit();
-    }
-    public void responde(Message mensagem,File arq){
-        mensagem.reply(arq).submit().thenRun(()->arq.delete());
-    }
-
+    
 
     public void reply(String str){
-        this.event.getChannel().sendMessage(str).submit();
+        this.event.getChannel().sendMessage(str).queue();
     }
     public void reply(EmbedBuilder eb){
-        this.event.getChannel().sendMessage(eb.build()).submit();
+        this.event.getChannel().sendMessage(eb.build()).queue();
     }
     public void reply(MessageEmbed me){
-        this.event.getChannel().sendMessage(me).submit();
+        this.event.getChannel().sendMessage(me).queue();
     }
     public void reply(File arq){
-        reply(arq,message -> message.delete().submitAfter(15,TimeUnit.SECONDS));
+        reply(arq,message -> arq.delete());
     }
 
     public void replyTemp(String str){
-        reply(str,message -> message.delete().submitAfter(15, TimeUnit.SECONDS));
+        reply(str,message -> message.delete().queueAfter(15, TimeUnit.SECONDS));
     }
     public void replyTemp(EmbedBuilder eb){
-        reply(eb,message -> message.delete().submitAfter(15, TimeUnit.SECONDS));
+        reply(eb,message -> message.delete().queueAfter(15, TimeUnit.SECONDS));
     }
     public void replyTemp(MessageEmbed me){
-        reply(me, message->message.delete().submitAfter(15, TimeUnit.SECONDS));
+        reply(me, message->message.delete().queueAfter(15, TimeUnit.SECONDS));
     }
 
 
-    public void reply(String str, Function<Message, CompletionStage<Void>> action){
-        this.event.getChannel().sendMessage(str).submit()
-                .thenCompose(action);
+    public void reply(String str, Consumer<Message> action){
+        this.event.getChannel().sendMessage(str).queue(action);
     }
-    public void reply(EmbedBuilder eb, Function<Message, CompletionStage<Void>> action){
-        this.event.getChannel().sendMessage(eb.build()).submit()
-                .thenCompose(action);
+    public void reply(EmbedBuilder eb, Consumer<Message> action){
+        log.info("the message is send");
+        this.event.getChannel().sendMessage(eb.build()).queue(action,err->{
+            log.error(err.getMessage());
+        });
     }
-    public void reply(MessageEmbed me, Function<Message, CompletionStage<Void>> action){
-        this.event.getChannel().sendMessage(me).submit()
-            .thenCompose(action);
+    public void reply(MessageEmbed me, Consumer<Message> action){
+
+        this.event.getChannel().sendMessage(me).queue(action);
     }
-    public void reply(File arq,Function<Message, CompletionStage<Void>> action) {
-        this.event.getChannel().sendFile(arq).submit()
-            .thenCompose(action)
-            .thenRun(()-> arq.delete());
+    public void reply(File arq,Consumer<Message> action) {
+        this.event.getChannel().sendFile(arq).queue(msg->{
+            action.andThen(q->arq.delete()).accept(msg);
+        });
     }
 
 
     public void dm(String str){
-        this.event.getJDA().retrieveUserById(id).submit()
-                .thenCompose(user -> user.openPrivateChannel().submit())
-                .thenCompose(privateChannel -> privateChannel.sendMessage(str).submit());
+        this.event.getJDA().retrieveUserById(id).queue(user ->
+                user.openPrivateChannel().queue(pv->
+                        pv.sendMessage(str).queue()
+                )
+        );
     }
     public void dm(EmbedBuilder eb){
-        this.event.getJDA().retrieveUserById(id).submit()
-                .thenCompose(user -> user.openPrivateChannel().submit())
-                .thenCompose(privateChannel -> privateChannel.sendMessage(eb.build()).submit());
+        this.event.getJDA().retrieveUserById(id).queue(user ->
+                user.openPrivateChannel().queue(pv->
+                        pv.sendMessage(eb.build()).queue()
+                )
+        );
     }
     public void dm(MessageEmbed me){
-        this.event.getJDA().retrieveUserById(id).submit()
-                .thenCompose(user -> user.openPrivateChannel().submit())
-                .thenCompose(privateChannel -> privateChannel.sendMessage(me).submit());
-        this.event.getJDA().getUserById(id).openPrivateChannel().queue(privateChannel -> {
-            privateChannel.sendMessage(me);
-        });
+        this.event.getJDA().retrieveUserById(id).queue(user ->
+                user.openPrivateChannel().queue(pv->
+                        pv.sendMessage(me).queue()
+                )
+        );
     }
     public void dm(File f){
-        this.jda().retrieveUserById(id).submit()
-                .thenCompose(user -> user.openPrivateChannel().submit())
-                .thenCompose(privateChannel -> privateChannel.sendFile(f).submit())
-                .thenRun(()->f.delete());
+        this.event.getJDA().retrieveUserById(id).queue(user ->
+                user.openPrivateChannel().queue(pv->
+                        pv.sendFile(f).queue(q->
+                            f.delete()
+                        )
+                )
+        );
     }
-    public void dm(String str, Function<Message, CompletionStage<Void>> action){
-        this.event.getJDA().retrieveUserById(id).submit()
-                .thenCompose(user -> user.openPrivateChannel().submit())
-                .thenCompose(privateChannel -> privateChannel.sendMessage(str).submit())
-                .thenCompose(action);
+    public void dm(String str, Consumer<Message> action){
+        this.event.getJDA().retrieveUserById(id).queue(user ->
+                user.openPrivateChannel().queue(pv->
+                        pv.sendMessage(str).queue(action)
+                )
+        );
+            }
+    public void dm(EmbedBuilder eb, Consumer<Message> action){
+        this.event.getJDA().retrieveUserById(id).queue(user ->
+                user.openPrivateChannel().queue(pv->
+                        pv.sendMessage(eb.build()).queue(action)
+                )
+        );
     }
-    public void dm(EmbedBuilder eb, Function<Message, CompletionStage<Void>> action){
-        this.event.getJDA().retrieveUserById(id).submit()
-                .thenCompose(user -> user.openPrivateChannel().submit())
-                .thenCompose(privateChannel -> privateChannel.sendMessage(eb.build()).submit())
-                .thenCompose(action);
+    public void dm(MessageEmbed me, Consumer<Message> action){
+        this.event.getJDA().retrieveUserById(id).queue(user ->
+                user.openPrivateChannel().queue(pv->
+                        pv.sendMessage(me).queue(action)
+                )
+        );
     }
-    public void dm(MessageEmbed me, Function<Message, CompletionStage<Void>> action){
-        this.event.getJDA().retrieveUserById(id).submit()
-                .thenCompose(user -> user.openPrivateChannel().submit())
-                .thenCompose(privateChannel -> privateChannel.sendMessage(me).submit())
-                .thenCompose(action);
-    }
-    public void dm(File f, Function<Message, CompletionStage<Void>> action){
-        this.jda().retrieveUserById(id).submit()
-                .thenCompose(user -> user.openPrivateChannel().submit())
-                .thenCompose(privateChannel -> privateChannel.sendFile(f).submit())
-                .thenCompose(action)
-                .thenRun(()->f.delete());
+    public void dm(File f, Consumer<Message> action){
+        this.event.getJDA().retrieveUserById(id).queue(user ->
+                user.openPrivateChannel().queue(pv->
+                        pv.sendFile(f).queue(q->action.andThen(qq->f.delete()).accept(q))
+                )
+        );
     }
 
     public String guildId(){
@@ -173,6 +168,9 @@ public abstract class Helper {
     }
     public Member membro() {
         return member;
+    }
+    public void membro(Member member) {
+        this.member =  member;
     }
 
 

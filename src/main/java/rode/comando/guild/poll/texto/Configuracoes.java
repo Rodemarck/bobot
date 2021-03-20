@@ -21,8 +21,7 @@ public class Configuracoes extends ComandoGuild {
             if(dp.guild() != null){
                 var poll = dp.guild().getPoll(dp.titulo());
                 hm.reply(poll.config(hm.bundle()), message -> {
-                    message.editMessage("config").submit();
-                    return null;
+                    message.editMessage("config").queue();
                 });
             }
         });

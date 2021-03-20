@@ -1,7 +1,6 @@
 package rode.comando.guild.mina;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.ComandoGuild;
@@ -11,7 +10,6 @@ import rode.model.CampoMinado;
 import rode.model.maker.MensagemReacao;
 import rode.utilitarios.Constantes;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
@@ -33,7 +31,10 @@ public class CriaCampoMinado extends ComandoGuild {
 
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
-        EventLoop2.addReacao(new ConversaCampo(hm));
+        hm.reply(Constantes.builder(hm.bundle()),msg->{
+            hm.mensagem(msg);
+            EventLoop2.addReacao(new ConversaCampo(hm));
+        });
     }
     public static class ConversaCampo extends MensagemReacao{
         private static Logger log = LoggerFactory.getLogger(ConversaCampo.class);
@@ -43,7 +44,7 @@ public class CriaCampoMinado extends ComandoGuild {
         private boolean check = false;
         private boolean end = false;
         public ConversaCampo(Helper hr) {
-            super(hr, hr.membro().getUser().getId(), System.currentTimeMillis()+20000,Permission.ADMINISTRATOR,new HashMap<>());
+            super(hr,hr.mensagem(), hr.membro().getUser().getId(), System.currentTimeMillis()+20000,null ,new HashMap<>());
             delay(60000);
             this.campo = new CampoMinado();
             src(new HashMap<>(){{
@@ -52,15 +53,13 @@ public class CriaCampoMinado extends ComandoGuild {
                     put(Constantes.emote("" + i), r -> click(ii, r));
                 }
             }});
-            mensagem().clearReactions().submit().thenCompose(q->{
+            mensagem().clearReactions().queue(q->{
                 for(int i=0;i<10;i++)
-                    mensagem().addReaction(Constantes.emote(""+i)).submit();
-                return null;
+                    mensagem().addReaction(Constantes.emote(""+i)).queue();
             });
-            eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"))
+            eb = Constantes.builder()
                     .setTitle("Campo minado")
-                    .setFooter("jogo de " + nome())
-                    .clearFields();
+                    .setFooter("jogo de " + nome());
             rerender(hr.bundle());
         }
 
@@ -78,7 +77,7 @@ public class CriaCampoMinado extends ComandoGuild {
                 eb.addField(rb.getString("campo.state"),rb.getString(end ? "campo.over":"campo.clear"),false);
             else
                 eb.addField(rb.getString("campo.type"),check?"y":"x",false);
-            mensagem().editMessage(eb.build()).submit();
+            mensagem().editMessage(eb.build()).queue();
         }
 
         private void click(int n, Helper.Reacao r){

@@ -34,7 +34,7 @@ public class Sexo extends ComandoGuild {
             @Override
             public boolean acao(JDA jda) {
                 jda.getTextChannelById(canal())
-                .sendMessage("viado do caralho").submit();
+                .sendMessage("viado do caralho").queue();
                 return true;
             }
         });

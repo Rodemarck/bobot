@@ -9,12 +9,10 @@ import org.slf4j.LoggerFactory;
 import rode.utilitarios.Constantes;
 import rode.utilitarios.Regex;
 
-import java.awt.*;
-import java.io.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.List;
 import java.util.stream.Collectors;
 public class Poll implements Serializable{
     private static Logger log = LoggerFactory.getLogger(Poll.class);
@@ -30,7 +28,7 @@ public class Poll implements Serializable{
 
     public MessageEmbed visualiza(int i,ResourceBundle rb) {
         top t = calculaTop();
-        EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
+        EmbedBuilder eb = Constantes.builder();
         eb.setTitle(titulo);
         if(Regex.isLink(opcoes.get(i)))
            eb.setImage(opcoes.get(i));
@@ -38,9 +36,7 @@ public class Poll implements Serializable{
             eb.appendDescription(opcoes.get(i));
         float numero = (t.total==0)? 0 : (((float)valores.get(i)/t.total)*100);
         return eb.addField(rb.getString("poll.op"), Constantes.LETRAS.get(i),true)
-                .setFooter(String.format("""
-                    %1$d/%2$d                %3$d %5$s [%4$.2f %%]
-                    """, i,(opcoes.size()-1), valores.get(i), numero,rb.getString("poll.vote"))
+                .setFooter(String.format("%1$d/%2$d                %3$d %5$s [%4$.2f %%]", i,(opcoes.size()-1), valores.get(i), numero,rb.getString("poll.vote"))
          ).build();
 
 
@@ -197,7 +193,7 @@ public class Poll implements Serializable{
         top t = calculaTop();
         int n = opcoes.size();
         log.debug("me, total = {}",t.total);
-        EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
+        EmbedBuilder eb = Constantes.builder();
         eb.setTitle(titulo);
         for(int i=0; i<n;i++){
             int numero = (t.total==0)? 0 : Math.round(((float)valores.get(i)/t.total)*100);
@@ -213,7 +209,7 @@ public class Poll implements Serializable{
 
     public MessageEmbed config(ResourceBundle rb) {
         top t = calculaTop();
-        EmbedBuilder eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
+        EmbedBuilder eb = Constantes.builder();
         eb.setTitle(titulo);
         eb.appendDescription(rb.getString("poll.creator"));
         String dara = "";

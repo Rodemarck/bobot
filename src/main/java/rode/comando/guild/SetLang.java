@@ -12,7 +12,6 @@ import rode.model.maker.MensagemReacao;
 import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -38,10 +37,13 @@ public class SetLang extends ComandoGuild {
     @Override
     public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         log.info("mudando idioma");
-        hm.reply(new EmbedBuilder().setColor(Color.decode("#C8A2C8")).setTitle("**carregando...**"), message -> {
-            hm.mensagem(message);
+        hm.getEvent().getChannel().sendMessage(Constantes.builder(hm.bundle()).build()).queue(msg->{
+            log.info("alterando mensagem");
+            hm.mensagem(msg);
+            log.info("add evento");
             EventLoop2.addReacao(new ConversaLingua(hm));
-            return null;
+        },err->{
+            log.error(err.getMessage());
         });
     }
 
@@ -49,13 +51,14 @@ public class SetLang extends ComandoGuild {
         private static Logger log = LoggerFactory.getLogger(ConversaLingua.class);
         private ResourceBundle rb;
         public ConversaLingua(Helper hr) {
-            super(hr, null, System.currentTimeMillis()+120000, Permission.ADMINISTRATOR, new HashMap<>());
+            super(hr,hr.mensagem(),null,System.currentTimeMillis()+120000,Permission.ADMINISTRATOR,new HashMap<>());
+            log.info("ConversaLingua<Init>");
             src(new HashMap<>(){{
                 put(Constantes.emote("br"), x->mudaIdioma(guildId(),"pt","BR"));
                 put(Constantes.emote("en"),x->mudaIdioma(guildId(), "en","US"));
             }});
-            mensagem().addReaction(Constantes.emote("br")).submit();
-            mensagem().addReaction(Constantes.emote("en")).submit();
+            mensagem().addReaction(Constantes.emote("br")).queue();
+            mensagem().addReaction(Constantes.emote("en")).queue();
             rb = hr.bundle();
             rerender(rb);
         }
@@ -67,11 +70,11 @@ public class SetLang extends ComandoGuild {
 
         @Override
         public void rerender(ResourceBundle bundle) {
-            var eb = new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
+            var eb = Constantes.builder();
             eb.setTitle(rb.getString("lingua.titulo"));
             eb.appendDescription(rb.getString("lingua.br"));
             eb.appendDescription(rb.getString("lingua.us"));
-            mensagem().editMessage(eb.build()).submit();
+            mensagem().editMessage(eb.build()).queue();
         }
         private void mudaIdioma(String id, String lingua, String pais){
             Memoria.usandoConfig(id,cg->{

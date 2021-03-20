@@ -60,7 +60,7 @@ public class PicReaction {
                 index = 0;
             else if (index < 0)
                 index = dp.poll().opcoes().size() - 1;
-            hr.mensagem().editMessage(dp.poll().visualiza(index,hr.bundle())).submit();
+            hr.mensagem().editMessage(dp.poll().visualiza(index,hr.bundle())).queue();
         });
         final var emb = hr.mensagem().getEmbeds().get(0);
     }

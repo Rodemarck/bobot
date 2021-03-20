@@ -50,7 +50,7 @@ public final class EventLoop2 implements Runnable{
             var lista = eventos_reacao.stream().filter(loop ->
                     (loop.mensagem().getId().equals(hr.mensagem().getId()))
                     && (loop.membro() == null || loop.membro().equals(hr.id()))
-                    && (loop.permissao() == null || hr.getEvent().getMember().hasPermission(loop.permissao()))
+                    && (loop.permissao() == null || hr.member.hasPermission(loop.permissao()))
             ).collect(Collectors.toList());
             for(var lop :lista) {
                 log.trace("chamando ->>"+lop.getClass().getName());
@@ -73,8 +73,10 @@ public final class EventLoop2 implements Runnable{
     }
 
     public static void addReacao(MensagemReacao reacaoMensagem){
+        log.info("colocando");
         synchronized (eventos_reacao){
             eventos_reacao.add(reacaoMensagem);
+            log.info("colocado");
         }
     }
     public static void addTexto(MensagemTexto mensagemTexto){
