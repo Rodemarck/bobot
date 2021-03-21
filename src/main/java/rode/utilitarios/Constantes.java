@@ -27,7 +27,8 @@ public class Constantes {
         put("8","8️⃣");
         put("9","9️⃣");
         put("10","🔟");
-
+        put("branco","\u26AA");
+        put("preto","\u26AB");
     }};
     private static final HashMap<Locale,HashMap<String, EmbedBuilder>>BUILDERS = new HashMap<>();
     private static final HashMap<String, Locale> LOC = new HashMap<>();

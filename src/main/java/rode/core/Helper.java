@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public abstract class Helper {
     private static final Logger log = LoggerFactory.getLogger(Helper.class);
@@ -77,6 +78,12 @@ public abstract class Helper {
         reply(me, message->message.delete().queueAfter(15, TimeUnit.SECONDS));
     }
 
+    public void embed(File f, Function<String,EmbedBuilder> msg){
+        this.event.getChannel().sendFile(f,"arq.png")
+                .embed(msg.apply("attachment://arq.png").build()).queue(q->
+                    f.delete()
+        );
+    }
 
     public void reply(String str, Consumer<Message> action){
         this.event.getChannel().sendMessage(str).queue(action);

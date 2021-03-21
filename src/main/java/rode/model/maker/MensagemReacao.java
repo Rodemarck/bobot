@@ -7,8 +7,7 @@ import org.slf4j.LoggerFactory;
 import rode.core.EventLoop;
 import rode.core.Helper;
 
-import java.util.HashMap;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.function.Consumer;
 
 public abstract class MensagemReacao extends ModelLoop{
@@ -19,7 +18,7 @@ public abstract class MensagemReacao extends ModelLoop{
     private String pic;
     private String nome;
 
-    public MensagemReacao(Helper hr,Message msg, String membro, long fim, Permission permissao, HashMap<String, Consumer<Helper.Reacao>> src) {
+    public MensagemReacao(Helper hr, Message msg, List<String> membro, long fim, Permission permissao, HashMap<String, Consumer<Helper.Reacao>> src) {
         super(TipoLoop.G_MENSAGEM_REACAO, EventLoop.geraId(), membro, System.currentTimeMillis(), fim, 20000,permissao);
         log.info("MensagemReacao<Init>");
         this.mensagem =msg;//hr.event().getChannel().sendMessage(Constantes.builder().setTitle(hr.text("embed.load")).build()).complete();

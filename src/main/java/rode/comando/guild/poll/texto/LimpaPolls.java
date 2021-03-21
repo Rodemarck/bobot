@@ -14,6 +14,7 @@ import rode.model.maker.MensagemReacao;
 import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
@@ -54,7 +55,7 @@ public class LimpaPolls extends ComandoGuild {
 
 
         public ConversaLimpar(Helper hr) {
-            super(hr,hr.mensagem(), hr.membro().getUser().getId(), System.currentTimeMillis()+20000,Permission.ADMINISTRATOR,new HashMap<>());
+            super(hr,hr.mensagem(), Arrays.asList(hr.id()), System.currentTimeMillis()+20000,Permission.ADMINISTRATOR,new HashMap<>());
             log.debug("membro id =[" + membro() + "]");
             var guild = Memoria.guild(guildId());
             atualiza(guild);

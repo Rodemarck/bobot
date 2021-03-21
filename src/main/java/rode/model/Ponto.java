@@ -8,4 +8,15 @@ public class Ponto {
         this.y = y;
     }
 
+    public boolean equals(Ponto p) {
+        return p.x == x && p.y == y;
+    }
+    public boolean equals(int x, int y){
+        return this.x == x && this.y == y;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + x +',' + y +')';
+    }
 }

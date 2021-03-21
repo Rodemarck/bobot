@@ -62,7 +62,7 @@ public final class EventLoop implements Runnable{
         log.debug("procurando texto");
         synchronized (eventos_texto){
             var lista = eventos_texto.stream().filter(loop->
-                    (loop.membro() == null || loop.membro().equals(hm.id()))
+                    (loop.membro() == null || loop.membro().contains(hm.id()))
                     && (loop.permissao() == null || hm.getEvent().getMember().hasPermission(loop.permissao()))
             ).collect(Collectors.toList());
             for(var loop:lista){

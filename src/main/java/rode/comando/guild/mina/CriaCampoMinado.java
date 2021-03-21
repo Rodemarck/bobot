@@ -10,6 +10,7 @@ import rode.model.CampoMinado;
 import rode.model.maker.MensagemReacao;
 import rode.utilitarios.Constantes;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
@@ -44,7 +45,7 @@ public class CriaCampoMinado extends ComandoGuild {
         private boolean check = false;
         private boolean end = false;
         public ConversaCampo(Helper hr) {
-            super(hr,hr.mensagem(), hr.membro().getUser().getId(), System.currentTimeMillis()+20000,null ,new HashMap<>());
+            super(hr,hr.mensagem(), Arrays.asList(hr.id()), System.currentTimeMillis()+20000,null ,new HashMap<>());
             delay(60000);
             this.campo = new CampoMinado();
             src(new HashMap<>(){{

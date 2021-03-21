@@ -5,13 +5,14 @@ import rode.core.Helper;
 import rode.model.maker.MensagemReacao;
 import rode.utilitarios.Memoria;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class ConversaDeletar extends MensagemReacao {
     private String titulo;
     public ConversaDeletar(Helper hr,String titulo) {
-        super(hr,hr.mensagem(), hr.id(), System.currentTimeMillis()+20000, Permission.ADMINISTRATOR, null);
+        super(hr,hr.mensagem(), Arrays.asList(hr.id()), System.currentTimeMillis()+20000, Permission.ADMINISTRATOR, null);
         this.titulo = titulo;
         src(new HashMap<>(){{
             var guild = Memoria.guild(hr.guildId());

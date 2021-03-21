@@ -5,19 +5,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.EventLoop;
 
+import java.util.List;
+
 
 public abstract class ModelLoop {
     private static Logger log = LoggerFactory.getLogger(ModelLoop.class);
     private TipoLoop tipo;
     private long id;
-    private String membro;
+    private List<String> membro;
     private long inicio;
     private long fim;
     private long delay;
     private boolean ativo = true;
     private Permission permissao;
 
-    public ModelLoop(TipoLoop tipo, long id, String membro, long inicio, long fim, long delay, Permission permissao) {
+    public ModelLoop(TipoLoop tipo, long id, List<String> membro, long inicio, long fim, long delay, Permission permissao) {
         log.info("ModelLoop<Init>");
         this.tipo = tipo;
         this.id = id;
@@ -85,11 +87,11 @@ public abstract class ModelLoop {
         this.tipo = tipo;
     }
 
-    public String membro() {
+    public List<String> membro() {
         return membro;
     }
 
-    public void membro(String membro) {
+    public void membro(List<String> membro) {
         this.membro = membro;
     }
 
