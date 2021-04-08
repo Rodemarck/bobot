@@ -12,17 +12,16 @@ import rode.utilitarios.Memoria;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.ResourceBundle;
 
 @EComandoPoll
 public class ListarPolls extends ComandoGuild {
 
     public ListarPolls() {
-        super("listar", null, "lpoll","list","listar","listpoll","listarpoll");
+        super("list", null, "lpoll","list","listar","listpoll","listarpoll");
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
         Document doc = Memoria.guilds.find(new Document("id", hm.guildId())).first();
         if(doc != null){
             ModelGuild g = ModelGuild.fromMongo(doc);
@@ -37,15 +36,5 @@ public class ListarPolls extends ComandoGuild {
             return;
         }
         hm.reply(hm.text("list.exec.empty"));
-    }
-
-    @Override
-    public void help(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("list.help"));
-    }
-
-    @Override
-    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("list.help.ex"));
     }
 }

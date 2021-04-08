@@ -18,11 +18,11 @@ import java.util.regex.Pattern;
 @EComandoPoll
 public class AdicionaOpcoesPoll extends ComandoGuild {
     public AdicionaOpcoesPoll() {
-        super("addop", null, "addpoll","addop","addoptions","addopções","addoveop","addoveoptions","addoveopções");
+        super("opcao", null, "addpoll","addop","addoptions","addopções","addoveop","addoveoptions","addoveopções");
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
         PollHelper.getPoll(args, hm, dp -> {
             if(dp.guild() != null){
                 if(dp.opcoes().isEmpty()){

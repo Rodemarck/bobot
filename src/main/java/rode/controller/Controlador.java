@@ -1,8 +1,10 @@
 package rode.controller;
 
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
@@ -17,6 +19,7 @@ import rode.utilitarios.Constantes;
 
 public class Controlador implements EventListener {
     private static Logger log = LoggerFactory.getLogger(Main.class);
+    private PrivateChannel pv;
     private boolean pre(Message message) {
         return message.getContentRaw().startsWith(Constantes.PREFIXO);
     }
@@ -24,8 +27,10 @@ public class Controlador implements EventListener {
     public void onReady(@NotNull ReadyEvent event) {
         event.getJDA().retrieveUserById(305090445283688450l).submit()
                 .thenCompose(user -> user.openPrivateChannel().submit())
-                .thenCompose(privateChannel -> privateChannel.sendMessage("olá...?? agr é sério...").submit())
-                .thenCompose(m->m.addReaction(Constantes.emote("check")).submit());
+                .thenCompose(privateChannel -> {
+                    pv = privateChannel;
+                    return privateChannel.sendMessage("número 1").submit();
+                });
         Executador.poolExecutor.submit(()->{
             EventLoop.getInstance(event.getJDA());
         });
@@ -62,12 +67,18 @@ public class Controlador implements EventListener {
             });
     }
 
+    public void slashCommandEvent(@NotNull SlashCommandEvent event){
+        Executador.interpreta(event);
+    }
+
     @Override
     public void onEvent(@NotNull GenericEvent event) {
         if(event instanceof GuildMessageReceivedEvent) onGuildMessageReceived((GuildMessageReceivedEvent)event);
+        else if(event instanceof SlashCommandEvent) slashCommandEvent((SlashCommandEvent) event);
         else if(event instanceof GuildMessageReactionAddEvent) onGuildMessageReactionAdd((GuildMessageReactionAddEvent)event);
         else if(event instanceof GuildMessageReactionRemoveEvent) onGuildMessageReactionRemove((GuildMessageReactionRemoveEvent)event);
         else if(event instanceof ReadyEvent) onReady((ReadyEvent)event);
+
 
     }
 }

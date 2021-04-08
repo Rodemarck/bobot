@@ -14,16 +14,12 @@ public class PingGuild extends ComandoGuild {
         super("ping", null, "ping","pong");
     }
 
-    public boolean livre(LinkedList<String> args, Helper.Mensagem hm) {
+    public boolean free(LinkedList<String> args, Helper.Mensagem hm) {
         return true;
     }
 
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) {
-        hm.reply(String.format(hm.text("ping.exec"),hm.jda().getGatewayPing()));
-    }
-
-    public void help(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("ping.help"));
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) {
+        hm.reply(hm.text("ping.exec").formatted(hm.jda().getGatewayPing()));
     }
 
     public void helpExtensive(EmbedBuilder me, ResourceBundle bd) {

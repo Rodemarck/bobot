@@ -25,7 +25,7 @@ public class GraficoPoll extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         PollHelper.getPoll(args, hm, dp -> {
             if(dp.guild() != null){
                 Poll poll = dp.guild().getPoll(dp.titulo());
@@ -35,11 +35,6 @@ public class GraficoPoll extends ComandoGuild {
             }
             hm.reply(String.format(hm.text("grafico.exec"),dp.titulo()));
         });
-    }
-
-    @Override
-    public void help(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("grafico.help"));
     }
 
     @Override

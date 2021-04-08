@@ -1,6 +1,5 @@
 package rode.comando.guild.poll.texto;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import org.bson.BsonValue;
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -11,21 +10,20 @@ import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.model.ModelGuild;
 import rode.model.Poll;
-import rode.utilitarios.*;
+import rode.utilitarios.Memoria;
 
 import java.util.LinkedList;
-import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 @EComandoPoll
 public class AbrePoll extends ComandoGuild {
     private static Logger log = LoggerFactory.getLogger(AbrePoll.class);
     public AbrePoll() {
-        super("poll",null,"poll","enquete","enq");
+        super("abre",null,"poll","enquete","enq");
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         log.debug("start");
         PollHelper.getPoll(args, hm, (dp) -> {
             log.debug("callback");
@@ -83,16 +81,5 @@ public class AbrePoll extends ComandoGuild {
             guild.getPolls().add(poll);
             Memoria.guilds.updateOne(query, new Document("$set",guild.toMongo()));
         });
-    }
-
-
-    @Override
-    public void help(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("abre.help"));
-    }
-
-    @Override
-    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("abre.help.ex"));
     }
 }

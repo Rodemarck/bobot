@@ -30,7 +30,7 @@ public class SetDataPoll  extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         PollHelper.getPoll(args,hm,dp -> {
             if(dp.guild() != null){
                 Poll poll = dp.guild().getPoll(dp.titulo());
@@ -81,8 +81,8 @@ public class SetDataPoll  extends ComandoGuild {
     }
 
     @Override
-    public boolean livre(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        return super.livre(args, event) || PollHelper.livreDono(args, event);
+    public boolean free(LinkedList<String> args, Helper.Mensagem event) throws Exception {
+        return super.free(args, event) || PollHelper.livreDono(args, event);
     }
 
     private void passaTempo(String pattern, String input, Tempx function){
@@ -99,11 +99,6 @@ public class SetDataPoll  extends ComandoGuild {
     private interface Tempx{
         void apply(long n);
     }
-    @Override
-    public void help(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("data.help"));
-    }
-
     @Override
     public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
         var agora = LocalDateTime.now();

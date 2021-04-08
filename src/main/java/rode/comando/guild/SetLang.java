@@ -21,21 +21,17 @@ import java.util.ResourceBundle;
 public class SetLang extends ComandoGuild {
     private static Logger log = LoggerFactory.getLogger(SetLang.class);
     public SetLang() {
-        super("lang", Permission.ADMINISTRATOR, "idioma","lingua","lang");
+        super("lingua", Permission.ADMINISTRATOR, "idioma","lingua","lang");
     }
 
-    @Override
-    public void help(EmbedBuilder me, ResourceBundle loc) {
-
-    }
 
     @Override
     public void helpExtensive(EmbedBuilder me, ResourceBundle loc) {
-
+        me.appendDescription(loc.getString("lingua.help.ex"));
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         log.info("mudando idioma");
         hm.getEvent().getChannel().sendMessage(Constantes.builder(hm.bundle()).build()).queue(msg->{
             log.info("alterando mensagem");

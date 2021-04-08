@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.*;
 
 public class Constantes {
+    public static final Random rng = new Random();
     public static final Dotenv env = Dotenv.load();
     public static final HashMap<String, String> EMOTES = new HashMap<>(){{
         put("check","✔");
@@ -107,10 +108,17 @@ public class Constantes {
             }});
         }
     }
+    public static String env(String key){
+        return env.get(key);
+    }
     public static EmbedBuilder builder(ResourceBundle rb){
         return builder().setTitle(rb.getString("embed.load"));
     }
     public static EmbedBuilder builder(){
         return new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
+    }
+
+    public static String fileName(String format) {
+        return "lixo/" + System.nanoTime() + "." + format;
     }
 }

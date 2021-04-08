@@ -1,8 +1,11 @@
 package rode.comando.guild;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Command;
+import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import org.reflections.Reflections;
 import rode.core.Anotacoes.EComandoPoll;
+import rode.core.Anotacoes.EComandoProgramador;
 import rode.core.Anotacoes.EcomandoGeral;
 import rode.core.Anotacoes.IgnoraComando;
 import rode.core.ComandoGuild;
@@ -23,21 +26,28 @@ public class Tutorial extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws IOException {
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws IOException {
         args.poll();
         var loc = hm.bundle().getLocale();
         if(args.isEmpty()){
             if(tutorial.get(loc) == null){
-
-                var tuto = Constantes.builder();
-                tuto.setTitle(hm.text("tutorial.title"),"https://cdn.discordapp.com/avatars/305090445283688450/b1af2bade4b94a08e31091db153c4aae.png");
-                tuto.appendDescription(hm.text("tutorial.descri"));
-                tuto.appendDescription(hm.text("tutorial.comando.poll"));
                 var reflections = new Reflections("rode.comando.guild");
+                var tuto = Constantes.builder();
+                var ignoreList = reflections.getTypesAnnotatedWith(IgnoraComando.class);
+                tuto.setTitle(hm.text("tutorial.title"))
+                        .setThumbnail("https://cdn.discordapp.com/attachments/305767530021126154/828477225371959306/20210405_005226.jpg")
+                        .appendDescription(hm.text("tutorial.descri"))
+                        .appendDescription(hm.text("tutorial.comando.poll"));
 
                 reflexao(reflections,tuto,hm.bundle(),EComandoPoll.class);
+
+                tuto.appendDescription(hm.text("tutorial.comando.program"));
+                reflexao(reflections,tuto,hm.bundle(), EComandoProgramador.class);
+
                 tuto.appendDescription(hm.text("tutorial.comando.geral"));
                 reflexao(reflections,tuto,hm.bundle(),EcomandoGeral.class);
+
+                System.out.println(tuto.build().getLength());
                 tutorial.put(loc,tuto);
             }
             hm.reply(tutorial.get(loc).build());
@@ -56,11 +66,17 @@ public class Tutorial extends ComandoGuild {
             hm.reply(eb);
             return;
         }
-        hm.reply(String.format(hm.text("tutorial.cmd.404"), args.getFirst() ));
+        hm.reply(hm.text("tutorial.cmd.404").formatted(args.getFirst()));
     }
-    private void reflexao(Reflections reflexao,EmbedBuilder eb,ResourceBundle rb,Class<? extends Annotation> a){
+
+    @Override
+    public void subscribeSlash(CommandUpdateAction cua, ResourceBundle bundle) {
+
+    }
+
+    private void reflexao(Reflections reflexao, EmbedBuilder eb, ResourceBundle rb, Class<? extends Annotation> a){
         var ignoreList = reflexao.getTypesAnnotatedWith(IgnoraComando.class);
-        reflexao.getTypesAnnotatedWith(a).stream().sorted(Comparator.comparing(Class::getName)).filter(aClass -> !ignoreList.contains(aClass)).forEach(c->{
+        reflexao.getTypesAnnotatedWith(a).stream().filter(aClass -> !ignoreList.contains(aClass)).sorted(Comparator.comparing(Class::getName)).forEach(c->{ 
             try {
                 c.getMethod("help", EmbedBuilder.class, ResourceBundle.class).invoke(c.getConstructor().newInstance(),eb,rb);
             } catch (NoSuchMethodException|InstantiationException|IllegalAccessException|InvocationTargetException e) {
@@ -68,15 +84,5 @@ public class Tutorial extends ComandoGuild {
             }
         });
         eb.appendDescription("\n");
-    }
-
-    @Override
-    public void help(EmbedBuilder me, ResourceBundle bd) {
-        me.appendDescription(bd.getString("tutorial.help"));
-    }
-
-    @Override
-    public void helpExtensive(EmbedBuilder me,ResourceBundle bd) {
-        me.appendDescription(bd.getString("tutorial.hep.ex"));
     }
 }

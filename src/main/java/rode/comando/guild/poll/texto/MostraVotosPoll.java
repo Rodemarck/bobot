@@ -10,7 +10,6 @@ import rode.utilitarios.Constantes;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.ResourceBundle;
 
 @EComandoPoll
 public class MostraVotosPoll extends ComandoGuild {
@@ -19,7 +18,7 @@ public class MostraVotosPoll extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
         PollHelper.getPoll(args,hm,dp -> {
             if(dp.guild() != null){
                 Poll poll = dp.guild().getPoll(dp.titulo());
@@ -31,15 +30,5 @@ public class MostraVotosPoll extends ComandoGuild {
             }
             hm.reply(String.format(hm.text("votos.exec.404"),dp.titulo()));
         });
-    }
-
-    @Override
-    public void help(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("votos.help"));
-    }
-
-    @Override
-    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("votos.help.ex"));
     }
 }

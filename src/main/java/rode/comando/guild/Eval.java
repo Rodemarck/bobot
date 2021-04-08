@@ -1,95 +1,76 @@
 package rode.comando.guild;
 
-import rode.core.Anotacoes.EcomandoGeral;
-import rode.core.Anotacoes.IgnoraComando;
+import jdk.jshell.JShell;
+import jdk.jshell.Snippet;
+import rode.core.Anotacoes.EComandoProgramador;
+import rode.core.ComandoGuild;
+import rode.core.EventLoop;
+import rode.core.Helper;
+import rode.model.maker.MensagemTexto;
+import rode.utilitarios.Constantes;
 
-@EcomandoGeral
-@IgnoraComando
-public class Eval /*extends ComandoGuild */{
-    /*public static JShell shell;
-    private static LocalDateTime time;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.regex.Pattern;
+
+@EComandoProgramador
+public class Eval extends ComandoGuild {
     public Eval() {
-        super("eval", null, "eval", "shell");
-        synchronized (this){
-            time = LocalDateTime.now();
-            if(shell == null) {
-                shell = JShell.create();
-                Executador.poolExecutor.execute(() -> {
-                    while (true) {
-                        try {Thread.sleep(60000);}
-                        catch (InterruptedException e) {e.printStackTrace();}
-                        synchronized (this){
-                            if(ChronoUnit.MINUTES.between(time, LocalDateTime.now()) > 5){
-                                shell = null;
-                                shell = JShell.create();
-                                time = LocalDateTime.now();
-                            }
-                        }
-                    }
-
-                });
-            }
-        }
+        super("say", null, "eval", "shell");
     }
 
     @Override
-    public void executa(LinkedList<String> __, Helper.Mensagem hm) throws Exception{
-        synchronized (this){
-            time = LocalDateTime.now();
-        }
-        var comando = hm.mensagem().getContentStripped();
-        if(comando.startsWith("-eval"))
-            comando = comando.replaceFirst("-eval","");
-        else if(comando.startsWith("-shell"))
-            comando = comando.replaceFirst("-shell","");
+    public void execute(LinkedList<String> __, Helper.Mensagem hm) throws Exception {
+        hm.reply(Constantes.builder(hm.bundle()), message -> {
+            hm.mensagem(message);
+            EventLoop.addTexto(new ConversaEval(hm));
+        });
+    }
 
-        try{
-            final var id = hm.getEvent().getAuthor().getIdLong();
-            final var gId = hm.getEvent().getChannel().getIdLong();
-            if(!comando.isBlank()){
-                hm.reply(">> " + shell.eval(comando).get(0).value());
-                return;
-            }
-            final var realComando = comando;
 
-            EventLoop.mensagem(id, new ModelMensagem(id,gId,null) {
-                @Override
-                public void executa(LinkedList<String> args, Helper.Mensagem hm) {
-                    log.debug("executando");
-                    if(mensagemId()==hm.getEvent().getChannel().getIdLong()){
-                        String comando = hm.mensagem().getContentStripped();
-                        if(comando.equals("exit")){
-                            EventLoop.deleta(id);
-                            hm.reply(hm.text("eval.exec.close"));
-                            return;
-                        }
-                        hm.reply(">> " + shell.eval(comando).get(0).value());
-                        atualiza();
-                    }
-                }
-            });
+    private class ConversaEval extends MensagemTexto {
+        private JShell shell;
+
+        private ConversaEval(Helper.Mensagem hm) {
+            super(hm, Arrays.asList(hm.id()), hm.text("eval.exec.close"));
+            src(new HashMap<>() {{
+                put(Pattern.compile("^([Ff](im|echar?)|[Ee]nd|[Cc]lose)"), h -> end());
+                put(Pattern.compile("^[^\\-]"), h -> fun(h));
+            }});
+            delay(180000);
             hm.reply(hm.text("eval.exec.open"));
-        } catch (Exception e) {
-            if(e.getMessage() != null)
-                hm.reply(e.getMessage());
-            throw e;
+            this.shell = JShell.create();
+
+        }
+
+        @Override
+        public void acao(Helper.Mensagem hm) {
+
+        }
+
+        @Override
+        public void rerender(Helper.Mensagem hm) {
+
+        }
+
+        private void fun(Helper.Mensagem hm) {
+            if (shell == null)
+                return;
+            var comando = hm.mensagem().getContentStripped();
+            var res = shell.eval(comando);
+            for (var se : res) {
+                if (se.status().equals(Snippet.Status.VALID)) {
+                    hm.reply(">>> " + se.value());
+                } else
+                    hm.reply("error :" + se.value());
+            }
+        }
+
+        private void end() {
+            shell = null;
+            finaliza();
         }
     }
 
-    @Override
-    public String toString() {
-        return "Eval{}";
-    }
-
-    @Override
-    public void help(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("eval.help"));
-    }
-
-    @Override
-    public void helpExtensive(EmbedBuilder me,ResourceBundle rb) {
-        me.appendDescription(rb.getString("eval.help.ex"));
-    }
-
-*/
 }

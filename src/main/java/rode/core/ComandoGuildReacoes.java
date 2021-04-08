@@ -19,9 +19,15 @@ public abstract class ComandoGuildReacoes extends Comando{
 
     @Override
     public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
-        help(me,rb);
+
     }
+
+    @Override
+    public void help(EmbedBuilder me, ResourceBundle loc) {
+
+    }
+
     public void falha(LinkedList<String> args, Helper.Reacao event) throws Exception{
-        super.falha(event);
+        super.fail(event);
     }
 }

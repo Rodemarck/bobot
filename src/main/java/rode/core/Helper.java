@@ -5,7 +5,8 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
 import org.slf4j.Logger;
@@ -20,26 +21,25 @@ import java.util.function.Function;
 
 public abstract class Helper {
     private static final Logger log = LoggerFactory.getLogger(Helper.class);
-    protected final GenericGuildMessageEvent event;
     protected Message message;
     protected final String id;
     protected Member member;
     protected final ResourceBundle bundle;
+    protected JDA jda;
+    protected TextChannel canal;
 
     public void mensagem(Message message) {
         this.message = message;
     }
 
     public JDA jda(){
-        return event.getJDA();
+        return jda;
     }
 
-    public GenericGuildMessageEvent event() {
-        return event;
-    }
 
-    protected Helper(GenericGuildMessageEvent event, Message message, String id, Member member, Locale locale) {
-        this.event = event;
+    protected Helper(JDA jda, TextChannel canal, Message message, String id, Member member, Locale locale) {
+        this.jda = jda;
+        this.canal = canal;
         this.message = message;
         this.id = id;
         this.member = member;
@@ -56,13 +56,13 @@ public abstract class Helper {
     
 
     public void reply(String str){
-        this.event.getChannel().sendMessage(str).queue();
+        canal.sendMessage(str).queue();
     }
     public void reply(EmbedBuilder eb){
-        this.event.getChannel().sendMessage(eb.build()).queue();
+        canal.sendMessage(eb.build()).queue();
     }
     public void reply(MessageEmbed me){
-        this.event.getChannel().sendMessage(me).queue();
+        canal.sendMessage(me).queue();
     }
     public void reply(File arq){
         reply(arq,message -> arq.delete());
@@ -79,55 +79,54 @@ public abstract class Helper {
     }
 
     public void embed(File f, Function<String,EmbedBuilder> msg){
-        this.event.getChannel().sendFile(f,"arq.png")
+        canal.sendFile(f,"arq.png")
                 .embed(msg.apply("attachment://arq.png").build()).queue(q->
                     f.delete()
         );
     }
 
     public void reply(String str, Consumer<Message> action){
-        this.event.getChannel().sendMessage(str).queue(action);
+        canal.sendMessage(str).queue(action);
     }
     public void reply(EmbedBuilder eb, Consumer<Message> action){
-        log.info("the message is send");
-        this.event.getChannel().sendMessage(eb.build()).queue(action,err->{
+        canal.sendMessage(eb.build()).queue(action,err->{
             log.error(err.getMessage());
         });
     }
     public void reply(MessageEmbed me, Consumer<Message> action){
 
-        this.event.getChannel().sendMessage(me).queue(action);
+        canal.sendMessage(me).queue(action);
     }
     public void reply(File arq,Consumer<Message> action) {
-        this.event.getChannel().sendFile(arq).queue(msg->{
+        canal.sendFile(arq).queue(msg->{
             action.andThen(q->arq.delete()).accept(msg);
         });
     }
 
 
     public void dm(String str){
-        this.event.getJDA().retrieveUserById(id).queue(user ->
+        jda.retrieveUserById(id).queue(user ->
                 user.openPrivateChannel().queue(pv->
                         pv.sendMessage(str).queue()
                 )
         );
     }
     public void dm(EmbedBuilder eb){
-        this.event.getJDA().retrieveUserById(id).queue(user ->
+        jda.retrieveUserById(id).queue(user ->
                 user.openPrivateChannel().queue(pv->
                         pv.sendMessage(eb.build()).queue()
                 )
         );
     }
     public void dm(MessageEmbed me){
-        this.event.getJDA().retrieveUserById(id).queue(user ->
+        jda.retrieveUserById(id).queue(user ->
                 user.openPrivateChannel().queue(pv->
                         pv.sendMessage(me).queue()
                 )
         );
     }
     public void dm(File f){
-        this.event.getJDA().retrieveUserById(id).queue(user ->
+        jda.retrieveUserById(id).queue(user ->
                 user.openPrivateChannel().queue(pv->
                         pv.sendFile(f).queue(q->
                             f.delete()
@@ -136,37 +135,34 @@ public abstract class Helper {
         );
     }
     public void dm(String str, Consumer<Message> action){
-        this.event.getJDA().retrieveUserById(id).queue(user ->
+        jda.retrieveUserById(id).queue(user ->
                 user.openPrivateChannel().queue(pv->
                         pv.sendMessage(str).queue(action)
                 )
         );
             }
     public void dm(EmbedBuilder eb, Consumer<Message> action){
-        this.event.getJDA().retrieveUserById(id).queue(user ->
+        jda.retrieveUserById(id).queue(user ->
                 user.openPrivateChannel().queue(pv->
                         pv.sendMessage(eb.build()).queue(action)
                 )
         );
     }
     public void dm(MessageEmbed me, Consumer<Message> action){
-        this.event.getJDA().retrieveUserById(id).queue(user ->
+        jda.retrieveUserById(id).queue(user ->
                 user.openPrivateChannel().queue(pv->
                         pv.sendMessage(me).queue(action)
                 )
         );
     }
     public void dm(File f, Consumer<Message> action){
-        this.event.getJDA().retrieveUserById(id).queue(user ->
+        jda.retrieveUserById(id).queue(user ->
                 user.openPrivateChannel().queue(pv->
                         pv.sendFile(f).queue(q->action.andThen(qq->f.delete()).accept(q))
                 )
         );
     }
 
-    public String guildId(){
-        return event.getGuild().getId();
-    }
     public Message mensagem() {
         return message;
     }
@@ -185,10 +181,11 @@ public abstract class Helper {
     public static class Mensagem extends Helper{
         private static Logger log = LoggerFactory.getLogger(Mensagem.class);
         private GuildMessageReceivedEvent event;
-
+        public String guildId(){
+            return event.getGuild().getId();
+        }
         public Mensagem(GuildMessageReceivedEvent event,Locale locale) {
-            super(event,event.getMessage(),event.getAuthor().getId(), event.getMember(),locale);
-            log.debug("id = [{}]",event.getAuthor().getId());
+            super(event.getJDA(),event.getChannel(),event.getMessage(),event.getAuthor().getId(), event.getMember(),locale);
             this.event = event;
         }
 
@@ -200,10 +197,11 @@ public abstract class Helper {
     public static class Reacao extends Helper{
         private static Logger log = LoggerFactory.getLogger(Reacao.class);
         private GenericGuildMessageReactionEvent event;
-
+        public String guildId(){
+            return event.getGuild().getId();
+        }
         public Reacao(GenericGuildMessageReactionEvent event, Message message,Locale locale) {
-            super(event,message, event.getUserId(), event.getMember(),locale);
-            log.debug("id = [{}]",event.getUserId());
+            super(event.getJDA(),event.getChannel(),message, event.getUserId(), event.getMember(),locale);
             this.event = event;
         }
 
@@ -215,6 +213,10 @@ public abstract class Helper {
             return this.event.getReactionEmote().getEmoji();
         }
     }
-
+    public static class Slash extends Helper{
+        public Slash(SlashCommandEvent event, Message message, String id, Member member, Locale locale) {
+            super(event.getJDA(),event.getTextChannel(), message, id, member, locale);
+        }
+    }
 
 }

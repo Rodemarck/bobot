@@ -19,7 +19,7 @@ public final class EventLoop implements Runnable{
     private static Logger log = LoggerFactory.getLogger(EventLoop.class);
     private static long count = 0;
     private static EventLoop instance;
-    public static final long delay = Long.parseLong(Objects.requireNonNull(Constantes.env.get("delay")));
+    public static final long delay = Long.parseLong(Objects.requireNonNull(Constantes.env("delay")));
     public static final long delayS = delay/1000;
     private final static List<MensagemReacao> eventos_reacao = Collections.synchronizedList(new LinkedList<>());
     private final static List<MensagemTexto> eventos_texto = Collections.synchronizedList(new LinkedList<>());
@@ -59,7 +59,6 @@ public final class EventLoop implements Runnable{
         }
     }
     public static void textoGuild(Helper.Mensagem hm){
-        log.debug("procurando texto");
         synchronized (eventos_texto){
             var lista = eventos_texto.stream().filter(loop->
                     (loop.membro() == null || loop.membro().contains(hm.id()))

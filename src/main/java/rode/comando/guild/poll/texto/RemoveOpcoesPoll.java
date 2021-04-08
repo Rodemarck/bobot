@@ -1,6 +1,5 @@
 package rode.comando.guild.poll.texto;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -15,22 +14,21 @@ import rode.utilitarios.Memoria;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.ResourceBundle;
 
 @EComandoPoll
 public class RemoveOpcoesPoll extends ComandoGuild {
     private static Logger log = LoggerFactory.getLogger(RemoveOpcoesPoll.class);
     public RemoveOpcoesPoll() {
-        super("remop", Permission.ADMINISTRATOR,  "rempoll","remop","remoptions","remopções","removeop","removeoptions","removeopções");
+        super("remp", Permission.ADMINISTRATOR,  "rempoll","remop","remoptions","remopções","removeop","removeoptions","removeopções");
     }
 
     @Override
-    public boolean livre(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
-        return super.livre(args, hm) || PollHelper.livreDono(args, hm);
+    public boolean free(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+        return super.free(args, hm) || PollHelper.livreDono(args, hm);
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
         log.debug("inicio");
         PollHelper.getPoll(args, hm, dp-> {
             log.debug("callback");
@@ -53,15 +51,5 @@ public class RemoveOpcoesPoll extends ComandoGuild {
             }
             hm.reply(String.format(hm.text("remp.exec"),dp.titulo()));
         });
-    }
-
-    @Override
-    public void help(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("remp.help"));
-    }
-
-    @Override
-    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("remp.help.ex"));
     }
 }

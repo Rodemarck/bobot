@@ -1,6 +1,5 @@
 package rode.comando.guild.poll.texto;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import org.bson.Document;
 import rode.core.Anotacoes.EComandoPoll;
 import rode.core.ComandoGuild;
@@ -11,16 +10,15 @@ import rode.utilitarios.Memoria;
 import rode.utilitarios.Regex;
 
 import java.util.LinkedList;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 @EComandoPoll
 public class VotarPoll extends ComandoGuild {
     public VotarPoll() {
-        super("votar", null, "v","votar", "vote");
+        super("votarP", null, "v","votar", "vote");
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         PollHelper.getPoll(args, hm, dp -> {
             if(dp.guild() != null){
                 if(!dp.poll().aberto()){
@@ -62,16 +60,5 @@ public class VotarPoll extends ComandoGuild {
 
             }
         });
-    }
-
-    @Override
-    public void help(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("votarP.help"));
-    }
-
-    @Override
-    public void helpExtensive(EmbedBuilder me,ResourceBundle rb) {
-        me.appendDescription(rb.getString("votarP.help.ex"));
-
     }
 }

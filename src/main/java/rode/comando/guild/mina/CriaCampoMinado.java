@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 
 public class CriaCampoMinado extends ComandoGuild {
     public CriaCampoMinado() {
-        super("mine", null, "campo");
+        super(/*"mine"*/null, null, "campo");
     }
 
     @Override
@@ -31,7 +31,7 @@ public class CriaCampoMinado extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         hm.reply(Constantes.builder(hm.bundle()),msg->{
             hm.mensagem(msg);
             EventLoop.addReacao(new ConversaCampo(hm));

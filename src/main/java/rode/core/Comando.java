@@ -6,19 +6,24 @@ import net.dv8tion.jda.api.Permission;
 import java.util.ResourceBundle;
 
 public abstract class Comando {
-    public String comando;
+    public String command;
     public String[] alias;
-    public Permission cargo;
+    public Permission permission;
 
-    public Comando(String comando, String[] alias, Permission cargo) {
-        this.comando = comando;
+    public Comando(String comando, String[] alias, Permission permission) {
+        this.command = comando;
         this.alias = alias;
-        this.cargo = cargo;
+        this.permission = permission;
     }
+
+    public String getCommand() {
+        return command;
+    }
+
     public abstract void help(EmbedBuilder me, ResourceBundle loc);
     public abstract void helpExtensive(EmbedBuilder me, ResourceBundle loc);
 
-    protected void falha(Helper h){
-        h.reply(String.format(h.text("cmd.fail"),comando,h.text(cargo.getName())));
+    protected void fail(Helper h){
+        h.reply(String.format(h.text("cmd.fail"), command,h.text(permission.getName())));
     }
 }

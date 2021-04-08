@@ -1,9 +1,9 @@
 package rode.comando.guild.dama;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rode.core.ComandoGuild;
 import rode.core.EventLoop;
 import rode.core.Helper;
@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 public class TabuleiroDama extends ComandoGuild {
     public TabuleiroDama() {
-        super("Dama", null, "dama");
+        super(/*"Dama"*/ null, null, "dama");
     }
 
     @Override
@@ -34,7 +34,7 @@ public class TabuleiroDama extends ComandoGuild {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         var size = hm.mensagem().getMentionedMembers().size();
         if (size == 1) {
             var mensao = hm.mensagem().getMentionedMembers().get(0);
@@ -57,6 +57,8 @@ public class TabuleiroDama extends ComandoGuild {
     }
 
     public static class JogoDama extends MensagemTexto {
+        private static final Logger log = LoggerFactory.getLogger(JogoDama.class);
+
         private static final HashMap<Character,Integer> VALOR = new HashMap<>(){{
             put('a',0);put('A',0);put('1',7);
             put('b',1);put('B',1);put('2',6);
@@ -81,14 +83,18 @@ public class TabuleiroDama extends ComandoGuild {
             this.eb = Constantes.builder();
             vezBranco = true;
             src(new HashMap<>() {{
-                put(Pattern.compile("^[a-hA-H][0-7](\\s+[a-hA-H][0-7])+$"),hm-> type(hm));
+                put(Pattern.compile("^(-?dama\\s*)?[a-hA-H][0-7](\\s+[a-hA-H][0-7])+$"),hm-> type(hm));
+                put(Pattern.compile("^(-?dama\\s*)?([Ee]nd)|([Ff]im)$"),hm->end());
             }});
             eb.setTitle("Jogo de damas russas")
                     .setFooter(Constantes.emote("branco")+branco.getEffectiveName() + "," + Constantes.emote("preto") + preto.getEffectiveName());
             hm.mensagem().delete().queue();
             hm.embed(dama.plot(),str->vez(eb.setImage(str)));
         }
-
+        private void end(){
+            log.info("finalizando");
+            finaliza();
+        }
         private void type(Helper.Mensagem hm) {
             if(vezBranco && !hm.membro().equals(branco) || !vezBranco && ! hm.membro().equals(preto)) {
                 hm.reply("não está na sua vez");
@@ -123,7 +129,10 @@ public class TabuleiroDama extends ComandoGuild {
         public void rerender(Helper.Mensagem hm) {
             if(mudou){
                 fim(fim()+delay());
-                hm.embed(dama.plot(),str->vez(eb.setImage(str)));
+                if(vezBranco)
+                    hm.embed(dama.plot(),str->vez(eb.setImage(str)));
+                else
+                    hm.embed(dama.plotFlipped(),str->vez(eb.setImage(str)));
                 mudou = false;
             }
         }

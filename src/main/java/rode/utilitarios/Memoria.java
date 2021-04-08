@@ -20,7 +20,7 @@ public class Memoria {
 
     static {
         try{
-            mongoClient = MongoClients.create(Constantes.env.get("mongo"));
+            mongoClient = MongoClients.create(Constantes.env("mongo"));
             database = mongoClient.getDatabase("bot");
             guilds  = database.getCollection("guild");
             configs = database.getCollection("config");

@@ -1,17 +1,15 @@
 package rode.comando.guild.poll.reacoes;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rode.core.Anotacoes.IgnoraComando;
 import rode.core.ComandoGuildReacoes;
 import rode.core.Helper;
-import rode.core.Anotacoes.IgnoraComando;
 import rode.core.PollHelper;
 import rode.utilitarios.Memoria;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.ResourceBundle;
 
 @IgnoraComando
 public class PollReactionRem extends ComandoGuildReacoes {
@@ -36,10 +34,5 @@ public class PollReactionRem extends ComandoGuildReacoes {
     @Override
     public boolean livre(LinkedList<String> args, Helper.Reacao event) throws IOException {
         return PollHelper.livreSiMesmo(args,event);
-    }
-
-    @Override
-    public void help(EmbedBuilder me, ResourceBundle rb) {
-
     }
 }

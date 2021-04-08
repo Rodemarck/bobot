@@ -43,7 +43,7 @@ public abstract class MensagemTexto extends ModelLoop{
     }
 
     public static boolean expirado(MensagemTexto mensagemTexto) {
-        boolean b = System.currentTimeMillis() > mensagemTexto.fim();
+        boolean b = !mensagemTexto.ativo() || System.currentTimeMillis() > mensagemTexto.fim() ;
         if(b)
             mensagemTexto.canal.sendMessage(mensagemTexto.mensagem).queue();
         return b;

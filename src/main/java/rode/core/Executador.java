@@ -3,6 +3,7 @@ package rode.core;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -56,7 +57,6 @@ public class Executador {
     }
     public static void checa(GuildMessageReceivedEvent e){
         tryCatch(e.getJDA(),()->{
-            log.debug("checando ");
             var l = Constantes.loc(e.getGuild().getId());
             var hm = new Helper.Mensagem(e,l);
             EventLoop.textoGuild(hm);
@@ -65,20 +65,20 @@ public class Executador {
 
     public static void interpreta(GuildMessageReceivedEvent e, User user) {
         tryCatch(e.getJDA(), () -> {
-            String raw = e.getMessage().getContentRaw();
-            LinkedList<String> args = traduz(raw);
-            String comando = args.size() == 0 ? "" : args.getFirst();
-            ComandoGuild mgr = COMANDOS_GUILD.get(NOME_COMANDOS_GUILD.get(comando));
+            var raw = e.getMessage().getContentRaw();
+            var args = traduz(raw);
+            var comando = args.size() == 0 ? "" : args.getFirst();
+            var mgr = COMANDOS_GUILD.get(NOME_COMANDOS_GUILD.get(comando));
             var l = Constantes.loc(e.getGuild().getId());
             Helper.Mensagem hm = new Helper.Mensagem(e, l);
             if (mgr == null)
                 mgr = COMANDOS_GUILD.get(null);
             if (mgr != null) {
                 log.trace("{} :: [{} <- ({})]", mgr.getClass().getSimpleName(), comando, args);
-                if (mgr.livre(args, hm))
-                    mgr.executa(args, hm);
+                if (mgr.free(args, hm))
+                    mgr.execute(args, hm);
                 else
-                    mgr.falha(args, hm);
+                    mgr.fail(args, hm);
             }
             else
                 EventLoop.textoGuild(hm);
@@ -88,8 +88,8 @@ public class Executador {
         String texto = raw.startsWith(Constantes.PREFIXO) ?
                 raw.replaceFirst(Constantes.PREFIXO,"")
                 :raw;
-        StringTokenizer tokens = new StringTokenizer(texto);
-        LinkedList<String> palavras = new LinkedList<>();
+        var tokens = new StringTokenizer(texto);
+        var palavras = new LinkedList<String>();
         while (tokens.hasMoreTokens())
             palavras.add(tokens.nextToken());
         return palavras;
@@ -107,14 +107,14 @@ public class Executador {
 
     private static void interpretaEmoji(GenericGuildMessageReactionEvent e, Message m,User u, String discriminador) throws Exception {
         tryCatch(e.getJDA(),()->{
-            String raw = m.getContentRaw();
-            LinkedList<String> args = traduz(raw);
-            String comando = args.size() == 0 ? "" : args.getFirst() + discriminador;
+            var raw = m.getContentRaw();
+            var args = traduz(raw);
+            var comando = args.size() == 0 ? "" : args.getFirst() + discriminador;
 
-            ComandoGuildReacoes rmg = COMANDOS_REACOES_GUILD.get(NOME_COMANDOS_REACOES_GUILD.get(comando));
+            var rmg = COMANDOS_REACOES_GUILD.get(NOME_COMANDOS_REACOES_GUILD.get(comando));
             log.trace("comando [{} <- ({})] chamado",comando , discriminador);
             var l = Constantes.loc(e.getGuild().getId());
-            Helper.Reacao hr = new Helper.Reacao(e,m,l);
+            var hr = new Helper.Reacao(e,m,l);
             if(rmg == null)
                 rmg = COMANDOS_REACOES_GUILD.get(null);
             if(rmg != null) {
@@ -126,6 +126,12 @@ public class Executador {
                 EventLoop.reacaoGuild(hr);
         });
 
+    }
+
+    public static void interpreta(SlashCommandEvent event) {
+        tryCatch(event.getJDA(),()->{
+
+        });
     }
 
     private interface Funcao{

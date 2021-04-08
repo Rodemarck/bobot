@@ -12,11 +12,11 @@ import java.util.ResourceBundle;
 @EcomandoGeral
 public class ApagaMensagem extends ComandoGuild {
     public ApagaMensagem() {
-        super("apagaMensagem", Permission.ADMINISTRATOR, "apagaMensagem");
+        super("apaga", Permission.ADMINISTRATOR, "apagaMensagem");
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         args.poll();
         if(args.size() == 0)
             return;
@@ -44,17 +44,12 @@ public class ApagaMensagem extends ComandoGuild {
     }
 
     @Override
-    public boolean livre(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
-        return super.livre(args, hm) || hm.id().equals("305090445283688450");
+    public boolean free(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+        return super.free(args, hm) || hm.id().equals("305090445283688450");
     }
 
     @Override
     public void help(EmbedBuilder me, ResourceBundle rb) {
 
-    }
-
-    @Override
-    public void helpExtensive(EmbedBuilder me,ResourceBundle rb) {
-        me.appendDescription(rb.getString("apaga.help.ex"));
     }
 }

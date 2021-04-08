@@ -1,6 +1,5 @@
 package rode.comando.guild.poll.texto;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -22,21 +21,11 @@ import java.util.ResourceBundle;
 @EComandoPoll
 public class LimpaPolls extends ComandoGuild {
     public LimpaPolls() {
-        super("limpa", Permission.ADMINISTRATOR, "limpa","limpar","lpoll");
+        super("limpar", Permission.ADMINISTRATOR, "limpa","limpar","lpoll");
     }
 
     @Override
-    public void help(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("limpar.help"));
-    }
-
-    @Override
-    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("limpar.help.ex"));
-    }
-
-    @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         var guild = Memoria.guild(hm.guildId());
         if(!guild.getPolls().isEmpty()){
             hm.reply(Constantes.builder(hm.bundle()),msg->{

@@ -1,6 +1,5 @@
 package rode.comando.guild.poll.texto;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import org.bson.Document;
 import rode.core.Anotacoes.EComandoPoll;
@@ -12,16 +11,15 @@ import rode.utilitarios.Memoria;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.ResourceBundle;
 
 @EComandoPoll
 public class DeletaPoll extends ComandoGuild {
     public DeletaPoll() {
-        super("deleta", Permission.MANAGE_CHANNEL, "delpoll","delete","deleta");
+        super("del", Permission.MANAGE_CHANNEL, "delpoll","delete","deleta");
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
+    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
 
         //EventLoop2.addTexto(new MensagemTexto(hm.getEvent().getChannel(), null,"tempo expirado",System.currentTimeMillis()+20000,50,Permission.ADMINISTRATOR));
 
@@ -38,17 +36,7 @@ public class DeletaPoll extends ComandoGuild {
     }
 
     @Override
-    public boolean livre(LinkedList<String> args, Helper.Mensagem event) throws Exception {
-        return super.livre(args, event) || PollHelper.livreDono(args, event);
-    }
-
-    @Override
-    public void help(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("del.help"));
-    }
-
-    @Override
-    public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
-        me.appendDescription(rb.getString("del.help.ex"));
+    public boolean free(LinkedList<String> args, Helper.Mensagem event) throws Exception {
+        return super.free(args, event) || PollHelper.livreDono(args, event);
     }
 }
