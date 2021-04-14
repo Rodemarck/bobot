@@ -104,7 +104,7 @@ public final class EventLoop implements Runnable{
         }
     }
     public static void checaPolls(){
-        Executador.poolExecutor.submit(()->Memoria.eachPoll(m->m.notifica(jda)));
+        Executador.poolExecutor.submit(()->Memoria.eachPoll(m->m.notify_(jda)));
     }
 
     @Override

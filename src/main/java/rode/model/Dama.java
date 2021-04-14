@@ -90,7 +90,7 @@ public class Dama {
                 return peca;
         return null;
     }
-    public boolean joga(boolean vezBranco, Ponto ... pontos){
+    public boolean play(boolean vezBranco, Ponto ... pontos){
         log.debug("jogando com o {}" , vezBranco?"banco":"preto");
         var cadaveres = new LinkedList<Peca>();
         Peca peca = null;

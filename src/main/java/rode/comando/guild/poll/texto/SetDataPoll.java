@@ -65,9 +65,9 @@ public class SetDataPoll  extends ComandoGuild {
                             data = agora.plusMonths(2);
                             hm.reply(hm.text("data.exec.max"));
                         }
-                        poll.setDataLimite(data);
+                        poll.setDeadLine(data);
                         Memoria.update(dp.query(), dp.guild());
-                        hm.reply(poll.config(hm.bundle()));
+                        hm.reply(poll.makeSettingsEmbed(hm.bundle()));
                     }catch (DateTimeException e){
                         hm.reply(hm.text("data.exec.invalid"));
                         return;

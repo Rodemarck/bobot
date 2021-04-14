@@ -26,8 +26,8 @@ public class Poll implements Serializable{
     private LocalDateTime dataLimite;
     private LocalDateTime dataCriacao;
 
-    public MessageEmbed visualiza(int i,ResourceBundle rb) {
-        top t = calculaTop();
+    public MessageEmbed makeDisplayEmbed(int i, ResourceBundle rb) {
+        top t = calculate();
         EmbedBuilder eb = Constantes.builder();
         eb.setTitle(titulo);
         if(Regex.isLink(opcoes.get(i)))
@@ -108,7 +108,7 @@ public class Poll implements Serializable{
         return b;
 
     }
-    public int votouPara(String id){
+    public int votesTo(String id){
         return this.usuariosId.get(id);
     }
     public void add(int index, String userId){
@@ -117,14 +117,14 @@ public class Poll implements Serializable{
             usuariosId.put(userId,index);
         }
     }
-    public void rem(int index, String userId){
+    public void remove(int index, String userId){
         if (hasUser(userId) && usuariosId.get(userId) == index) {
             valores.set(index, (valores.get(index) > 0) ? (valores.get(index) - 1) : 0);
             usuariosId.remove(userId);
         }
     }
 
-    public void addOpcoes(LinkedList<String> opcoes) {
+    public void addOptions(LinkedList<String> opcoes) {
         for(String s: opcoes)
             if (this.opcoes.contains(s))
                 opcoes.remove(s);
@@ -133,7 +133,7 @@ public class Poll implements Serializable{
             this.valores.add(0);
         }
     }
-    public void remOpcoes(LinkedList<String> opcoes) {
+    public void remOptions(LinkedList<String> opcoes) {
         log.debug("remOp");
         synchronized (this) {
             this.usuariosId.entrySet().forEach(u -> {
@@ -165,15 +165,15 @@ public class Poll implements Serializable{
         }
     }
 
-    public boolean aberto(){
+    public boolean isOpen(){
         return dataLimite == null || LocalDateTime.now().isBefore(dataLimite);
     }
 
-    public void fecha(){
+    public void close(){
         dataLimite = LocalDateTime.now().minusMinutes(1);
     }
 
-    private top calculaTop(){
+    private top calculate(){
         int pri=0,sec=0,total=0,priPos=0,secPos=0,num;
         int n = opcoes.size();
         for(int i=0; i<n;i++){
@@ -189,8 +189,8 @@ public class Poll implements Serializable{
         }
         return new top(pri, priPos, sec,secPos, total);
     }
-    public MessageEmbed me(ResourceBundle rb){
-        top t = calculaTop();
+    public MessageEmbed makeDefaultEmbed(ResourceBundle rb){
+        top t = calculate();
         int n = opcoes.size();
         log.debug("me, total = {}",t.total);
         EmbedBuilder eb = Constantes.builder();
@@ -199,7 +199,7 @@ public class Poll implements Serializable{
             int numero = (t.total==0)? 0 : Math.round(((float)valores.get(i)/t.total)*100);
             eb.appendDescription(Constantes.emotePoll(i) + ": " + ((i==t.priPos)? ("**" + opcoes.get(i) + "**"):opcoes.get(i) )+ "\t[" + (numero) + "%]\n\n");
         }
-        eb.appendDescription(aberto()? rb.getString("poll.state") : rb.getString("poll.end"));
+        eb.appendDescription(isOpen()? rb.getString("poll.state") : rb.getString("poll.end"));
         if(t.pri == t.sec)
             eb.appendDescription(rb.getString("poll.vote.drawn"));
         else
@@ -207,8 +207,8 @@ public class Poll implements Serializable{
         return eb.build();
     }
 
-    public MessageEmbed config(ResourceBundle rb) {
-        top t = calculaTop();
+    public MessageEmbed makeSettingsEmbed(ResourceBundle rb) {
+        top t = calculate();
         EmbedBuilder eb = Constantes.builder();
         eb.setTitle(titulo);
         eb.appendDescription(rb.getString("poll.creator"));
@@ -244,19 +244,19 @@ public class Poll implements Serializable{
     }
 
 
-    public String titulo() {
+    public String getTitle() {
         return titulo;
     }
 
-    public List<String> opcoes() {
+    public List<String> getOptions() {
         return opcoes;
     }
 
-    public List<Integer> valores() {
+    public List<Integer> getValues() {
         return valores;
     }
 
-    public String criadorId() {
+    public String creatorId() {
         return criadorId;
     }
 
@@ -271,7 +271,7 @@ public class Poll implements Serializable{
                 '}';
     }
 
-    public HashMap<String, Integer> getNumeroVotos(){
+    public HashMap<String, Integer> getVotesCount(){
         HashMap<String, Integer> votos = new HashMap<>();
         int n = opcoes.size();
         for (int i=0; i<n; i++){
@@ -280,30 +280,30 @@ public class Poll implements Serializable{
         }
         return votos;
     }
-    public void getVotos(EmbedBuilder eb, ResourceBundle rb) {
+    public void getVotes(EmbedBuilder eb, ResourceBundle rb) {
         for(Map.Entry<String, Integer> u :usuariosId.entrySet()){
             System.out.println(opcoes);
             eb.appendDescription(String.format(rb.getString("poll.vote.to"),u.getKey(), opcoes.get(u.getValue())));
         }
     }
 
-    public HashMap<String, Integer> usuariosId() {
+    public HashMap<String, Integer> getUsersId() {
         return usuariosId;
     }
 
-    public LocalDateTime dataLimite() {
+    public LocalDateTime getDeadLine() {
         return dataLimite;
     }
 
-    public void setDataLimite(LocalDateTime dataLimite) {
+    public void setDeadLine(LocalDateTime dataLimite) {
         this.dataLimite = dataLimite;
     }
 
-    public LocalDateTime dataCriacao() {
+    public LocalDateTime getCreationTime() {
         return dataCriacao;
     }
 
-    public void dataCriacao(LocalDateTime dataCriacao) {
+    public void setCreationTime(LocalDateTime dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
     private class top{

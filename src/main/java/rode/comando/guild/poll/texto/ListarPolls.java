@@ -29,8 +29,8 @@ public class ListarPolls extends ComandoGuild {
             EmbedBuilder eb = Constantes.builder();
             eb.setTitle("polls abertas");
             for(Poll p: g.getPolls()) {
-                String t = p.titulo();
-                eb.appendDescription(String.format(hm.text("list.exec.line"), t, p.criadorId()));
+                String t = p.getTitle();
+                eb.appendDescription(String.format(hm.text("list.exec.line"), t, p.creatorId()));
             }
             hm.reply(eb);
             return;

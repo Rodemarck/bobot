@@ -31,7 +31,6 @@ public abstract class ComandoGuild extends Comando{
     public void subscribeSlash(CommandUpdateAction cua, ResourceBundle bundle){
         cua.addCommands(
                 new CommandUpdateAction.CommandData(command,bundle.getString(getHelp()))
-                        .addOption(new CommandUpdateAction.OptionData(Op))
         );
     }
 

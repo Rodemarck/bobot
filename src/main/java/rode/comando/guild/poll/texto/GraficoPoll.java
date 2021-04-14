@@ -44,14 +44,14 @@ public class GraficoPoll extends ComandoGuild {
 
     public File plot(Poll poll, Guild guild) throws IOException {
         DefaultPieDataset pieDataset = new DefaultPieDataset();
-        HashMap<String, Integer> votos = poll.getNumeroVotos();
+        HashMap<String, Integer> votos = poll.getVotesCount();
         votos.entrySet().forEach(entry->
                 pieDataset.setValue(entry.getKey(), entry.getValue())
         );
 
 
         JFreeChart chart = ChartFactory.createRingChart(
-                poll.titulo(), pieDataset, false, false, false);
+                poll.getTitle(), pieDataset, false, false, false);
 
         File f = new File("lixo/"+System.currentTimeMillis() + ".png");
         ChartUtilities.saveChartAsPNG(f, chart, 500, 350);

@@ -24,7 +24,7 @@ public class MostraVotosPoll extends ComandoGuild {
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 EmbedBuilder eb = Constantes.builder();
                 eb.setTitle(String.format(hm.text("votos.exec.title"),dp.titulo()));
-                poll.getVotos(eb, hm.bundle());
+                poll.getVotes(eb, hm.bundle());
                 hm.reply(eb);
                 return;
             }

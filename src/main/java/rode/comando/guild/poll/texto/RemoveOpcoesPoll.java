@@ -41,11 +41,11 @@ public class RemoveOpcoesPoll extends ComandoGuild {
             if(dp.guild() != null){
                 log.debug("não nulo");
                 Poll poll = dp.guild().getPoll(dp.titulo());
-                poll.remOpcoes(dp.opcoes());
+                poll.remOptions(dp.opcoes());
                 Document d = dp.guild().toMongo();
                 Memoria.guilds.updateOne(dp.query(), new Document("$set",d));
-                hm.reply(poll.me(hm.bundle()), message->
-                    PollHelper.addReaction(message,poll.opcoes().size())
+                hm.reply(poll.makeDefaultEmbed(hm.bundle()), message->
+                    PollHelper.addReaction(message,poll.getOptions().size())
                 );
                 return;
             }

@@ -30,11 +30,11 @@ public class ModelGuild {
         return id;
     }
 
-    public String chat() {
+    public String getChat() {
         return chat;
     }
 
-    public void chat(String chat) {
+    public void setChat(String chat) {
         this.chat = chat;
     }
 
@@ -58,7 +58,7 @@ public class ModelGuild {
 
     public Poll getPoll(String titulo){
         for(Poll p:polls) {
-            if (p.titulo().equalsIgnoreCase(titulo)) {
+            if (p.getTitle().equalsIgnoreCase(titulo)) {
                 return p;
             }
         }
@@ -74,10 +74,10 @@ public class ModelGuild {
                 '}';
     }
 
-    public void notifica(JDA jda) {
+    public void notify_(JDA jda) {
         var lista = new LinkedList<Poll>();
         for(var p:polls)
-            if(!p.aberto())
+            if(!p.isOpen())
                 lista.add(p);
         if(!lista.isEmpty()) {
             var c = Memoria.config(id);

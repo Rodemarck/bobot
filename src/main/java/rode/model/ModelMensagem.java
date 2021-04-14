@@ -22,40 +22,39 @@ public abstract class ModelMensagem {
         this.mensagemId = mensagemId;
     }
 
-    public long mensagemId() {
-        return mensagemId;
-    }
-
-    public void mensagemId(long mensagemId) {
-        this.mensagemId = mensagemId;
-    }
-
-    public void tempoLimite(LocalDateTime tempoLimite) {
-        this.tempoLimite = tempoLimite;
-    }
-
-    public long usuarioId() {
-        return usuarioId;
-    }
-
-    public void usuarioId(long usuarioId) {
-        this.usuarioId = usuarioId;
-    }
-
-    public ModelGuild guild() {
-        return guild;
-    }
-
-    public void guild(ModelGuild guild) {
-        this.guild = guild;
-    }
-
-    public LocalDateTime tempoLimite() {
+    public LocalDateTime getDeadLine() {
         return tempoLimite;
     }
 
+    public void setDeadLine(LocalDateTime tempoLimite) {
+        this.tempoLimite = tempoLimite;
+    }
 
-    public void atualiza() {
+    public long getUsersId() {
+        return usuarioId;
+    }
+
+    public void setUsersId(long usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public long getMessageId() {
+        return mensagemId;
+    }
+
+    public void setMessageId(long mensagemId) {
+        this.mensagemId = mensagemId;
+    }
+
+    public ModelGuild getGuild() {
+        return guild;
+    }
+
+    public void setGuild(ModelGuild guild) {
+        this.guild = guild;
+    }
+
+    public void update() {
         this.tempoLimite.plusSeconds(EventLoop.delay/1000);
     }
 
@@ -63,5 +62,5 @@ public abstract class ModelMensagem {
         return agr.isBefore(tempoLimite);
     }
 
-    public abstract void executa(LinkedList<String> args, Helper.Mensagem hm);
+    public abstract void execute(LinkedList<String> args, Helper.Mensagem hm);
 }

@@ -65,8 +65,8 @@ public final class PollHelper {
                     return;
                 }
                 Poll poll = dp.guild().getPoll(dp.titulo());
-                if(!poll.aberto()){
-                    helper.replyTemp(String.format(helper.text("helper.close"),poll.titulo()));
+                if(!poll.isOpen()){
+                    helper.replyTemp(String.format(helper.text("helper.close"),poll.getTitle()));
                     return;
                 }
                 function.apply(new DadosPoll(dp.titulo, dp.opcoes, dp.guild, dp.query, dp.poll, index));
@@ -95,9 +95,9 @@ public final class PollHelper {
             ModelGuild g = ModelGuild.fromMongo(doc);
             Poll poll = g.getPoll(titulo);
             System.out.println("poll = " + poll);
-            if(poll.criadorId().equals(event.id()))
+            if(poll.creatorId().equals(event.id()))
                 return true;
-            event.jda().retrieveUserById(poll.criadorId()).queue(u ->{
+            event.jda().retrieveUserById(poll.creatorId()).queue(u ->{
                 event.reply("pertence a " + u.getName());
             });
         }
@@ -121,12 +121,12 @@ public final class PollHelper {
 
     public static void reRender(Helper.Reacao hr,String tipo, DadosPoll dp) {
         if(tipo.contains("poll"))
-            hr.mensagem().editMessage(dp.poll().me(hr.bundle)).queue();
+            hr.mensagem().editMessage(dp.poll().makeDefaultEmbed(hr.bundle)).queue();
         else if(tipo.contains("pic")){
             final var emb = hr.mensagem().getEmbeds().get(0);
             LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
             int i = Integer.parseInt(param.getFirst());
-            hr.mensagem().editMessage(dp.poll().visualiza(i,hr.bundle)).queue();
+            hr.mensagem().editMessage(dp.poll().makeDisplayEmbed(i,hr.bundle)).queue();
         }
     }
 

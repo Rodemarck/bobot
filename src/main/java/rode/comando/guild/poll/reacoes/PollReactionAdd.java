@@ -22,19 +22,19 @@ public class PollReactionAdd extends ComandoGuildReacoes {
         log.debug("inicio");
         PollHelper.getPollFromEmote(args, hr,dp -> {
             log.debug("callback");
-            if(dp.poll().opcoes().size() > dp.index()){
+            if(dp.poll().getOptions().size() > dp.index()){
                 if(dp.poll().hasUser(hr.id())){
                     hr.mensagem().removeReaction(hr.emoji(), hr.getEvent().getUser()).queue(mm->{
-                        int v = dp.poll().votouPara(hr.id());
+                        int v = dp.poll().votesTo(hr.id());
                         if(dp.index() == v){
-                            dp.poll().rem(dp.index(),hr.id());
+                            dp.poll().remove(dp.index(),hr.id());
                             PollHelper.removeVoto(hr,dp.index());
                             Memoria.update(dp);
                             PollHelper.reRender(hr,tipo,dp);
                             return;
                         }
                         PollHelper.jaVotou(hr,v);
-                        dp.poll().rem(v,hr.id());
+                        dp.poll().remove(v,hr.id());
                         PollHelper.removeVoto(hr, v);
                         dp.poll().add(dp.index(),hr.id());
                         PollHelper.contaVoto(hr, dp.index());

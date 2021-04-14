@@ -107,7 +107,7 @@ public class TabuleiroDama extends ComandoGuild {
                 for(var i=0; i<p.length;i++)
                     pontos[i] = new Ponto(VALOR.get(p[i].charAt(0)), VALOR.get(p[i].charAt(1)));
                 System.out.println(pontos[0] + "->" + pontos[1]);
-                var jogo = this.dama.joga(vezBranco,pontos);
+                var jogo = this.dama.play(vezBranco,pontos);
                 if(jogo) {
                     hm.reply("movimento valido detectado");
                     vezBranco =! vezBranco;

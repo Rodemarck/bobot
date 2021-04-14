@@ -38,9 +38,9 @@ public class PicReaction {
             int index = Integer.parseInt(param.getFirst());
             if(n == 0){
                 if(dp.poll().hasUser(hr.id())){
-                    int i = dp.poll().votouPara(hr.id());
+                    int i = dp.poll().votesTo(hr.id());
                     if(i == index){
-                        dp.poll().rem(index,hr.id());
+                        dp.poll().remove(index,hr.id());
                         Memoria.update(dp);
                         PollHelper.removeVoto(hr, index);
                         PollHelper.reRender(hr,"pic", dp);
@@ -56,11 +56,11 @@ public class PicReaction {
                 return;
             }
             index = (index + n);
-            if(index >= dp.poll().opcoes().size())
+            if(index >= dp.poll().getOptions().size())
                 index = 0;
             else if (index < 0)
-                index = dp.poll().opcoes().size() - 1;
-            hr.mensagem().editMessage(dp.poll().visualiza(index,hr.bundle())).queue();
+                index = dp.poll().getOptions().size() - 1;
+            hr.mensagem().editMessage(dp.poll().makeDisplayEmbed(index,hr.bundle())).queue();
         });
         final var emb = hr.mensagem().getEmbeds().get(0);
     }

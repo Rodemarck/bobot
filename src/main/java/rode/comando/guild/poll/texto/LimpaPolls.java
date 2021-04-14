@@ -60,7 +60,7 @@ public class LimpaPolls extends ComandoGuild {
             log.debug("deletando poll de titul [+" + pp + "]");
             var guild = Memoria.guild(guildId());
             for(var p:guild.getPolls())
-                if(p.titulo().equals(pp)){
+                if(p.getTitle().equals(pp)){
                     guild.getPolls().remove(p);
                     Memoria.update(new Document("id",guildId()),guild);
                     return;
@@ -73,7 +73,7 @@ public class LimpaPolls extends ComandoGuild {
                     .setTitle(rb.getString("limpar.delete"));
             for(int i=0;i<guild.getPolls().size();i++){
                 var p = guild.getPolls().get(i);
-                eb.appendDescription(Constantes.emotePoll(i) + " : **" + p.titulo()+"** , criada por <@"+p.criadorId()+">.\n\n");
+                eb.appendDescription(Constantes.emotePoll(i) + " : **" + p.getTitle()+"** , criada por <@"+p.creatorId()+">.\n\n");
             }
             eb.setFooter(String.format(rb.getString("limpar.exclusive"),nome()),pic());
             mensagem().editMessage(eb.build()).queue(q->atualiza(guild));
@@ -86,7 +86,7 @@ public class LimpaPolls extends ComandoGuild {
                     for (int i = 0; i < guild.getPolls().size(); i++) {
                         final int finalI = i;
                         mensagem().addReaction(Constantes.emotePoll(i)).queue();
-                        put(Constantes.emotePoll(i), r -> pagina(guild.getPolls().get(finalI).titulo()));
+                        put(Constantes.emotePoll(i), r -> pagina(guild.getPolls().get(finalI).getTitle()));
                     }
                 }});
             });

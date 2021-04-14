@@ -20,11 +20,11 @@ public class FechaPoll extends ComandoGuild {
     public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
         PollHelper.getPoll(args,hm,dp -> {
             if(dp.guild() != null){
-                if(!dp.poll().aberto()){
+                if(!dp.poll().isOpen()){
                     hm.replyTemp(String.format(hm.text("fecha.exec.already"),dp.titulo()));
                     return;
                 }
-                dp.poll().fecha();
+                dp.poll().close();
                 Memoria.update(dp);
                 hm.reply(String.format(hm.text("fecha.exec.close"),dp.titulo()), message -> message.addReaction(Constantes.emote("check")).queue());
             }

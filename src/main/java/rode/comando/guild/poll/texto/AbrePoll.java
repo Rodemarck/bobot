@@ -37,7 +37,7 @@ public class AbrePoll extends ComandoGuild {
                 hm.reply("poll", message -> {
                             log.info("poll respondida");
                             hm.reply("carregando");
-                            message.editMessage(poll.me(hm.bundle())).queue();
+                            message.editMessage(poll.makeDefaultEmbed(hm.bundle())).queue();
                         }
                 );
                 return;
@@ -64,8 +64,8 @@ public class AbrePoll extends ComandoGuild {
             }
             final Poll  poll = new Poll(dp.titulo(),dp.opcoes(), hm.getEvent());
             hm.reply("poll", message ->
-                    message.editMessage(poll.me(hm.bundle())).queue(message1 ->
-                            PollHelper.addReaction(message1,poll.opcoes().size())
+                    message.editMessage(poll.makeDefaultEmbed(hm.bundle())).queue(message1 ->
+                            PollHelper.addReaction(message1,poll.getOptions().size())
                     )
             );
             Document query = new Document("id",hm.guildId());
