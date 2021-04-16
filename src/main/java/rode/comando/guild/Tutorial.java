@@ -71,7 +71,9 @@ public class Tutorial extends ComandoGuild {
 
     @Override
     public void subscribeSlash(CommandUpdateAction cua, ResourceBundle bundle) {
-
+        cua.addCommands(
+                new CommandUpdateAction.CommandData("tutorial", bundle.getString("tutorial.help"))
+        );
     }
 
     private void reflexao(Reflections reflexao, EmbedBuilder eb, ResourceBundle rb, Class<? extends Annotation> a){

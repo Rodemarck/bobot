@@ -3,7 +3,9 @@ package rode.core;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
+import org.reflections.Reflections;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
@@ -11,8 +13,10 @@ public abstract class ComandoGuild extends Comando{
     private String help;
     private String helpEx;
     private boolean slash;
+    private final HashMap<String, ComandoGuild> sons;
     public ComandoGuild(String comando, Permission cargo, String ... alias) {
         super(comando, alias, cargo);
+        this.sons = new HashMap<>();
         this.slash = false;
         if (comando != null) {
             help = comando + ".help";
@@ -21,6 +25,7 @@ public abstract class ComandoGuild extends Comando{
     }
     public ComandoGuild(String comando, Permission cargo,boolean slash, String ... alias) {
         super(comando, alias, cargo);
+        this.sons = new HashMap<>();
         this.slash = slash;
         if (comando != null) {
             help = comando + ".help";
@@ -64,5 +69,15 @@ public abstract class ComandoGuild extends Comando{
 
     public boolean isSlash(){
         return slash;
+    }
+
+    public HashMap<String, ComandoGuild> getSons() {
+        return sons;
+    }
+
+    public void findSons(Reflections reflections, Class<? extends ComandoGuild> clazz) {
+        reflections.getSubTypesOf(clazz).forEach(subClass->{
+            sons.put(subClass.getName(),subClass.getConstructor().newInstance());
+        });
     }
 }

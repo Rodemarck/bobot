@@ -59,7 +59,7 @@ public class Main {
         var ignoreList = reflections.getTypesAnnotatedWith(IgnoraComando.class);
         reflections.getSubTypesOf(ComandoGuild.class)
                 .stream().filter(aClass -> !ignoreList.contains(aClass))
-                .forEach(clazz->cadastraComando(clazz,cua,bundle));
+                .forEach(clazz->cadastraComando(clazz,cua,bundle,reflections));
         reflections.getSubTypesOf(ComandoGuildReacoes.class)
                 .stream().filter(aClass -> !ignoreList.contains(aClass))
                 .forEach(Main::cadastraComandoReacao);
@@ -67,7 +67,7 @@ public class Main {
     }
 
 
-    public static void cadastraComando(Class<? extends ComandoGuild> clazz,CommandUpdateAction cua, ResourceBundle bundle) {
+    public static void cadastraComando(Class<? extends ComandoGuild> clazz,CommandUpdateAction cua, ResourceBundle bundle, Reflections reflections) {
         ComandoGuild command;
         try {
             command = clazz.getConstructor().newInstance();
@@ -80,6 +80,7 @@ public class Main {
         Executador.COMANDOS_GUILD.put(id_comando, command);
         for(String s: command.alias)
             Executador.NOME_COMANDOS_GUILD.put(s,id_comando);
+        command.findSons(reflections,clazz);
         if(command.isSlash()){
             command.subscribeSlash(cua,bundle);
         }
