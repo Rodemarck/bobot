@@ -6,6 +6,8 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.Event;
+import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
@@ -176,7 +178,7 @@ public abstract class Helper {
         this.member =  member;
     }
 
-
+    public abstract Event getEvent();
 
     public static class Mensagem extends Helper{
         private static Logger log = LoggerFactory.getLogger(Mensagem.class);
@@ -215,11 +217,16 @@ public abstract class Helper {
     }
     public static class Slash extends Helper{
         private SlashCommandEvent event;
-        public Slash(SlashCommandEvent event, Message message, String id, Member member, Locale locale) {
-            super(event.getJDA(),event.getTextChannel(), message, id, member, locale);
+        public Slash(SlashCommandEvent event, Locale locale) {
+            super(event.getJDA(),event.getTextChannel(), null, event.getMember().getId(), event.getMember(), locale);
         }
         public String guildId(){
             return event.getGuild().getId();
+        }
+
+        @Override
+        public GenericGuildEvent getEvent() {
+            return event;
         }
 
         public void replySlash(EmbedBuilder b) {

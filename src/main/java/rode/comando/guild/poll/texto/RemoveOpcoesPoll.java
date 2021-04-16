@@ -43,7 +43,7 @@ public class RemoveOpcoesPoll extends AbrePoll {
         log.debug("inicio");
         PollHelper.getPoll(args, hm, dp-> {
             log.debug("callback");
-            if(dp.opcoes().isEmpty()){
+            if(dp.opcoes() == null || dp.opcoes().isEmpty()){
                 var eb = Constantes.builder();
                 help(eb,hm.bundle());
                 hm.reply(eb);

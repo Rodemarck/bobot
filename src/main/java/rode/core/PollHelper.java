@@ -52,9 +52,9 @@ public final class PollHelper {
 
     }
     public static void getPollFromEmote(String[] args, Helper.Reacao helper, PollFunction function) throws IOException {
-        final var tipo = args[1];
+        final var tipo = args[0];
         final var args2 = new String[args.length+1];
-        System.arraycopy(args,0,args2,0,args.length+1);
+        System.arraycopy(args,0,args2,0,args.length);
         log.debug("do tipo {}", tipo);
         if(Constantes.POOL_EMOTES.contains(helper.emoji())) {
             var index = Constantes.POOL_EMOTES.indexOf(helper.emoji());
