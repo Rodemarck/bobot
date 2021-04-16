@@ -1,6 +1,7 @@
 package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import org.bson.Document;
 import rode.core.Anotacoes.EComandoPoll;
 import rode.model.ComandoGuild;
@@ -12,12 +13,20 @@ import rode.utilitarios.Memoria;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 @EComandoPoll
-public class ListarPolls extends ComandoGuild {
+public class ListarPolls extends AbrePoll {
 
     public ListarPolls() {
-        super("list", null, "lpoll","list","listar","listpoll","listarpoll");
+        super("list", null, false, "lpoll","list","listar","listpoll","listarpoll");
+        setPath("list");
+    }
+
+    @Override
+    public void subscribeSlash(CommandUpdateAction.CommandData commandData, ResourceBundle bundle) {
+        var subCommand = new CommandUpdateAction.SubcommandData(getCommand(), bundle.getString(getHelp()));
+        commandData.addSubcommand(subCommand);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Command;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -19,9 +21,17 @@ import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 @EComandoPoll
-public class GraficoPoll extends ComandoGuild {
+public class GraficoPoll extends AbrePoll {
     public GraficoPoll() {
-        super("grafico", null, "grafico","grpah","gpoll");
+        super("grafico", null, false,"grafico","grpah","gpoll");
+        setPath("grafico");
+    }
+
+    @Override
+    public void subscribeSlash(CommandUpdateAction.CommandData commandData, ResourceBundle bundle) {
+        var subCommand = new CommandUpdateAction.SubcommandData(getCommand(),bundle.getString(getHelp()))
+                .addOption(new CommandUpdateAction.OptionData(Command.OptionType.STRING,"titulo","titulo da poll a ser deletada").setRequired(true));
+        commandData.addSubcommand(subCommand);
     }
 
     @Override

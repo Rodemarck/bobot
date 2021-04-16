@@ -19,7 +19,7 @@ public abstract class ComandoGuild extends Comando {
     public ComandoGuild(String comando, Permission cargo, String ... alias) {
         super(comando, alias, cargo);
         this.sons = new HashMap<>();
-        this.slash = false;
+        this.slash = true;
         if (comando != null) {
             help = comando + ".help";
             helpEx = help + ".ex";
@@ -36,11 +36,15 @@ public abstract class ComandoGuild extends Comando {
     }
 
     public void subscribeSlash(CommandUpdateAction cua, ResourceBundle bundle){
-        System.out.println(getHelp());
+        /*System.out.println(getCommand());
         cua.addCommands(
                 new CommandUpdateAction.CommandData(command,bundle.getString(getHelp()))
-        );
+        );*/
     }
+    public void subscribeSlash(CommandUpdateAction.CommandData commandData, ResourceBundle bundle){
+
+    }
+
     public void setPath(String path){
         help = path + ".help";
         helpEx = help + ".ex";
@@ -72,6 +76,7 @@ public abstract class ComandoGuild extends Comando {
         if(helpEx != null)
             me.appendDescription(rb.getString(helpEx));
     }
+
 
     public boolean isSlash(){
         return slash;

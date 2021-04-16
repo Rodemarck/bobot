@@ -70,7 +70,7 @@ public class Tutorial extends ComandoGuild {
 
         tuto.appendDescription(hm.text("tutorial.comando.geral"));
         reflexao(reflections,tuto,hm.bundle(),EcomandoGeral.class);
-        tutorial.put(hm.bundle().getLocale(),makeTutorial(hm));
+        tutorial.put(hm.bundle().getLocale(),tuto);
         return tuto;
     }
 

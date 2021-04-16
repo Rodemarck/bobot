@@ -1,6 +1,8 @@
 package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Command;
+import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import org.bson.Document;
 import rode.core.Anotacoes.EComandoPoll;
 import rode.core.Helper;
@@ -17,6 +19,15 @@ import java.util.regex.Pattern;
 public class AdicionaOpcoesPoll extends AbrePoll {
     public AdicionaOpcoesPoll() {
         super("add", null, true,"addpoll","addop","addoptions","addopções","addoveop","addoveoptions","addoveopções");
+        setPath("opcao");
+    }
+
+    @Override
+    public void subscribeSlash(CommandUpdateAction.CommandData commandData, ResourceBundle bundle) {
+        var subCommand = new CommandUpdateAction.SubcommandData(getCommand(), bundle.getString(getHelp()))
+                .addOption(new CommandUpdateAction.OptionData(Command.OptionType.STRING,"titulo","titulo da poll desejada").setRequired(true))
+                .addOption(new CommandUpdateAction.OptionData(Command.OptionType.STRING,"opcao","opção a ser adcional").setRequired(true));
+        commandData.addSubcommand(subCommand);
     }
 
     @Override
@@ -58,5 +69,5 @@ public class AdicionaOpcoesPoll extends AbrePoll {
     @Override
     public void helpExtensive(EmbedBuilder me, ResourceBundle rb) {
         me.appendDescription(rb.getString("opcao.help.ex"));
-        }
+    }
 }

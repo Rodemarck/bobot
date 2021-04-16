@@ -1,6 +1,7 @@
 package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +20,16 @@ import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 @EComandoPoll
-public class LimpaPolls extends ComandoGuild {
+public class LimpaPolls extends AbrePoll {
     public LimpaPolls() {
-        super("limpar", Permission.ADMINISTRATOR, "limpa","limpar","lpoll");
+        super("clean", Permission.ADMINISTRATOR, false,"limpa","limpar","clear","clean");
+        setPath("limpar");
+    }
+
+    @Override
+    public void subscribeSlash(CommandUpdateAction.CommandData commandData, ResourceBundle bundle) {
+        var subCommand = new CommandUpdateAction.SubcommandData(getCommand(), bundle.getString(getHelp()));
+        commandData.addSubcommand(subCommand);
     }
 
     @Override

@@ -1,8 +1,10 @@
 package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import org.bson.BsonValue;
 import org.bson.Document;
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.Anotacoes.EComandoPoll;
@@ -13,21 +15,50 @@ import rode.model.ModelGuild;
 import rode.model.Poll;
 import rode.utilitarios.Memoria;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 @EComandoPoll
 public class AbrePoll extends ComandoGuild {
+    private static final HashMap<String, AbrePoll> subObjects = new HashMap<>();
     private static Logger log = LoggerFactory.getLogger(AbrePoll.class);
     public AbrePoll() {
         super("poll",null,"poll","enquete","enq");
-        setPath("opcao");
+        setPath("poll");
     }
 
     public AbrePoll(String comando, Permission cargo, boolean slash, String... alias) {
         super(comando, cargo, slash, alias);
-        setPath("opcao");
+        setPath("poll");
     }
+
+    @Override
+    public void subscribeSlash(CommandUpdateAction cua, ResourceBundle bundle) {
+        var reflections = new Reflections("rode.comando.guild.poll.texto");
+        var commandData = new CommandUpdateAction.CommandData(command, bundle.getString("tutorial.help"));
+        reflections.getSubTypesOf(getClass()).stream().sorted(Comparator.comparing(Class::getName)).forEach(e->{
+            AbrePoll subObject = null;
+            log.info("inscrevendo a comando {}",e.getName());
+            try {
+                subObject = e.getConstructor().newInstance();
+                subObject.subscribeSlash(commandData,bundle);
+            } catch (InstantiationException instantiationException) {
+                instantiationException.printStackTrace();
+            } catch (IllegalAccessException illegalAccessException) {
+                illegalAccessException.printStackTrace();
+            } catch (InvocationTargetException invocationTargetException) {
+                invocationTargetException.printStackTrace();
+            } catch (NoSuchMethodException noSuchMethodException) {
+                noSuchMethodException.printStackTrace();
+            }
+        });
+        cua.addCommands(commandData);
+    }
+
 
     @Override
     public void execute(String[] args, Helper.Mensagem hm) throws Exception {

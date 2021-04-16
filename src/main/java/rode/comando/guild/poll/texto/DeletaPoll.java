@@ -1,6 +1,8 @@
 package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Command;
+import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import org.bson.Document;
 import rode.core.Anotacoes.EComandoPoll;
 import rode.model.ComandoGuild;
@@ -11,11 +13,20 @@ import rode.utilitarios.Memoria;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 @EComandoPoll
-public class DeletaPoll extends ComandoGuild {
+public class DeletaPoll extends AbrePoll {
     public DeletaPoll() {
-        super("del", Permission.MANAGE_CHANNEL, "delpoll","delete","deleta");
+        super("delete", Permission.MANAGE_CHANNEL, false,"delpoll","delete","deleta");
+        setPath("del");
+    }
+
+    @Override
+    public void subscribeSlash(CommandUpdateAction.CommandData commandData, ResourceBundle bundle) {
+        var subCommand = new CommandUpdateAction.SubcommandData(getCommand(), bundle.getString(getHelp()))
+                .addOption(new CommandUpdateAction.OptionData(Command.OptionType.STRING,"titulo", "titulo da poll a ser deletada").setRequired(true));
+        commandData.addSubcommand(subCommand);
     }
 
     @Override

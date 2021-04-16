@@ -1,5 +1,7 @@
 package rode.comando.guild.poll.texto;
 
+import net.dv8tion.jda.api.entities.Command;
+import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import org.bson.Document;
 import rode.core.Anotacoes.EComandoPoll;
 import rode.model.ComandoGuild;
@@ -11,11 +13,20 @@ import rode.utilitarios.Regex;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 @EComandoPoll
 public class VotarPoll extends ComandoGuild {
     public VotarPoll() {
-        super("votarP", null, "v","votar", "vote");
+        super("vote", null, "v","votar", "vote");
+        setPath("votarP");
+    }
+    @Override
+    public void subscribeSlash(CommandUpdateAction.CommandData commandData, ResourceBundle bundle) {
+        var subCommand = new CommandUpdateAction.SubcommandData(getCommand(), bundle.getString(getHelp()))
+                .addOption(new CommandUpdateAction.OptionData(Command.OptionType.STRING,"titulo","titulo da poll desejada").setRequired(true))
+                .addOption(new CommandUpdateAction.OptionData(Command.OptionType.STRING,"voto","seu voto para a poll").setRequired(true));
+        commandData.addSubcommand(subCommand);
     }
 
     @Override
