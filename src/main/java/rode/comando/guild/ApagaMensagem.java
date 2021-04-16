@@ -3,10 +3,9 @@ package rode.comando.guild;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import rode.core.Anotacoes.EcomandoGeral;
-import rode.core.ComandoGuild;
 import rode.core.Helper;
+import rode.model.ComandoGuild;
 
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 @EcomandoGeral
@@ -16,12 +15,11 @@ public class ApagaMensagem extends ComandoGuild {
     }
 
     @Override
-    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
-        args.poll();
-        if(args.size() == 0)
+    public void execute(String[] args, Helper.Mensagem hm) throws Exception {
+        if(args.length < 2)
             return;
-        if(args.size() == 1) {
-            hm.getEvent().getChannel().retrieveMessageById(args.getFirst()).queue(message -> {
+        if(args.length == 2) {
+            hm.getEvent().getChannel().retrieveMessageById(args[1]).queue(message -> {
                 if (message.getAuthor().getId().equals(hm.jda().getSelfUser().getId()))
                     message.delete().queue(u ->
                             hm.mensagem().delete().queue()
@@ -30,9 +28,9 @@ public class ApagaMensagem extends ComandoGuild {
                     hm.replyTemp(hm.text("apaga.exec"));
             });
         }
-        if(args.size() == 2){
-            hm.getEvent().getGuild().getTextChannelById(args.getFirst())
-                    .retrieveMessageById(args.getLast()).queue(message -> {
+        if(args.length == 3){
+            hm.getEvent().getGuild().getTextChannelById(args[1])
+                    .retrieveMessageById(args[2]).queue(message -> {
                 if (message.getAuthor().getId().equals(hm.jda().getSelfUser().getId()))
                     message.delete().queue(u-> hm.mensagem().delete().queue());
                 else
@@ -44,7 +42,7 @@ public class ApagaMensagem extends ComandoGuild {
     }
 
     @Override
-    public boolean free(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public boolean free(String[] args, Helper.Mensagem hm) throws Exception {
         return super.free(args, hm) || hm.id().equals("305090445283688450");
     }
 

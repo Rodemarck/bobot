@@ -2,13 +2,12 @@ package rode.comando.guild.poll.reacoes;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rode.core.ComandoGuildReacoes;
 import rode.core.Helper;
 import rode.core.PollHelper;
+import rode.model.ComandoGuildReacoes;
 import rode.utilitarios.Memoria;
 
 import java.io.IOException;
-import java.util.LinkedList;
 
 public class PollReactionAdd extends ComandoGuildReacoes {
     private static Logger log = LoggerFactory.getLogger(PollReactionAdd.class);
@@ -17,8 +16,8 @@ public class PollReactionAdd extends ComandoGuildReacoes {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Reacao hr) throws IOException, Exception {
-        final String tipo = args.getFirst();
+    public void executa(String[] args, Helper.Reacao hr) throws IOException, Exception {
+        final String tipo = args[0];
         log.debug("inicio");
         PollHelper.getPollFromEmote(args, hr,dp -> {
             log.debug("callback");
@@ -52,7 +51,7 @@ public class PollReactionAdd extends ComandoGuildReacoes {
         });
     }
     @Override
-    public boolean livre(LinkedList<String> args, Helper.Reacao hr) throws IOException {
+    public boolean livre(String[] args, Helper.Reacao hr) throws IOException {
         return PollHelper.livreSiMesmo(args,hr);
     }
 }

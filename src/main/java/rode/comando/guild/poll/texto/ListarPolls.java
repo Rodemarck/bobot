@@ -3,7 +3,7 @@ package rode.comando.guild.poll.texto;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.bson.Document;
 import rode.core.Anotacoes.EComandoPoll;
-import rode.core.ComandoGuild;
+import rode.model.ComandoGuild;
 import rode.core.Helper;
 import rode.model.ModelGuild;
 import rode.model.Poll;
@@ -21,7 +21,7 @@ public class ListarPolls extends ComandoGuild {
     }
 
     @Override
-    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
+    public void execute(String[] args, Helper.Mensagem hm) throws IOException, Exception {
         Document doc = Memoria.guilds.find(new Document("id", hm.guildId())).first();
         if(doc != null){
             ModelGuild g = ModelGuild.fromMongo(doc);

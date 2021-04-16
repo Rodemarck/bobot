@@ -3,7 +3,7 @@ package rode.comando.guild.mina;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rode.core.ComandoGuild;
+import rode.model.ComandoGuild;
 import rode.core.EventLoop;
 import rode.core.Helper;
 import rode.model.CampoMinado;
@@ -31,7 +31,7 @@ public class CriaCampoMinado extends ComandoGuild {
     }
 
     @Override
-    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(String[] args, Helper.Mensagem hm) throws Exception {
         hm.reply(Constantes.builder(hm.bundle()),msg->{
             hm.mensagem(msg);
             EventLoop.addReacao(new ConversaCampo(hm));

@@ -2,7 +2,7 @@ package rode.comando.guild.poll.reacoes;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rode.core.ComandoGuildReacoes;
+import rode.model.ComandoGuildReacoes;
 import rode.core.Helper;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class PicReactionRem extends ComandoGuildReacoes {
     }
 
     @Override
-    public void executa(LinkedList<String> args, Helper.Reacao hr) throws IOException, Exception {
+    public void executa(String[] args, Helper.Reacao hr) throws IOException, Exception {
         log.trace("chamando ->>" + PicReaction.class);
         PicReaction.executa(args, hr,"---");
     }

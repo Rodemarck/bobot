@@ -31,12 +31,15 @@ public class Controlador implements EventListener {
                     pv = privateChannel;
                     return privateChannel.sendMessage("número 1").submit();
                 });
+        log.info("aaa");
         Executador.poolExecutor.submit(()->{
             EventLoop.getInstance(event.getJDA());
         });
+        log.info("bbb");
     }
 
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+        log.info("msg");
         if (!event.getAuthor().isBot()) {
             if (pre(event.getMessage()))
                 Executador.interpreta(event,event.getAuthor());
@@ -68,6 +71,7 @@ public class Controlador implements EventListener {
     }
 
     public void slashCommandEvent(@NotNull SlashCommandEvent event){
+        log.info("slah!!!");
         Executador.interpreta(event);
     }
 
@@ -78,7 +82,5 @@ public class Controlador implements EventListener {
         else if(event instanceof GuildMessageReactionAddEvent) onGuildMessageReactionAdd((GuildMessageReactionAddEvent)event);
         else if(event instanceof GuildMessageReactionRemoveEvent) onGuildMessageReactionRemove((GuildMessageReactionRemoveEvent)event);
         else if(event instanceof ReadyEvent) onReady((ReadyEvent)event);
-
-
     }
 }

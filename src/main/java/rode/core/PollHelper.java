@@ -11,6 +11,7 @@ import rode.utilitarios.Memoria;
 import rode.utilitarios.Regex;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -25,9 +26,8 @@ public final class PollHelper {
         }
         return null;
     }
-    public static void getPoll(LinkedList<String> args, Helper helper, PollFunction pf) throws IOException {
-        args.poll();
-        String txt = args.stream().collect(Collectors.joining(" "));
+    public static void getPoll(String[] args, Helper helper, PollFunction pf) throws IOException {
+        String txt = Arrays.stream(args).sequential().collect(Collectors.joining(" "));
         LinkedList<String> param = Regex.extractInside("\\{([^\\}])+\\}", txt);
         if(param.size() == 0){
             log.debug("poll [{}] não encontrada", txt);
@@ -51,22 +51,24 @@ public final class PollHelper {
         pf.apply(new DadosPoll(titulo,opcoes,null,query,null,0));
 
     }
-    public static void getPollFromEmote(LinkedList<String> args, Helper.Reacao helper, PollFunction function) throws IOException {
-        final String tipo = args.getFirst();
+    public static void getPollFromEmote(String[] args, Helper.Reacao helper, PollFunction function) throws IOException {
+        final var tipo = args[1];
+        final var args2 = new String[args.length+1];
+        System.arraycopy(args,0,args2,0,args.length+1);
         log.debug("do tipo {}", tipo);
         if(Constantes.POOL_EMOTES.contains(helper.emoji())) {
-            int index = Constantes.POOL_EMOTES.indexOf(helper.emoji());
-            String titulo = helper.mensagem().getEmbeds().get(0).getTitle();
-            args.add('{' + titulo + '}');
+            var index = Constantes.POOL_EMOTES.indexOf(helper.emoji());
+            var titulo = helper.mensagem().getEmbeds().get(0).getTitle();
+            args2[args.length] = '{' + titulo + '}';
             log.debug("titulo da poll {}", titulo);
-            getPoll(args, helper, dp -> {
+            getPoll(args2, helper, dp -> {
                 if(dp.guild() == null){
-                    helper.replyTemp(String.format(helper.text("helper.404"),titulo));
+                    helper.replyTemp(helper.text("helper.404").formatted(titulo));
                     return;
                 }
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 if(!poll.isOpen()){
-                    helper.replyTemp(String.format(helper.text("helper.close"),poll.getTitle()));
+                    helper.replyTemp(helper.text("helper.close").formatted(poll.getTitle()));
                     return;
                 }
                 function.apply(new DadosPoll(dp.titulo, dp.opcoes, dp.guild, dp.query, dp.poll, index));
@@ -78,13 +80,12 @@ public final class PollHelper {
                             helper.mensagem().clearReactions(helper.emoji()).queue())
             );
     }
-    public static boolean livreSiMesmo(LinkedList<String> args, Helper.Reacao event) throws IOException {
+    public static boolean livreSiMesmo(String[] args, Helper.Reacao event) throws IOException {
         return event.mensagem().getAuthor().getId().equals(event.jda().getSelfUser().getId());
     }
-    public static boolean livreDono(LinkedList<String> args, Helper.Mensagem event){
-        LinkedList<String>args2 = new LinkedList<>(args);
-        args2.poll();
-        String txt = args.stream().collect(Collectors.joining(" "));
+    public static boolean livreDono(String[] args, Helper.Mensagem event){
+
+        String txt = Arrays.stream(args).sequential().collect(Collectors.joining(" "));
         String titulo = Regex.extractInside("\\{([^\\}])+\\}", txt).getFirst();
 
         Document query = new Document("id",event.guildId()).append("polls.titulo",titulo);
@@ -106,17 +107,17 @@ public final class PollHelper {
 
     public static void contaVoto(Helper.Reacao hr, int index) {
         hr.jda().retrieveUserById(hr.id()).queue(user->
-            hr.replyTemp(String.format(hr.text("helper.vote"),user.getName(),Constantes.LETRAS.get(index)))
+            hr.replyTemp(hr.text("helper.vote").formatted(user.getName(),Constantes.LETRAS.get(index)))
         );
     }
     public static void removeVoto(Helper.Reacao hr, int index) {
         hr.jda().retrieveUserById(hr.id()).queue(user->{
-            hr.replyTemp(String.format(hr.text("helper.remove"), user.getName(), Constantes.LETRAS.get(index)));
+            hr.replyTemp(hr.text("helper.remove").formatted( user.getName(), Constantes.LETRAS.get(index)));
         });
     }
 
     public static void jaVotou(Helper.Reacao hr, int index) {
-        hr.replyTemp(String.format(hr.text("helper.already"), hr.getEvent().getUser().getName(), Constantes.LETRAS.get(index)));
+        hr.replyTemp(hr.text("helper.already").formatted( hr.getEvent().getUser().getName(), Constantes.LETRAS.get(index)));
     }
 
     public static void reRender(Helper.Reacao hr,String tipo, DadosPoll dp) {

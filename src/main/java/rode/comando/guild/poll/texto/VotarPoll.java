@@ -2,13 +2,14 @@ package rode.comando.guild.poll.texto;
 
 import org.bson.Document;
 import rode.core.Anotacoes.EComandoPoll;
-import rode.core.ComandoGuild;
+import rode.model.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 import rode.utilitarios.Regex;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 @EComandoPoll
@@ -18,14 +19,14 @@ public class VotarPoll extends ComandoGuild {
     }
 
     @Override
-    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(String[] args, Helper.Mensagem hm) throws Exception {
         PollHelper.getPoll(args, hm, dp -> {
             if(dp.guild() != null){
                 if(!dp.poll().isOpen()){
                     hm.replyTemp(hm.text("votarP.exec.close"));
                     return;
                 }
-                String str = args.stream().collect(Collectors.joining());
+                String str = Arrays.stream(args).sequential().collect(Collectors.joining());
                 LinkedList<String> votos = Regex.extractInside("\\[([^\\]])\\]",str);
                 if(votos.size() == 0){
                     hm.replyTemp(hm.text("votarP.exec.lost"));

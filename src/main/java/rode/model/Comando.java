@@ -1,7 +1,8 @@
-package rode.core;
+package rode.model;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import rode.core.Helper;
 
 import java.util.ResourceBundle;
 

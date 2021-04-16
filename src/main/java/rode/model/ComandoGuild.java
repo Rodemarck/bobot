@@ -1,15 +1,17 @@
-package rode.core;
+package rode.model;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import org.reflections.Reflections;
+import rode.core.Helper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 
-public abstract class ComandoGuild extends Comando{
+public abstract class ComandoGuild extends Comando {
     private String help;
     private String helpEx;
     private boolean slash;
@@ -34,11 +36,15 @@ public abstract class ComandoGuild extends Comando{
     }
 
     public void subscribeSlash(CommandUpdateAction cua, ResourceBundle bundle){
+        System.out.println(getHelp());
         cua.addCommands(
                 new CommandUpdateAction.CommandData(command,bundle.getString(getHelp()))
         );
     }
-
+    public void setPath(String path){
+        help = path + ".help";
+        helpEx = help + ".ex";
+    }
     public String getHelp() {
         return help;
     }
@@ -47,13 +53,13 @@ public abstract class ComandoGuild extends Comando{
         return helpEx;
     }
 
-    public boolean free(LinkedList<String> args, Helper.Mensagem event)throws Exception {
+    public boolean free(String[] args, Helper.Mensagem event)throws Exception {
         if(permission == null)
             return true;
         return  event.getEvent().getMember().hasPermission(permission);
     }
-    public abstract void execute(LinkedList<String> args, Helper.Mensagem event) throws Exception;
-    public void fail(LinkedList<String> args, Helper.Mensagem event) throws Exception{
+    public abstract void execute(String[] args, Helper.Mensagem event) throws Exception;
+    public void fail(String[] args, Helper.Mensagem event) throws Exception{
         super.fail(event);
     }
 
@@ -77,7 +83,20 @@ public abstract class ComandoGuild extends Comando{
 
     public void findSons(Reflections reflections, Class<? extends ComandoGuild> clazz) {
         reflections.getSubTypesOf(clazz).forEach(subClass->{
-            sons.put(subClass.getName(),subClass.getConstructor().newInstance());
+            try {
+                var subObject = subClass.getConstructor().newInstance();
+                sons.put(subObject.getCommand(), subObject);
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
         });
     }
+
+    public void executeSlash(SlashCommandEvent slash, Helper.Slash hs){}
 }

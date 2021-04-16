@@ -3,7 +3,6 @@ package rode.comando.guild.poll.texto;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.bson.Document;
 import rode.core.Anotacoes.EComandoPoll;
-import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.model.Poll;
@@ -11,18 +10,17 @@ import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 @EComandoPoll
-public class AdicionaOpcoesPoll extends ComandoGuild {
+public class AdicionaOpcoesPoll extends AbrePoll {
     public AdicionaOpcoesPoll() {
-        super("opcao", null, "addpoll","addop","addoptions","addopções","addoveop","addoveoptions","addoveopções");
+        super("add", null, true,"addpoll","addop","addoptions","addopções","addoveop","addoveoptions","addoveopções");
     }
 
     @Override
-    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
+    public void execute(String[] args, Helper.Mensagem hm) throws IOException, Exception {
         PollHelper.getPoll(args, hm, dp -> {
             if(dp.guild() != null){
                 if(dp.opcoes().isEmpty()){
@@ -39,7 +37,7 @@ public class AdicionaOpcoesPoll extends ComandoGuild {
                     }
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 if(!poll.isOpen()){
-                    hm.replyTemp(String.format(hm.text("opcao.exec.close"), poll.getTitle()));
+                    hm.replyTemp(hm.text("opcao.exec.close").formatted(poll.getTitle()));
                     return;
                 }
 
@@ -48,7 +46,7 @@ public class AdicionaOpcoesPoll extends ComandoGuild {
                 hm.reply(poll.makeDefaultEmbed(hm.bundle()), message->PollHelper.addReaction(message, poll.getOptions().size()));
                 return;
             }
-            hm.reply(String.format(hm.text("opcao.exec.404"),dp.titulo()));
+            hm.reply(hm.text("opcao.exec.404").formatted(dp.titulo()));
         });
     }
 

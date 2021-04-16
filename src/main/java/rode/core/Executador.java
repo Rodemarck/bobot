@@ -10,14 +10,14 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rode.model.ComandoGuild;
+import rode.model.ComandoGuildReacoes;
 import rode.utilitarios.Constantes;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,6 +30,8 @@ public class Executador {
 
     public static final HashMap<Integer, ComandoGuildReacoes> COMANDOS_REACOES_GUILD = new HashMap<>();
     public static final HashMap<String, Integer> NOME_COMANDOS_REACOES_GUILD = new HashMap<>();
+
+    public static final HashMap<String, Integer> NOME_COMANDOS_SLASH = new HashMap<>();
 
     private static void tryCatch(JDA jda, Funcao f){
         poolExecutor.execute(()->{
@@ -57,24 +59,40 @@ public class Executador {
     }
     public static void checa(GuildMessageReceivedEvent e){
         tryCatch(e.getJDA(),()->{
+            log.info("uuu");
             var l = Constantes.loc(e.getGuild().getId());
             var hm = new Helper.Mensagem(e,l);
             EventLoop.textoGuild(hm);
         });
     }
-
+    public static ComandoGuild getGuildCommand(String command, String[] args){
+        var mgr = COMANDOS_GUILD.get(NOME_COMANDOS_GUILD.get(command));
+        var i = 1;
+        ComandoGuild aux;
+        while (mgr!=null && i < args.length){
+            aux = mgr.getSons().get(args[i++]);
+            if(aux != null)
+                mgr = aux;
+            else
+                break;
+        }
+        return mgr;
+    }
     public static void interpreta(GuildMessageReceivedEvent e, User user) {
         tryCatch(e.getJDA(), () -> {
             var raw = e.getMessage().getContentRaw();
-            var args = traduz(raw);
-            var comando = args.size() == 0 ? "" : args.getFirst();
-            var mgr = COMANDOS_GUILD.get(NOME_COMANDOS_GUILD.get(comando));
+            var args = splitter(raw);
+            var command = args.length == 0 ? "" : args[0];
+            log.info("getuuu");
+            var mgr = getGuildCommand(command,args);
+            log.info("{}",mgr.getClass().getSimpleName());
             var l = Constantes.loc(e.getGuild().getId());
-            Helper.Mensagem hm = new Helper.Mensagem(e, l);
+            var hm = new Helper.Mensagem(e, l);
+
             if (mgr == null)
                 mgr = COMANDOS_GUILD.get(null);
             if (mgr != null) {
-                log.trace("{} :: [{} <- ({})]", mgr.getClass().getSimpleName(), comando, args);
+                log.trace("{} :: [{} <- ({})]", mgr.getClass().getSimpleName(), command, args);
                 if (mgr.free(args, hm))
                     mgr.execute(args, hm);
                 else
@@ -84,15 +102,12 @@ public class Executador {
                 EventLoop.textoGuild(hm);
         });
     }
-    private static LinkedList<String>  traduz(String raw){
+    private static String[] splitter(String raw){
         String texto = raw.startsWith(Constantes.PREFIXO) ?
                 raw.replaceFirst(Constantes.PREFIXO,"")
                 :raw;
-        var tokens = new StringTokenizer(texto);
-        var palavras = new LinkedList<String>();
-        while (tokens.hasMoreTokens())
-            palavras.add(tokens.nextToken());
-        return palavras;
+        return texto.split("\\s+|\\n+");
+
     }
     public static void interpreta(GuildMessageReactionAddEvent event, User u) {
         event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(m->{
@@ -108,8 +123,8 @@ public class Executador {
     private static void interpretaEmoji(GenericGuildMessageReactionEvent e, Message m,User u, String discriminador) throws Exception {
         tryCatch(e.getJDA(),()->{
             var raw = m.getContentRaw();
-            var args = traduz(raw);
-            var comando = args.size() == 0 ? "" : args.getFirst() + discriminador;
+            var args = splitter(raw);
+            var comando = args.length == 0 ? "" : args[0] + discriminador;
 
             var rmg = COMANDOS_REACOES_GUILD.get(NOME_COMANDOS_REACOES_GUILD.get(comando));
             log.trace("comando [{} <- ({})] chamado",comando , discriminador);
@@ -130,7 +145,7 @@ public class Executador {
 
     public static void interpreta(SlashCommandEvent event) {
         tryCatch(event.getJDA(),()->{
-
+            event.reply(event.getName()).setEphemeral(true).queue();
         });
     }
 

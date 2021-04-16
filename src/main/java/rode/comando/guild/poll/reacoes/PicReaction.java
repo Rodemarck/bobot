@@ -14,7 +14,7 @@ import java.util.LinkedList;
 
 public class PicReaction {
     private static Logger log = LoggerFactory.getLogger(PicReaction.class);
-    public static void executa(LinkedList<String> args, Helper.Reacao hr, String discriminator) throws IOException, Exception {
+    public static void executa(String[] args, Helper.Reacao hr, String discriminator) throws IOException, Exception {
         int aux;
         log.debug("verificando seta");
         if(hr.emoji().equals(Constantes.emote("esquerda")))

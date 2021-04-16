@@ -2,7 +2,7 @@ package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.Permission;
 import rode.core.Anotacoes.EComandoPoll;
-import rode.core.ComandoGuild;
+import rode.model.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.utilitarios.Constantes;
@@ -17,7 +17,7 @@ public class FechaPoll extends ComandoGuild {
     }
 
     @Override
-    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(String[] args, Helper.Mensagem hm) throws Exception {
         PollHelper.getPoll(args,hm,dp -> {
             if(dp.guild() != null){
                 if(!dp.poll().isOpen()){
@@ -32,7 +32,7 @@ public class FechaPoll extends ComandoGuild {
     }
 
     @Override
-    public boolean free(LinkedList<String> args, Helper.Mensagem event) throws Exception {
+    public boolean free(String[] args, Helper.Mensagem event) throws Exception {
         return super.free(args, event) || PollHelper.livreDono(args, event);
     }
 }

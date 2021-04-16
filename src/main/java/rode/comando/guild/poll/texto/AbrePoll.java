@@ -1,11 +1,12 @@
 package rode.comando.guild.poll.texto;
 
+import net.dv8tion.jda.api.Permission;
 import org.bson.BsonValue;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.Anotacoes.EComandoPoll;
-import rode.core.ComandoGuild;
+import rode.model.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.model.ModelGuild;
@@ -19,11 +20,17 @@ import java.util.regex.Pattern;
 public class AbrePoll extends ComandoGuild {
     private static Logger log = LoggerFactory.getLogger(AbrePoll.class);
     public AbrePoll() {
-        super("abre",null,"poll","enquete","enq");
+        super("poll",null,"poll","enquete","enq");
+        setPath("opcao");
+    }
+
+    public AbrePoll(String comando, Permission cargo, boolean slash, String... alias) {
+        super(comando, cargo, slash, alias);
+        setPath("opcao");
     }
 
     @Override
-    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(String[] args, Helper.Mensagem hm) throws Exception {
         log.debug("start");
         PollHelper.getPoll(args, hm, (dp) -> {
             log.debug("callback");

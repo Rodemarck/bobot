@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.Anotacoes.EcomandoGeral;
-import rode.core.ComandoGuild;
+import rode.model.ComandoGuild;
 import rode.core.EventLoop;
 import rode.core.Helper;
 import rode.model.maker.MensagemReacao;
@@ -31,7 +31,7 @@ public class SetLang extends ComandoGuild {
     }
 
     @Override
-    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(String[] args, Helper.Mensagem hm) throws Exception {
         log.info("mudando idioma");
         hm.getEvent().getChannel().sendMessage(Constantes.builder(hm.bundle()).build()).queue(msg->{
             log.info("alterando mensagem");

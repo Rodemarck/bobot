@@ -1,11 +1,9 @@
 package rode.comando.guild.poll.texto;
 
 import rode.core.Anotacoes.EComandoPoll;
-import rode.core.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
-
-import java.util.LinkedList;
+import rode.model.ComandoGuild;
 
 @EComandoPoll
 public class Configuracoes extends ComandoGuild {
@@ -14,7 +12,7 @@ public class Configuracoes extends ComandoGuild {
     }
 
     @Override
-    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(String[] args, Helper.Mensagem hm) throws Exception {
         PollHelper.getPoll(args, hm,dp -> {
             if(dp.guild() != null){
                 var poll = dp.guild().getPoll(dp.titulo());

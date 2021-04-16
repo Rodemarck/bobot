@@ -5,7 +5,7 @@ import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.Anotacoes.EComandoPoll;
-import rode.core.ComandoGuild;
+import rode.model.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.model.Poll;
@@ -23,12 +23,12 @@ public class RemoveOpcoesPoll extends ComandoGuild {
     }
 
     @Override
-    public boolean free(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public boolean free(String[] args, Helper.Mensagem hm) throws Exception {
         return super.free(args, hm) || PollHelper.livreDono(args, hm);
     }
 
     @Override
-    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
+    public void execute(String[] args, Helper.Mensagem hm) throws IOException, Exception {
         log.debug("inicio");
         PollHelper.getPoll(args, hm, dp-> {
             log.debug("callback");

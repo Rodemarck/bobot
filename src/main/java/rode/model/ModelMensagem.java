@@ -62,5 +62,5 @@ public abstract class ModelMensagem {
         return agr.isBefore(tempoLimite);
     }
 
-    public abstract void execute(LinkedList<String> args, Helper.Mensagem hm);
+    public abstract void execute(String[] args, Helper.Mensagem hm);
 }

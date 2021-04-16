@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.Anotacoes.EComandoPoll;
-import rode.core.ComandoGuild;
+import rode.model.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.model.Poll;
@@ -16,6 +16,7 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
@@ -30,11 +31,11 @@ public class SetDataPoll  extends ComandoGuild {
     }
 
     @Override
-    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(String[] args, Helper.Mensagem hm) throws Exception {
         PollHelper.getPoll(args,hm,dp -> {
             if(dp.guild() != null){
                 Poll poll = dp.guild().getPoll(dp.titulo());
-                String s = args.stream().collect(Collectors.joining(" ")).replaceAll("\\{([^\\}]+)\\}|\\[([^\\]]+)\\]"," ");
+                String s = Arrays.stream(args).sequential().collect(Collectors.joining(" ")).replaceAll("\\{([^\\}]+)\\}|\\[([^\\]]+)\\]"," ");
                 log.debug(s);
                 var p = Pattern.compile("\\d+(/|-)\\d+((/|-)\\d+)?(\\s+\\d+:\\d+)?");
                 var m = p.matcher(s);
@@ -81,7 +82,7 @@ public class SetDataPoll  extends ComandoGuild {
     }
 
     @Override
-    public boolean free(LinkedList<String> args, Helper.Mensagem event) throws Exception {
+    public boolean free(String[] args, Helper.Mensagem event) throws Exception {
         return super.free(args, event) || PollHelper.livreDono(args, event);
     }
 

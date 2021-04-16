@@ -4,7 +4,6 @@ package rode;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Command;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import org.reflections.Reflections;
@@ -12,16 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.controller.Controlador;
 import rode.core.Anotacoes.IgnoraComando;
-import rode.core.ComandoGuild;
-import rode.core.ComandoGuildReacoes;
 import rode.core.Executador;
+import rode.model.ComandoGuild;
+import rode.model.ComandoGuildReacoes;
 import rode.utilitarios.Constantes;
 
 import javax.security.auth.login.LoginException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.EnumSet;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 
 public class Main {
@@ -33,20 +32,16 @@ public class Main {
     private static void jda(){
         log.debug("logando");
         try{
-            var jda = JDABuilder.createLight(Constantes.env("token_teste"), EnumSet.noneOf(GatewayIntent.class))
-                    .setActivity(Activity.playing("-help"))
+            var jda = JDABuilder.createDefault(Constantes.env("token_teste"),Set.of(
+                        GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                        GatewayIntent.GUILD_MESSAGES,
+                        GatewayIntent.DIRECT_MESSAGES)
+                    ).setActivity(Activity.playing("-help"))
                     .setStatus(OnlineStatus.ONLINE)
                     .addEventListeners(new Controlador())
                     .build();
+
             inicializaComandos(jda.updateCommands());
-            var comandos = jda.updateCommands();
-            comandos.addCommands(
-                    new CommandUpdateAction.CommandData("sexo","você transa").
-                            addOption(new CommandUpdateAction.OptionData(Command.OptionType.USER, "user","com quem você vai transar").setRequired(true))
-            );
-            comandos.queue(q->{
-                log.info("foi...");
-            });
         } catch (LoginException e) {
             e.printStackTrace();
         }
@@ -63,6 +58,7 @@ public class Main {
         reflections.getSubTypesOf(ComandoGuildReacoes.class)
                 .stream().filter(aClass -> !ignoreList.contains(aClass))
                 .forEach(Main::cadastraComandoReacao);
+        log.info("finalizado");
         cua.queue();
     }
 

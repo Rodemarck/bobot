@@ -3,25 +3,24 @@ package rode.comando.guild;
 import jdk.jshell.JShell;
 import jdk.jshell.Snippet;
 import rode.core.Anotacoes.EComandoProgramador;
-import rode.core.ComandoGuild;
 import rode.core.EventLoop;
 import rode.core.Helper;
+import rode.model.ComandoGuild;
 import rode.model.maker.MensagemTexto;
 import rode.utilitarios.Constantes;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 @EComandoProgramador
 public class Eval extends ComandoGuild {
     public Eval() {
-        super("say", null, "eval", "shell");
+        super("eval", null, "eval", "shell");
     }
 
     @Override
-    public void execute(LinkedList<String> __, Helper.Mensagem hm) throws Exception {
+    public void execute(String[] __, Helper.Mensagem hm) throws Exception {
         hm.reply(Constantes.builder(hm.bundle()), message -> {
             hm.mensagem(message);
             EventLoop.addTexto(new ConversaEval(hm));

@@ -3,7 +3,7 @@ package rode.comando.guild.poll.texto;
 import net.dv8tion.jda.api.Permission;
 import org.bson.Document;
 import rode.core.Anotacoes.EComandoPoll;
-import rode.core.ComandoGuild;
+import rode.model.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.utilitarios.Constantes;
@@ -19,7 +19,7 @@ public class DeletaPoll extends ComandoGuild {
     }
 
     @Override
-    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
+    public void execute(String[] args, Helper.Mensagem hm) throws IOException, Exception {
 
         //EventLoop2.addTexto(new MensagemTexto(hm.getEvent().getChannel(), null,"tempo expirado",System.currentTimeMillis()+20000,50,Permission.ADMINISTRATOR));
 
@@ -36,7 +36,7 @@ public class DeletaPoll extends ComandoGuild {
     }
 
     @Override
-    public boolean free(LinkedList<String> args, Helper.Mensagem event) throws Exception {
+    public boolean free(String[] args, Helper.Mensagem event) throws Exception {
         return super.free(args, event) || PollHelper.livreDono(args, event);
     }
 }

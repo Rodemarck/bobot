@@ -36,7 +36,7 @@ public abstract class Helper {
         return jda;
     }
 
-
+    public abstract String guildId();
     protected Helper(JDA jda, TextChannel canal, Message message, String id, Member member, Locale locale) {
         this.jda = jda;
         this.canal = canal;
@@ -214,8 +214,16 @@ public abstract class Helper {
         }
     }
     public static class Slash extends Helper{
+        private SlashCommandEvent event;
         public Slash(SlashCommandEvent event, Message message, String id, Member member, Locale locale) {
             super(event.getJDA(),event.getTextChannel(), message, id, member, locale);
+        }
+        public String guildId(){
+            return event.getGuild().getId();
+        }
+
+        public void replySlash(EmbedBuilder b) {
+            event.reply(b.build()).setEphemeral(true).queue();
         }
     }
 

@@ -2,7 +2,7 @@ package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import rode.core.Anotacoes.EComandoPoll;
-import rode.core.ComandoGuild;
+import rode.model.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.model.Poll;
@@ -18,7 +18,7 @@ public class MostraVotosPoll extends ComandoGuild {
     }
 
     @Override
-    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws IOException, Exception {
+    public void execute(String[] args, Helper.Mensagem hm) throws IOException, Exception {
         PollHelper.getPoll(args,hm,dp -> {
             if(dp.guild() != null){
                 Poll poll = dp.guild().getPoll(dp.titulo());

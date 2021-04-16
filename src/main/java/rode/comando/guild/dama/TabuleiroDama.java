@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rode.core.ComandoGuild;
+import rode.model.ComandoGuild;
 import rode.core.EventLoop;
 import rode.core.Helper;
 import rode.model.Dama;
@@ -34,7 +34,7 @@ public class TabuleiroDama extends ComandoGuild {
     }
 
     @Override
-    public void execute(LinkedList<String> args, Helper.Mensagem hm) throws Exception {
+    public void execute(String[] args, Helper.Mensagem hm) throws Exception {
         var size = hm.mensagem().getMentionedMembers().size();
         if (size == 1) {
             var mensao = hm.mensagem().getMentionedMembers().get(0);
