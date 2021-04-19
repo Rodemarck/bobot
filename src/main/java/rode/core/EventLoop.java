@@ -24,6 +24,7 @@ public final class EventLoop implements Runnable{
     private final static List<MensagemReacao> eventos_reacao = Collections.synchronizedList(new LinkedList<>());
     private final static List<MensagemTexto> eventos_texto = Collections.synchronizedList(new LinkedList<>());
     private final static List<Aviso> eventos_avisos = Collections.synchronizedList(new LinkedList<>());
+    private final static List<Aviso> slash_cache = Collections.synchronizedList(new LinkedList<>());
     private static JDA jda;
     private EventLoop(JDA jda){
         EventLoop.jda = jda;
@@ -121,4 +122,5 @@ public final class EventLoop implements Runnable{
             b = !b;
         }
     }
+
 }

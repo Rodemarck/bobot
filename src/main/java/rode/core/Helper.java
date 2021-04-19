@@ -180,6 +180,13 @@ public abstract class Helper {
 
     public abstract Event getEvent();
 
+    public Message replyFull(String a) {
+        return canal.sendMessage(a).complete();
+    }
+    public Message replyFull(EmbedBuilder a) {
+        return canal.sendMessage(a.build()).complete();
+    }
+
     public static class Mensagem extends Helper{
         private static Logger log = LoggerFactory.getLogger(Mensagem.class);
         private GuildMessageReceivedEvent event;
@@ -226,11 +233,24 @@ public abstract class Helper {
 
         @Override
         public GenericGuildEvent getEvent() {
-            return event;
+            return null;
         }
 
         public void replySlash(EmbedBuilder b) {
             event.reply(b.build()).setEphemeral(true).queue();
+        }
+
+        @Override
+        public void reply(String a) {
+             event.reply(a).setEphemeral(true).queue();
+        }
+        @Override
+        public void reply(EmbedBuilder a) {
+             event.reply(a.build()).setEphemeral(true).queue();
+        }
+        @Override
+        public void reply(MessageEmbed a) {
+            event.reply(a).setEphemeral(true).queue();
         }
     }
 

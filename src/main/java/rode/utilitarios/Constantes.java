@@ -2,11 +2,14 @@ package rode.utilitarios;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import rode.core.Helper;
 import rode.model.ConfigGuid;
 
 import java.awt.*;
 import java.util.List;
 import java.util.*;
+import java.util.function.BiFunction;
 
 public class Constantes {
     public static final Random rng = new Random();
@@ -116,6 +119,15 @@ public class Constantes {
     }
     public static EmbedBuilder builder(){
         return new EmbedBuilder().setColor(Color.decode("#C8A2C8"));
+    }
+    public static BiFunction<String, EmbedBuilder, Message> reply(Helper hm){
+        return (a,b)->{
+            if(a != null)
+                return hm.replyFull(a);
+            if(b != null)
+                return hm.replyFull(b);
+            return null;
+        };
     }
 
     public static String fileName(String format) {

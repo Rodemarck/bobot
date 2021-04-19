@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rode.controller.Controlador;
+import rode.core.Controlador;
 import rode.core.Anotacoes.IgnoraComando;
 import rode.core.Executador;
 import rode.model.ComandoGuild;

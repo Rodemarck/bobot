@@ -1,7 +1,11 @@
 package rode.comando.guild.poll.texto;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.commands.CommandHook;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import org.bson.BsonValue;
 import org.bson.Document;
@@ -9,19 +13,24 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.Anotacoes.EComandoPoll;
-import rode.model.ComandoGuild;
+import rode.core.Executador;
 import rode.core.Helper;
 import rode.core.PollHelper;
+import rode.model.ComandoGuild;
 import rode.model.ModelGuild;
 import rode.model.Poll;
+import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 @EComandoPoll
@@ -40,6 +49,7 @@ public class AbrePoll extends ComandoGuild {
 
     @Override
     public void subscribeSlash(CommandUpdateAction cua, ResourceBundle bundle) {
+        Executador.NOME_COMANDOS_SLASH.put(command,Executador.NOME_COMANDOS_GUILD.get(command));
         var reflections = new Reflections("rode.comando.guild.poll.texto");
         var commandData = new CommandUpdateAction.CommandData(command, bundle.getString("tutorial.help"));
         reflections.getSubTypesOf(getClass()).stream().sorted(Comparator.comparing(Class::getName)).forEach(e->{
@@ -61,25 +71,22 @@ public class AbrePoll extends ComandoGuild {
         cua.addCommands(commandData);
     }
 
-    private void function(String[] args, Helper hm,BiConsumer<String, MessageEmbed> reply){
+    private void function(String[] args, Helper hm) throws IOException {
         log.debug("start");
 
         PollHelper.getPoll(args, hm, (dp) -> {
             log.debug("callback");
             if(dp.titulo() == null){
-                reply.accept(hm.text("abre.exec.title"),null);
+                reply.apply(hm.text("abre.exec.title"),null);
                 return;
             }
             if(dp.guild() != null){
                 log.debug("poll encontrada");
                 Poll poll = dp.guild().getPoll(dp.titulo());
-                hm.reply("poll", message -> {
-                            log.info("poll respondida");
-                            message.editMessage(poll.makeDefaultEmbed(hm.bundle())).queue(msg->{
-                                PollHelper.addReaction(message,dp.poll().getOptions().size());
-                            });
-                        }
-                );
+                var message = reply.apply(null,poll.makeDefaultEmbed(hm.bundle()));
+                message.editMessage().queue(msg->{
+                    PollHelper.addReaction(message,dp.poll().getOptions().size());
+                });
                 return;
             }
             if(dp.opcoes() == null){
@@ -94,7 +101,7 @@ public class AbrePoll extends ComandoGuild {
             else{
                 for(String s: dp.opcoes())
                     if(Pattern.matches(".*<@!?\\d+>.*",s)){
-                        reply.accept(hm.text("abre.exec.opmention"),null);
+                        reply.apply(hm.text("abre.exec.opmention"),null);
                         return;
                     }
             }
@@ -102,12 +109,12 @@ public class AbrePoll extends ComandoGuild {
                 hm.reply(hm.text("abre.exec.timention"));
                 return;
             }
-            final Poll  poll = new Poll(dp.titulo(),dp.opcoes(), hm.getEvent());
-            hm.reply("poll", message ->
-                    message.editMessage(poll.makeDefaultEmbed(hm.bundle())).queue(message1 ->
-                            PollHelper.addReaction(message1,poll.getOptions().size())
-                    )
-            );
+            final Poll  poll = new Poll(hm.id(),dp.titulo(),dp.opcoes());
+            var message = reply.apply("poll",null);
+            log.info("poll respondida");
+            message.editMessage(poll.makeDefaultEmbed(hm.bundle())).queue(msg->{
+                PollHelper.addReaction(message,dp.poll().getOptions().size());
+            });
             Document query = new Document("id",hm.guildId());
             Document doc = Memoria.guilds.find(query).first();
 
@@ -124,10 +131,19 @@ public class AbrePoll extends ComandoGuild {
     }
 
     @Override
+    public void executeSlash(SlashCommandEvent slash, Helper.Slash hs) {
+        log.info("{}??{}",slash.getName(),slash.getSubcommandName());
+        if(slash.getSubcommandName() != null)
+            subObjects.get(slash.getSubcommandName()).executeSlash(slash,hs);
+        else
+            System.out.println();
+    }
+
+    @Override
     public void execute(String[] args, Helper.Mensagem hm) throws Exception {
         log.debug("start");
-
-        PollHelper.getPoll(args, hm, (dp) -> {
+        function(args,hm, Constantes.reply(hm));
+        /*PollHelper.getPoll(args, hm, (dp) -> {
             log.debug("callback");
             if(dp.titulo() == null){
                 hm.reply(hm.text("abre.exec.title"));
@@ -183,6 +199,6 @@ public class AbrePoll extends ComandoGuild {
             ModelGuild guild = ModelGuild.fromMongo(doc);
             guild.getPolls().add(poll);
             Memoria.guilds.updateOne(query, new Document("$set",guild.toMongo()));
-        });
+        });*/
     }
 }

@@ -1,4 +1,4 @@
-package rode.controller;
+package rode.core;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.PrivateChannel;
@@ -13,8 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.Main;
-import rode.core.EventLoop;
-import rode.core.Executador;
 import rode.utilitarios.Constantes;
 
 public class Controlador implements EventListener {

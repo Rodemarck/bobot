@@ -145,9 +145,17 @@ public class Executador {
 
     public static void interpreta(SlashCommandEvent event) {
         tryCatch(event.getJDA(),()->{
+            log.info(event.getName());
             var command = COMANDOS_GUILD.get(NOME_COMANDOS_SLASH.get(event.getName()));
-            var loc = Constantes.loc(event.getGuild().getId());
-            command.executeSlash(event, new Helper.Slash(event,loc));
+            if (command!= null){
+                var loc = Constantes.loc(event.getGuild().getId());
+                command.executeSlash(event, new Helper.Slash(event,loc));
+            }
+            else {
+                NOME_COMANDOS_SLASH.forEach((s, integer) -> {
+                    System.out.println(s + "\t" +COMANDOS_GUILD.get(integer));
+                });
+            }
         });
     }
 
