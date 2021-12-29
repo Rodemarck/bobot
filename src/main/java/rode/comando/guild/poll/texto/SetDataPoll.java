@@ -2,12 +2,13 @@ package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Command;
-import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.Anotacoes.EComandoPoll;
-import rode.model.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.model.Poll;
@@ -34,11 +35,11 @@ public class SetDataPoll  extends AbrePoll {
     }
 
     @Override
-    public void subscribeSlash(CommandUpdateAction.CommandData commandData, ResourceBundle bundle) {
-        var subCommand = new CommandUpdateAction.SubcommandData(getCommand(), bundle.getString(getHelp()))
-                .addOption(new CommandUpdateAction.OptionData(Command.OptionType.STRING,"titulo","titulo da poll desejada").setRequired(true))
-                .addOption(new CommandUpdateAction.OptionData(Command.OptionType.STRING,"data","nova data limite de votação").setRequired(true));
-        commandData.addSubcommand(subCommand);
+    public void subscribeSlash(CommandData commandData, ResourceBundle bundle) {
+        var subCommand = new SubcommandData(getCommand(), bundle.getString(getHelp()))
+                .addOptions(new OptionData(OptionType.STRING,"titulo","titulo da poll desejada").setRequired(true),
+                        new OptionData(OptionType.STRING,"data","nova data limite de votação").setRequired(true));
+        commandData.addSubcommands(subCommand);
     }
 
     @Override
@@ -70,22 +71,22 @@ public class SetDataPoll  extends AbrePoll {
                     try{
                         var data = LocalDateTime.of(numeros[0],numeros[1],numeros[2],numeros[3],numeros[4]);
                         if(agora.isAfter(data)){
-                            hm.reply(hm.text("data.exec.invalid"));
+                            hm.reply(hm.getText("data.exec.invalid"));
                             return;
                         }
                         if(ChronoUnit.MONTHS.between(agora,data) > 2) {
                             data = agora.plusMonths(2);
-                            hm.reply(hm.text("data.exec.max"));
+                            hm.reply(hm.getText("data.exec.max"));
                         }
-                        poll.setDeadLine(data);
+                        poll.setDataLimite(data);
                         Memoria.update(dp.query(), dp.guild());
-                        hm.reply(poll.makeSettingsEmbed(hm.bundle()));
+                        hm.reply(poll.makeSettingsEmbed(hm.getBundle()));
                     }catch (DateTimeException e){
-                        hm.reply(hm.text("data.exec.invalid"));
+                        hm.reply(hm.getText("data.exec.invalid"));
                         return;
                     }
                 }else{
-                    hm.reply(hm.text("data.exec.invalid"));
+                    hm.reply(hm.getText("data.exec.invalid"));
                     return;
                 }
             }

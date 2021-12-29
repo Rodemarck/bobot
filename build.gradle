@@ -3,36 +3,25 @@ plugins {
     id'application'
     id'com.github.johnrengelman.shadow' version '6.0.0'
 }
-sourceCompatibility = 15
-targetCompatibility = 15
+sourceCompatibility = 16
+targetCompatibility = 16
 mainClassName  = 'rode.Main'
 
 task stage(dependsOn: ['build', 'clean'])
-/*
-repositories {
-    mavenCentral()
-    jcenter()
-    google()
-    maven {
-        name 'm2-dv8tion'
-        url 'https://m2.dv8tion.net/releases'
-    }
-    maven { url 'https://jitpack.io' }
+tasks.withType( JavaCompile ).configureEach {
+    options.forkOptions.jvmArgs.addAll( ['--add-opens', 'jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED'] )
 }
 
-ext.jdaVersion = 'assets'
-dependencies {
-    compile "com.github.DV8FromTheWorld:JDA:$jdaVersion"
-}*/
-
-ext.jdaVersion = '5b479c8'
 repositories {
     mavenCentral()
     maven { url 'https://m2.dv8tion.net/releases' }
     maven { url 'https://jitpack.io' }
 }
 dependencies {
-    compile "com.github.DV8FromTheWorld:JDA:$jdaVersion"
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    implementation 'com.google.code.gson:gson:2.8.9'
+
+    implementation 'net.dv8tion:JDA:4.4.0_351'
 
     // https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver
     implementation 'org.mongodb:mongodb-driver-legacy:4.0.5'
@@ -53,58 +42,13 @@ dependencies {
     implementation 'io.github.cdimascio:dotenv-java:2.2.0'
 
 
-    // https://mvnrepository.com/artifact/org.projectlombok/lombok
-    implementation 'org.projectlombok:lombok:1.18.16'
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     // https://mvnrepository.com/artifact/org.reflections/reflections
     implementation 'org.reflections:reflections:0.9.11'
 }
-
-/*
-tasks.withType(JavaCompile) {
-    options.compilerArgs += "--enable-preview"
-}
-
-tasks.withType(Test) {
-    jvmArgs += "--enable-preview"
-}
-
-tasks.withType(JavaExec) {
-    jvmArgs += '--enable-preview'
-}*/
-
-
-/*/
-dependencies {
-    compile "com.github.DV8FromTheWorld:JDA:$jdaVersion"
-
-    // https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver
-    implementation 'org.mongodb:mongodb-driver-legacy:4.0.5'
-    /// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
-    implementation 'org.apache.logging.log4j:log4j-core:2.14.0'
-
-    // https://mvnrepository.com/artifact/org.mongodb/bson
-    implementation 'org.mongodb:bson:4.2.0-beta1'
-
-// https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
-    implementation 'ch.qos.logback:logback-classic:1.2.3'
-
-    // https://mvnrepository.com/artifact/org.knowm.xchart/xchart
-    implementation 'org.knowm.xchart:xchart:3.6.6'
-// https://mvnrepository.com/artifact/jfree/jfreechart
-    implementation 'jfree:jfreechart:1.0.13'
-
-    implementation 'io.github.cdimascio:dotenv-java:2.2.0'
-
-
-    // https://mvnrepository.com/artifact/org.projectlombok/lombok
-    implementation 'org.projectlombok:lombok:1.18.16'
-
-    // https://mvnrepository.com/artifact/org.reflections/reflections
-    implementation 'org.reflections:reflections:0.9.11'
-
-
-
-}
-*/
 compileJava.options.encoding = 'UTF-8'

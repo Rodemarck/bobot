@@ -21,8 +21,8 @@ public class Memoria {
     static {
         try{
             mongoClient = MongoClients.create(Constantes.env("mongo"));
-            database = mongoClient.getDatabase("bot");
-            guilds  = database.getCollection("guild");
+            database = mongoClient.getDatabase("domo");
+            guilds  = database.getCollection("dispositivo");
             configs = database.getCollection("config");
         }catch (Exception e){
             e.printStackTrace();

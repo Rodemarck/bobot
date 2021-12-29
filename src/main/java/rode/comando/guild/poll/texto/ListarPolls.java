@@ -3,7 +3,8 @@ package rode.comando.guild.poll.texto;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.bson.Document;
 import rode.core.Anotacoes.EComandoPoll;
 import rode.core.Helper;
@@ -25,9 +26,9 @@ public class ListarPolls extends AbrePoll {
     }
 
     @Override
-    public void subscribeSlash(CommandUpdateAction.CommandData commandData, ResourceBundle bundle) {
-        var subCommand = new CommandUpdateAction.SubcommandData(getCommand(), bundle.getString(getHelp()));
-        commandData.addSubcommand(subCommand);
+    public void subscribeSlash(CommandData commandData, ResourceBundle bundle) {
+        var subCommand = new SubcommandData(getCommand(), bundle.getString(getHelp()));
+        commandData.addSubcommands(subCommand);
     }
 
     @Override
@@ -42,29 +43,30 @@ public class ListarPolls extends AbrePoll {
             EmbedBuilder eb = Constantes.builder();
             eb.setTitle("polls abertas");
             for(Poll p: g.getPolls()) {
-                String t = p.getTitle();
-                eb.appendDescription(String.format(hm.text("list.exec.line"), t, p.creatorId()));
+                String t = p.getTitulo();
+                eb.appendDescription(String.format(hm.getText("list.exec.line"), t, p.getCriadorId()));
             }
             reply.apply(null,eb);
             return;
         }
-        reply.apply(hm.text("list.exec.empty"),null);
+        reply.apply(hm.getText("list.exec.empty"),null);
     }
     @Override
     public void execute(String[] args, Helper.Mensagem hm) throws IOException, Exception {
-        /*Document doc = Memoria.guilds.find(new Document("id", hm.guildId())).first();
+        //function(args);
+        var doc = Memoria.guilds.find(new Document("id", hm.guildId())).first();
         if(doc != null){
-            ModelGuild g = ModelGuild.fromMongo(doc);
+            var g = ModelGuild.fromMongo(doc);
 
             EmbedBuilder eb = Constantes.builder();
             eb.setTitle("polls abertas");
             for(Poll p: g.getPolls()) {
-                String t = p.getTitle();
-                eb.appendDescription(String.format(hm.text("list.exec.line"), t, p.creatorId()));
+                String t = p.getTitulo();
+                eb.appendDescription(String.format(hm.getText("list.exec.line"), t, p.getCriadorId()));
             }
             hm.reply(eb);
             return;
         }
-        hm.reply(hm.text("list.exec.empty"));*/
+        hm.reply(hm.getText("list.exec.empty"));
     }
 }

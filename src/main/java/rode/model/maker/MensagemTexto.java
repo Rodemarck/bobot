@@ -11,17 +11,17 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 public abstract class MensagemTexto extends ModelLoop{
-    private HashMap<Pattern, Consumer<Helper.Mensagem>> src;
+    private HashMap<Pattern, Consumer<Helper.Mensagem>> comandos;
     private TextChannel canal;
     private String mensagem;
 
     public MensagemTexto(TextChannel canal, List<String> menbros,String mensagem, long fim, long delay, Permission permissao) {
-        super(TipoLoop.G_MENSAGEM_TEXTO, EventLoop.geraId(), menbros, System.currentTimeMillis(), fim, delay, permissao);
+        super(getTipo.G_MENSAGEM_TEXTO, EventLoop.geraId(), menbros, System.currentTimeMillis(), fim, delay, permissao);
         this.canal = canal;
         this.mensagem = mensagem;
     }
     public MensagemTexto(Helper.Mensagem hm, List<String> menbros, String mensagem){
-        super(TipoLoop.G_MENSAGEM_TEXTO, EventLoop.geraId(),menbros,System.currentTimeMillis(),System.currentTimeMillis()+120000,120000,null);
+        super(getTipo.G_MENSAGEM_TEXTO, EventLoop.geraId(),menbros,System.currentTimeMillis(),System.currentTimeMillis()+120000,120000,null);
         this.canal = hm.getEvent().getChannel();
         this.mensagem = mensagem;
     }
@@ -29,9 +29,9 @@ public abstract class MensagemTexto extends ModelLoop{
     public void run(Helper.Mensagem hm){
         var check = false;
         synchronized (this){
-            if(ativo()){
-                for(var e: src.entrySet())
-                    if(e.getKey().matcher(hm.mensagem().getContentRaw()).find()) {
+            if(getAtivo()){
+                for(var e: comandos.entrySet())
+                    if(e.getKey().matcher(hm.getMensagem().getContentRaw()).find()) {
                         e.getValue().accept(hm);
                         acao(hm);
                         check = true;
@@ -43,33 +43,33 @@ public abstract class MensagemTexto extends ModelLoop{
     }
 
     public static boolean expirado(MensagemTexto mensagemTexto) {
-        boolean b = !mensagemTexto.ativo() || System.currentTimeMillis() > mensagemTexto.fim() ;
+        boolean b = !mensagemTexto.getAtivo() || System.currentTimeMillis() > mensagemTexto.getFim() ;
         if(b)
             mensagemTexto.canal.sendMessage(mensagemTexto.mensagem).queue();
         return b;
     }
 
-    public HashMap<Pattern, Consumer<Helper.Mensagem>> src() {
-        return src;
+    public HashMap<Pattern, Consumer<Helper.Mensagem>> getComandos() {
+        return comandos;
     }
 
-    public void src(HashMap<Pattern, Consumer<Helper.Mensagem>> src) {
-        this.src = src;
+    public void setComandos(HashMap<Pattern, Consumer<Helper.Mensagem>> src) {
+        this.comandos = src;
     }
 
-    public TextChannel canal() {
+    public TextChannel getCanal() {
         return canal;
     }
 
-    public void canal(TextChannel canal) {
+    public void setCanal(TextChannel canal) {
         this.canal = canal;
     }
 
-    public String mensagem() {
+    public String getMensagem() {
         return mensagem;
     }
 
-    public void mensagem(String mensagem) {
+    public void setMensagem(String mensagem) {
         this.mensagem = mensagem;
     }
     public abstract void acao(Helper.Mensagem hm);

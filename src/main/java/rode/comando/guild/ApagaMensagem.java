@@ -22,19 +22,19 @@ public class ApagaMensagem extends ComandoGuild {
             hm.getEvent().getChannel().retrieveMessageById(args[1]).queue(message -> {
                 if (message.getAuthor().getId().equals(hm.jda().getSelfUser().getId()))
                     message.delete().queue(u ->
-                            hm.mensagem().delete().queue()
+                            hm.getMensagem().delete().queue()
                     );
                 else
-                    hm.replyTemp(hm.text("apaga.exec"));
+                    hm.replyTemp(hm.getText("apaga.exec"));
             });
         }
         if(args.length == 3){
             hm.getEvent().getGuild().getTextChannelById(args[1])
                     .retrieveMessageById(args[2]).queue(message -> {
                 if (message.getAuthor().getId().equals(hm.jda().getSelfUser().getId()))
-                    message.delete().queue(u-> hm.mensagem().delete().queue());
+                    message.delete().queue(u-> hm.getMensagem().delete().queue());
                 else
-                    hm.replyTemp(hm.text("apaga.exec"));
+                    hm.replyTemp(hm.getText("apaga.exec"));
             });
 
             return;
@@ -43,7 +43,7 @@ public class ApagaMensagem extends ComandoGuild {
 
     @Override
     public boolean free(String[] args, Helper.Mensagem hm) throws Exception {
-        return super.free(args, hm) || hm.id().equals("305090445283688450");
+        return super.free(args, hm) || hm.getId().equals("305090445283688450");
     }
 
     @Override

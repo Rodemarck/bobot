@@ -1,7 +1,9 @@
 package rode.comando.guild.poll.texto;
 
-import net.dv8tion.jda.api.entities.Command;
-import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.bson.Document;
 import rode.core.Anotacoes.EComandoPoll;
 import rode.model.ComandoGuild;
@@ -22,11 +24,11 @@ public class VotarPoll extends ComandoGuild {
         setPath("votarP");
     }
     @Override
-    public void subscribeSlash(CommandUpdateAction.CommandData commandData, ResourceBundle bundle) {
-        var subCommand = new CommandUpdateAction.SubcommandData(getCommand(), bundle.getString(getHelp()))
-                .addOption(new CommandUpdateAction.OptionData(Command.OptionType.STRING,"titulo","titulo da poll desejada").setRequired(true))
-                .addOption(new CommandUpdateAction.OptionData(Command.OptionType.STRING,"voto","seu voto para a poll").setRequired(true));
-        commandData.addSubcommand(subCommand);
+    public void subscribeSlash(CommandData commandData, ResourceBundle bundle) {
+        var subCommand = new SubcommandData(getCommand(), bundle.getString(getHelp()))
+                .addOptions(new OptionData(OptionType.STRING,"titulo","titulo da poll desejada").setRequired(true),
+                        new OptionData(OptionType.STRING,"voto","seu voto para a poll").setRequired(true));
+        commandData.addSubcommands(subCommand);
     }
 
     @Override
@@ -34,35 +36,35 @@ public class VotarPoll extends ComandoGuild {
         PollHelper.getPoll(args, hm, dp -> {
             if(dp.guild() != null){
                 if(!dp.poll().isOpen()){
-                    hm.replyTemp(hm.text("votarP.exec.close"));
+                    hm.replyTemp(hm.getText("votarP.exec.close"));
                     return;
                 }
                 String str = Arrays.stream(args).sequential().collect(Collectors.joining());
                 LinkedList<String> votos = Regex.extractInside("\\[([^\\]])\\]",str);
                 if(votos.size() == 0){
-                    hm.replyTemp(hm.text("votarP.exec.lost"));
+                    hm.replyTemp(hm.getText("votarP.exec.lost"));
                     return;
                 }
                 if(Constantes.LETRAS.contains(votos.getFirst().toLowerCase())){
                     int index = Constantes.LETRAS.indexOf(votos.getFirst().toLowerCase());
-                    if(index < dp.poll().getOptions().size()){
+                    if(index < dp.poll().getOpcoes().size()){
                         if(dp.poll().hasUser(hm.getEvent().getAuthor().getId())){
                             int original = dp.poll().votesTo(hm.getEvent().getAuthor().getId());
                             if(index == original){
-                                hm.mensagem().delete().queue();
-                                dp.poll().remove(index,hm.id());
-                                hm.replyTemp(String.format(hm.text("votarP.exec.remove"),hm.getEvent().getAuthor().getName()));
+                                hm.getMensagem().delete().queue();
+                                dp.poll().remove(index,hm.getId());
+                                hm.replyTemp(String.format(hm.getText("votarP.exec.remove"),hm.getEvent().getAuthor().getName()));
                                 Memoria.guilds.updateOne(dp.query(), new Document("$set", dp.guild().toMongo()));
                                 return;
                             }
                             else{
-                                hm.replyTemp(String.format(hm.text("votarP.exec.already"), hm.getEvent().getAuthor().getName(), Constantes.LETRAS.get(dp.poll().votesTo(hm.id()))));
+                                hm.replyTemp(String.format(hm.getText("votarP.exec.already"), hm.getEvent().getAuthor().getName(), Constantes.LETRAS.get(dp.poll().votesTo(hm.getId()))));
                             }
                         }
                         else{
-                            hm.mensagem().delete().queue();
-                            dp.poll().add(index, hm.id());
-                            hm.replyTemp(String.format(hm.text("votarP.exec.vote"), hm.getEvent().getAuthor().getName()));
+                            hm.getMensagem().delete().queue();
+                            dp.poll().add(index, hm.getId());
+                            hm.replyTemp(String.format(hm.getText("votarP.exec.vote"), hm.getEvent().getAuthor().getName()));
                             Memoria.guilds.updateOne(dp.query(), new Document("$set", dp.guild().toMongo()));
                             return;
                         }

@@ -1,6 +1,7 @@
 package rode.core;
 
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -109,35 +110,41 @@ public class Executador {
         return texto.split("\\s+|\\n+");
 
     }
-    public static void interpreta(GuildMessageReactionAddEvent event, User u) {
+    public static void interpreta(GuildMessageReactionAddEvent event, Member u) {
         event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(m->{
             tryCatch(event.getJDA(),()->interpretaEmoji(event, m,u, "+++"));
         });
     }
-    public static void interpreta(GuildMessageReactionRemoveEvent event, User u) {
+    public static void interpreta(GuildMessageReactionRemoveEvent event, Member u) {
         event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(m->{
             tryCatch(event.getJDA(),()->interpretaEmoji(event,m,u, "---"));
         });
     }
 
-    private static void interpretaEmoji(GenericGuildMessageReactionEvent e, Message m,User u, String discriminador) throws Exception {
+    private static void interpretaEmoji(GenericGuildMessageReactionEvent e, Message m,Member u, String discriminador) throws Exception {
         tryCatch(e.getJDA(),()->{
+            var embeds = m.getEmbeds();
             var raw = m.getContentRaw();
             var args = splitter(raw);
+            if(embeds.size() > 0 && u.equals(e.getJDA().getSelfUser())){
+                embeds.get(0).getTitle();
+            }
             var comando = args.length == 0 ? "" : args[0] + discriminador;
 
             var rmg = COMANDOS_REACOES_GUILD.get(NOME_COMANDOS_REACOES_GUILD.get(comando));
-            log.trace("comando [{} <- ({})] chamado",comando , discriminador);
             var l = Constantes.loc(e.getGuild().getId());
             var hr = new Helper.Reacao(e,m,l);
+            hr.setMembro(u);
+
             if(rmg == null)
                 rmg = COMANDOS_REACOES_GUILD.get(null);
             if(rmg != null) {
                 log.trace("{} :: [{} <- ({})]",rmg.getClass().getSimpleName(),comando , args);
                 if (rmg.livre(args, hr))
                     rmg.executa(args, hr);
+                return;
             }
-            else if(discriminador.equals("+++"))
+            if(discriminador.equals("+++"))
                 EventLoop.reacaoGuild(hr);
         });
 

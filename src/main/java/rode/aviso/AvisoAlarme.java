@@ -18,8 +18,9 @@ public class AvisoAlarme extends Aviso{
     }
 
     public static AvisoAlarme fromMongo(Document d) {
+        System.out.println(d);
         return new AvisoAlarme(d.getString("canal"),
-                LocalDateTime.parse(d.getString("horario")),
+                d.getString("horario")!= null ?LocalDateTime.parse(d.getString("horario")) : null,
                 d.getString("guildId"),
                 d.getString("id"),
                 d.getString("titulo"),
@@ -37,17 +38,17 @@ public class AvisoAlarme extends Aviso{
     @Override
     public boolean acao(JDA jda) {
         var eb = Constantes.builder()
-                .setTitle(titulo())
-                .addField("criado por","<@" + id() + ">",true)
-                .appendDescription(mensagem());
-        jda.getTextChannelById(canal()).sendMessage(eb.build()).queue();
-        horario(horario().plusSeconds(espasamento));
+                .setTitle(getTitulo())
+                .addField("criado por","<@" + getId() + ">",true)
+                .appendDescription(getMensagem());
+        jda.getTextChannelById(getCanal()).sendMessageEmbeds(eb.build()).queue();
+        setHorario(getHorario().plusSeconds(espasamento));
         --repeticao;
-        Memoria.usandoConfig(guildId(),conf->{
+        Memoria.usandoConfig(getGuildId(), conf->{
             var n = conf.avisos().size();
             for(int i=0;i<n;i++){
                 var a =conf.avisos().get(i);
-                if(a.titulo().equals(titulo())){
+                if(a.getTitulo().equals(getTitulo())){
                     conf.avisos().set(i,this);
                 }
             }

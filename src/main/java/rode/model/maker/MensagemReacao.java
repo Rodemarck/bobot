@@ -10,100 +10,101 @@ import rode.core.Helper;
 import java.util.*;
 import java.util.function.Consumer;
 
+
 public abstract class MensagemReacao extends ModelLoop{
     private static Logger log = LoggerFactory.getLogger(MensagemReacao.class);
     private Message mensagem;
-    private HashMap<String, Consumer<Helper.Reacao>> src;
+    private HashMap<String, Consumer<Helper.Reacao>> comandos;
     private String guildId;
     private String pic;
     private String nome;
 
-    public MensagemReacao(Helper hr, Message msg, List<String> membro, long fim, Permission permissao, HashMap<String, Consumer<Helper.Reacao>> src) {
-        super(TipoLoop.G_MENSAGEM_REACAO, EventLoop.geraId(), membro, System.currentTimeMillis(), fim, 20000,permissao);
+    public MensagemReacao(Helper hr, Message msg, List<String> membro, long fim, Permission permissao, HashMap<String, Consumer<Helper.Reacao>> comandos) {
+        super(getTipo.G_MENSAGEM_REACAO, EventLoop.geraId(), membro, System.currentTimeMillis(), fim, 20000,permissao);
         log.info("MensagemReacao<Init>");
         this.mensagem =msg;//hr.event().getChannel().sendMessage(Constantes.builder().setTitle(hr.text("embed.load")).build()).complete();
-        this.src = src;
+        this.comandos = comandos;
         this.guildId = hr.guildId();
-        this.pic = hr.membro().getUser().getAvatarUrl();
-        this.nome = hr.membro().getUser().getAsTag();
+        this.pic = hr.getMembro().getUser().getAvatarUrl();
+        this.nome = hr.getMembro().getUser().getAsTag();
     }
 
     public void run( Helper.Reacao helper) {
         synchronized (this){
-            if(ativo()){
-                for(var e : src.entrySet()) {
+            if(getAtivo()){
+                for(var e : comandos.entrySet()) {
                     if (e.getKey().equals(helper.emoji())) {
                         e.getValue().accept(helper);
-                        render(helper.bundle());
+                        render(helper.getBundle());
                         break;
                     }
                 }
 
             }
-            helper.mensagem().removeReaction(helper.emoji(),helper.membro().getUser()).queue();
+            helper.getMensagem().removeReaction(helper.emoji(),helper.getMembro().getUser()).queue();
         }
     }
 
     public abstract void acao();
 
-    public Message mensagem() {
-        return mensagem;
-    }
-
-    public void mensagem(Message mensagem) {
-        this.mensagem = mensagem;
-    }
-
-    public HashMap<String, Consumer<Helper.Reacao>> src() {
-        return src;
-    }
-
-    public void src(HashMap<String, Consumer<Helper.Reacao>> src) {
-        this.src = src;
-    }
-
-    public String guildId() {
-        return guildId;
-    }
-
-    public void guildId(String guildId) {
-        this.guildId = guildId;
-    }
-
-    public String pic() {
-        return pic;
-    }
-
-    public void pic(String pic) {
-        this.pic = pic;
-    }
-
-    public String nome() {
-        return nome;
-    }
-
-    public void nome(String nome) {
-        this.nome = nome;
-    }
-
     public abstract void rerender(ResourceBundle rb);
 
     private void render(ResourceBundle rb){
         acao();
-        if(ativo()){
-            fim(System.currentTimeMillis()+delay());
+        if(getAtivo()){
+            setFim(System.currentTimeMillis()+ getDelay());
             rerender(rb);
         }else
             finaliza();
     }
 
     public static boolean expirado(MensagemReacao mensagemReacao) {
-        if(!mensagemReacao.ativo())
+        if(!mensagemReacao.getAtivo())
             return true;
-        var b = System.currentTimeMillis() > mensagemReacao.fim();
+        var b = System.currentTimeMillis() > mensagemReacao.getFim();
         if(b) {
-            mensagemReacao.mensagem().delete().queue();
+            mensagemReacao.getMensagem().delete().queue();
         }
         return b;
+    }
+
+    public Message getMensagem() {
+        return mensagem;
+    }
+
+    public void setMensagem(Message mensagem) {
+        this.mensagem = mensagem;
+    }
+
+    public HashMap<String, Consumer<Helper.Reacao>> getComandos() {
+        return comandos;
+    }
+
+    public void setComandos(HashMap<String, Consumer<Helper.Reacao>> comandos) {
+        this.comandos = comandos;
+    }
+
+    public String getGuildId() {
+        return guildId;
+    }
+
+    public void setGuildId(String guildId) {
+        this.guildId = guildId;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 }

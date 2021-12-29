@@ -1,16 +1,16 @@
 package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Command;
-import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import rode.core.Anotacoes.EComandoPoll;
-import rode.model.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 @EComandoPoll
@@ -21,10 +21,10 @@ public class FechaPoll extends AbrePoll {
     }
 
     @Override
-    public void subscribeSlash(CommandUpdateAction.CommandData commandData, ResourceBundle bundle) {
-        var subCommand = new CommandUpdateAction.SubcommandData(getCommand(),bundle.getString(getHelp()))
-                .addOption(new CommandUpdateAction.OptionData(Command.OptionType.STRING,"titulo","titulo da poll a ser apagada").setRequired(true));
-        commandData.addSubcommand(subCommand);
+    public void subscribeSlash(CommandData commandData, ResourceBundle bundle) {
+        var subCommand = new SubcommandData(getCommand(),bundle.getString(getHelp()))
+                .addOptions(new OptionData(OptionType.STRING,"titulo","titulo da poll a ser apagada").setRequired(true));
+        commandData.addSubcommands(subCommand);
     }
 
     @Override
@@ -32,12 +32,12 @@ public class FechaPoll extends AbrePoll {
         PollHelper.getPoll(args,hm,dp -> {
             if(dp.guild() != null){
                 if(!dp.poll().isOpen()){
-                    hm.replyTemp(String.format(hm.text("fecha.exec.already"),dp.titulo()));
+                    hm.replyTemp(String.format(hm.getText("fecha.exec.already"),dp.titulo()));
                     return;
                 }
                 dp.poll().close();
                 Memoria.update(dp);
-                hm.reply(String.format(hm.text("fecha.exec.close"),dp.titulo()), message -> message.addReaction(Constantes.emote("check")).queue());
+                hm.reply(String.format(hm.getText("fecha.exec.close"),dp.titulo()), message -> message.addReaction(Constantes.emote("check")).queue());
             }
         });
     }

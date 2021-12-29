@@ -56,32 +56,32 @@ public final class PollHelper {
         final var args2 = new String[args.length+1];
         System.arraycopy(args,0,args2,0,args.length);
         log.debug("do tipo {}", tipo);
-        if(Constantes.POOL_EMOTES.contains(helper.emoji())) {
-            var index = Constantes.POOL_EMOTES.indexOf(helper.emoji());
-            var titulo = helper.mensagem().getEmbeds().get(0).getTitle();
+        if(Constantes.containsEmote(helper.emoji())) {
+            var index = Constantes.indexEmote(helper.emoji());
+            var titulo = helper.getMensagem().getEmbeds().get(0).getTitle();
             args2[args.length] = '{' + titulo + '}';
             log.debug("titulo da poll {}", titulo);
             getPoll(args2, helper, dp -> {
                 if(dp.guild() == null){
-                    helper.replyTemp(helper.text("helper.404").formatted(titulo));
+                    helper.replyTemp(String.format(helper.getText("helper.404"),titulo));
                     return;
                 }
                 Poll poll = dp.guild().getPoll(dp.titulo());
                 if(!poll.isOpen()){
-                    helper.replyTemp(helper.text("helper.close").formatted(poll.getTitle()));
+                    helper.replyTemp(String.format(helper.getText("helper.close"),poll.getTitulo()));
                     return;
                 }
                 function.apply(new DadosPoll(dp.titulo, dp.opcoes, dp.guild, dp.query, dp.poll, index));
             });
         }
         else
-            helper.reply(String.format(helper.text("helper.troll"),helper.getEvent().getUser().getName(),helper.emoji()), message->
+            helper.reply(String.format(helper.getText("helper.troll"),helper.getEvent().getUser().getName(),helper.emoji()), message->
                     message.delete().queueAfter(15, TimeUnit.SECONDS,x->
-                            helper.mensagem().clearReactions(helper.emoji()).queue())
+                            helper.getMensagem().clearReactions(helper.emoji()).queue())
             );
     }
     public static boolean livreSiMesmo(String[] args, Helper.Reacao event) throws IOException {
-        return event.mensagem().getAuthor().getId().equals(event.jda().getSelfUser().getId());
+        return event.getMensagem().getAuthor().getId().equals(event.jda().getSelfUser().getId());
     }
     public static boolean livreDono(String[] args, Helper.Mensagem event){
 
@@ -96,9 +96,9 @@ public final class PollHelper {
             ModelGuild g = ModelGuild.fromMongo(doc);
             Poll poll = g.getPoll(titulo);
             System.out.println("poll = " + poll);
-            if(poll.creatorId().equals(event.id()))
+            if(poll.getCriadorId().equals(event.getId()))
                 return true;
-            event.jda().retrieveUserById(poll.creatorId()).queue(u ->{
+            event.jda().retrieveUserById(poll.getCriadorId()).queue(u ->{
                 event.reply("pertence a " + u.getName());
             });
         }
@@ -106,28 +106,28 @@ public final class PollHelper {
     }
 
     public static void contaVoto(Helper.Reacao hr, int index) {
-        hr.jda().retrieveUserById(hr.id()).queue(user->
-            hr.replyTemp(hr.text("helper.vote").formatted(user.getName(),Constantes.LETRAS.get(index)))
+        hr.jda().retrieveUserById(hr.getId()).queue(user->
+            hr.replyTemp(String.format(hr.getText("helper.vote"),user.getName(),Constantes.LETRAS.get(index)))
         );
     }
     public static void removeVoto(Helper.Reacao hr, int index) {
-        hr.jda().retrieveUserById(hr.id()).queue(user->{
-            hr.replyTemp(hr.text("helper.remove").formatted( user.getName(), Constantes.LETRAS.get(index)));
+        hr.jda().retrieveUserById(hr.getId()).queue(user->{
+            hr.replyTemp(String.format(hr.getText("helper.remove"), user.getName(), Constantes.LETRAS.get(index)));
         });
     }
 
     public static void jaVotou(Helper.Reacao hr, int index) {
-        hr.replyTemp(hr.text("helper.already").formatted( hr.getEvent().getUser().getName(), Constantes.LETRAS.get(index)));
+        hr.replyTemp(String.format(hr.getText("helper.already"), hr.getEvent().getUser().getName(), Constantes.LETRAS.get(index)));
     }
 
     public static void reRender(Helper.Reacao hr,String tipo, DadosPoll dp) {
         if(tipo.contains("poll"))
-            hr.mensagem().editMessage(dp.poll().makeDefaultEmbed(hr.bundle)).queue();
+            hr.getMensagem().editMessageEmbeds(dp.poll().makeDefaultEmbed(hr.bundle)).queue();
         else if(tipo.contains("pic")){
-            final var emb = hr.mensagem().getEmbeds().get(0);
+            final var emb = hr.getMensagem().getEmbeds().get(0);
             LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
             int i = Integer.parseInt(param.getFirst());
-            hr.mensagem().editMessage(dp.poll().makeDisplayEmbed(i,hr.bundle)).queue();
+            hr.getMensagem().editMessageEmbeds(dp.poll().makeDisplayEmbed(i,hr.bundle)).queue();
         }
     }
 

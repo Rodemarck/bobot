@@ -14,6 +14,9 @@ public class Ponto {
     public boolean equals(int x, int y){
         return this.x == x && this.y == y;
     }
+    public Ponto add(int x, int y){
+        return new Ponto(this.x+x,this.y+y);
+    }
 
     @Override
     public String toString() {

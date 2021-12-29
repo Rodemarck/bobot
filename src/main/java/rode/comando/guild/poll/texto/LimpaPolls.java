@@ -1,12 +1,12 @@
 package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.Anotacoes.EComandoPoll;
-import rode.model.ComandoGuild;
 import rode.core.EventLoop;
 import rode.core.Helper;
 import rode.model.ModelGuild;
@@ -16,7 +16,6 @@ import rode.utilitarios.Memoria;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 @EComandoPoll
@@ -27,22 +26,22 @@ public class LimpaPolls extends AbrePoll {
     }
 
     @Override
-    public void subscribeSlash(CommandUpdateAction.CommandData commandData, ResourceBundle bundle) {
-        var subCommand = new CommandUpdateAction.SubcommandData(getCommand(), bundle.getString(getHelp()));
-        commandData.addSubcommand(subCommand);
+    public void subscribeSlash(CommandData commandData, ResourceBundle bundle) {
+        var subCommand = new SubcommandData(getCommand(), bundle.getString(getHelp()));
+        commandData.addSubcommands(subCommand);
     }
 
     @Override
     public void execute(String[] args, Helper.Mensagem hm) throws Exception {
         var guild = Memoria.guild(hm.guildId());
         if(!guild.getPolls().isEmpty()){
-            hm.reply(Constantes.builder(hm.bundle()),msg->{
-                hm.mensagem(msg);
+            hm.reply(Constantes.builder(hm.getBundle()), msg->{
+                hm.setMensagem(msg);
                 EventLoop.addReacao(new ConversaLimpar(hm));
             });
         }
         else
-            hm.reply(hm.text("limpar.exec"));
+            hm.reply(hm.getText("limpar.exec"));
     }
 
     public static class ConversaLimpar extends MensagemReacao {
@@ -52,11 +51,11 @@ public class LimpaPolls extends AbrePoll {
 
 
         public ConversaLimpar(Helper hr) {
-            super(hr,hr.mensagem(), Arrays.asList(hr.id()), System.currentTimeMillis()+20000,Permission.ADMINISTRATOR,new HashMap<>());
-            log.debug("membro id =[" + membro() + "]");
-            var guild = Memoria.guild(guildId());
+            super(hr,hr.getMensagem(), Arrays.asList(hr.getId()), System.currentTimeMillis()+20000,Permission.ADMINISTRATOR,new HashMap<>());
+            log.debug("membro id =[" + getMembros() + "]");
+            var guild = Memoria.guild(getGuildId());
             atualiza(guild);
-            rerender(hr.bundle());
+            rerender(hr.getBundle());
         }
 
 
@@ -66,35 +65,35 @@ public class LimpaPolls extends AbrePoll {
 
         public void pagina(String pp){
             log.debug("deletando poll de titul [+" + pp + "]");
-            var guild = Memoria.guild(guildId());
+            var guild = Memoria.guild(getGuildId());
             for(var p:guild.getPolls())
-                if(p.getTitle().equals(pp)){
+                if(p.getTitulo().equals(pp)){
                     guild.getPolls().remove(p);
-                    Memoria.update(new Document("id",guildId()),guild);
+                    Memoria.update(new Document("id", getGuildId()),guild);
                     return;
                 }
         }
 
         public void rerender(ResourceBundle rb){
-            var guild = Memoria.guild(guildId());
+            var guild = Memoria.guild(getGuildId());
             var eb = Constantes.builder()
                     .setTitle(rb.getString("limpar.delete"));
             for(int i=0;i<guild.getPolls().size();i++){
                 var p = guild.getPolls().get(i);
-                eb.appendDescription(Constantes.emotePoll(i) + " : **" + p.getTitle()+"** , criada por <@"+p.creatorId()+">.\n\n");
+                eb.appendDescription(Constantes.emotePoll(i) + " : **" + p.getTitulo()+"** , criada por <@"+p.getCriadorId()+">.\n\n");
             }
-            eb.setFooter(String.format(rb.getString("limpar.exclusive"),nome()),pic());
-            mensagem().editMessage(eb.build()).queue(q->atualiza(guild));
+            eb.setFooter(String.format(rb.getString("limpar.exclusive"), getNome()), getPic());
+            getMensagem().editMessageEmbeds(eb.build()).queue(q->atualiza(guild));
 
         }
 
         public void atualiza(ModelGuild guild){
-            mensagem().clearReactions().queue(x->{
-                src( new HashMap<>(){{
+            getMensagem().clearReactions().queue(x->{
+                setComandos(new HashMap<>(){{
                     for (int i = 0; i < guild.getPolls().size(); i++) {
                         final int finalI = i;
-                        mensagem().addReaction(Constantes.emotePoll(i)).queue();
-                        put(Constantes.emotePoll(i), r -> pagina(guild.getPolls().get(finalI).getTitle()));
+                        getMensagem().addReaction(Constantes.emotePoll(i)).queue();
+                        put(Constantes.emotePoll(i), r -> pagina(guild.getPolls().get(finalI).getTitulo()));
                     }
                 }});
             });

@@ -42,12 +42,16 @@ public class ConfigGuid {
                 .append("avisos", alarmes);
     }
     public static ConfigGuid fromMongo(Document doc){
-        return new ConfigGuid(doc.getString("id")
+        return new ConfigGuid(
+                 doc.getString("id")
                 ,doc.getString("lingua")
                 ,doc.getString("pais")
                 ,doc.getString("canalPoll")
                 ,doc.getBoolean("mencao",false)
-                ,(((List<Document>)doc.get("polls",new LinkedList<Document>())).stream().map(d->AvisoAlarme.fromMongo(d)).collect(Collectors.toList())));
+                ,doc.get("avisos", new LinkedList<Document>()).stream()
+                    .map(d->AvisoAlarme.fromMongo(d))
+                    .toList()
+        );
     }
 
     public void id(String id) {

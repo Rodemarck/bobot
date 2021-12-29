@@ -14,7 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 public final class EventLoop implements Runnable{
     private static Logger log = LoggerFactory.getLogger(EventLoop.class);
     private static long count = 0;
@@ -28,10 +27,12 @@ public final class EventLoop implements Runnable{
     private static JDA jda;
     private EventLoop(JDA jda){
         EventLoop.jda = jda;
-        run();
-        Executador.poolExecutor.submit(()->{
-            Memoria.eachConfig(cf->cf.avisos().forEach(EventLoop::addAviso));
-        });
+        Executador.poolExecutor.execute(()->
+                run()
+        );
+        Executador.poolExecutor.execute(()->
+            Memoria.eachConfig(cf->cf.avisos().forEach(EventLoop::addAviso))
+        );
     }
 
     public static EventLoop getInstance(JDA j) {
@@ -46,12 +47,12 @@ public final class EventLoop implements Runnable{
     }
 
     public static void reacaoGuild(Helper.Reacao hr) {
-        log.debug("procurando reação");
+        log.info("procurando reação");
         synchronized (eventos_reacao){
             var lista = eventos_reacao.stream().filter(loop ->
-                    (loop.mensagem().getId().equals(hr.mensagem().getId()))
-                    && (loop.membro() == null || loop.membro().equals(hr.id()))
-                    && (loop.permissao() == null || hr.member.hasPermission(loop.permissao()))
+                    (loop.getMensagem().getId().equals(hr.getMensagem().getId()))
+                    && (loop.getMembros() == null || loop.getMembros().contains(hr.getId()))
+                    && (loop.getPermissao() == null || hr.member.hasPermission(loop.getPermissao()))
             ).collect(Collectors.toList());
             for(var lop :lista) {
                 log.trace("chamando ->>"+lop.getClass().getName());
@@ -62,8 +63,8 @@ public final class EventLoop implements Runnable{
     public static void textoGuild(Helper.Mensagem hm){
         synchronized (eventos_texto){
             var lista = eventos_texto.stream().filter(loop->
-                    (loop.membro() == null || loop.membro().contains(hm.id()))
-                    && (loop.permissao() == null || hm.getEvent().getMember().hasPermission(loop.permissao()))
+                    (loop.getMembros() == null || loop.getMembros().contains(hm.getId()))
+                    && (loop.getPermissao() == null || hm.getEvent().getMember().hasPermission(loop.getPermissao()))
             ).collect(Collectors.toList());
             for(var loop:lista){
                 log.trace("chamando ->>"+loop.getClass().getName());
@@ -73,10 +74,10 @@ public final class EventLoop implements Runnable{
     }
 
     public static void addReacao(MensagemReacao reacaoMensagem){
-        log.info("colocando");
+        log.debug("colocando reação");
         synchronized (eventos_reacao){
             eventos_reacao.add(reacaoMensagem);
-            log.info("colocado");
+            log.debug("reação colocada");
         }
     }
     public static void addTexto(MensagemTexto mensagemTexto){
@@ -105,22 +106,22 @@ public final class EventLoop implements Runnable{
         }
     }
     public static void checaPolls(){
-        Executador.poolExecutor.submit(()->Memoria.eachPoll(m->m.notify_(jda)));
+        //Executador.poolExecutor.execute(()->Memoria.eachPoll(m->m.notify_(jda)));
     }
 
     @Override
     public void run() {
-        log.info("event Loop iniciado");
-        var b = false;
+        log.info("event Loop iniciado, possuindo tick em intervalos de " + delay);
+        var n = 0;
         while (true){
             try{Thread.sleep(delay);}
             catch (InterruptedException e){}
             log.debug("tick");
             checa();
-            if(b)
+            if(n++ == 10) {
                 checaPolls();
-            b = !b;
+                n = 0;
+            }
         }
     }
-
 }

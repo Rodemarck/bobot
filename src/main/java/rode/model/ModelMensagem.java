@@ -1,5 +1,6 @@
 package rode.model;
 
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.EventLoop;
@@ -8,6 +9,7 @@ import rode.core.Helper;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 
+@Data
 public abstract class ModelMensagem {
     public static Logger log = LoggerFactory.getLogger(ModelMensagem.class);
     private LocalDateTime tempoLimite;
@@ -24,34 +26,6 @@ public abstract class ModelMensagem {
 
     public LocalDateTime getDeadLine() {
         return tempoLimite;
-    }
-
-    public void setDeadLine(LocalDateTime tempoLimite) {
-        this.tempoLimite = tempoLimite;
-    }
-
-    public long getUsersId() {
-        return usuarioId;
-    }
-
-    public void setUsersId(long usuarioId) {
-        this.usuarioId = usuarioId;
-    }
-
-    public long getMessageId() {
-        return mensagemId;
-    }
-
-    public void setMessageId(long mensagemId) {
-        this.mensagemId = mensagemId;
-    }
-
-    public ModelGuild getGuild() {
-        return guild;
-    }
-
-    public void setGuild(ModelGuild guild) {
-        this.guild = guild;
     }
 
     public void update() {

@@ -1,10 +1,10 @@
 package rode.comando.guild.poll.texto;
 
-import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import rode.core.Anotacoes.EComandoPoll;
 import rode.core.Helper;
 import rode.core.PollHelper;
-import rode.model.ComandoGuild;
 
 import java.util.ResourceBundle;
 
@@ -16,8 +16,8 @@ public class Configuracoes extends AbrePoll {
     }
 
     @Override
-    public void subscribeSlash(CommandUpdateAction.CommandData commandData, ResourceBundle bundle) {
-        commandData.addSubcommand(new CommandUpdateAction.SubcommandData(getCommand(),bundle.getString(getHelp())));
+    public void subscribeSlash(CommandData commandData, ResourceBundle bundle) {
+        commandData.addSubcommands(new SubcommandData(getCommand(),bundle.getString(getHelp())));
     }
 
     @Override
@@ -25,7 +25,7 @@ public class Configuracoes extends AbrePoll {
         PollHelper.getPoll(args, hm,dp -> {
             if(dp.guild() != null){
                 var poll = dp.guild().getPoll(dp.titulo());
-                hm.reply(poll.makeSettingsEmbed(hm.bundle()), message -> {
+                hm.reply(poll.makeSettingsEmbed(hm.getBundle()), message -> {
                     message.editMessage("config").queue();
                 });
             }

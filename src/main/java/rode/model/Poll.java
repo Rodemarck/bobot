@@ -1,5 +1,7 @@
 package rode.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+
 public class Poll implements Serializable{
     private static Logger log = LoggerFactory.getLogger(Poll.class);
     private String criadorId;
@@ -62,6 +65,7 @@ public class Poll implements Serializable{
         this.usuariosId = usuariosId;
         this.dataCriacao = dataCriacao;
         this.dataLimite = dataLimite;
+        opcoes.forEach(e->valores.add(0));
     }
 
     public Poll(String criadorId, String titulo, LinkedList<String> opcoes) {
@@ -71,6 +75,7 @@ public class Poll implements Serializable{
         this.usuariosId = new HashMap<>();
         this.valores = new LinkedList<>();
         this.dataCriacao = LocalDateTime.now();
+        opcoes.forEach(e->valores.add(0));
     }
     public Poll(){}
 
@@ -244,21 +249,6 @@ public class Poll implements Serializable{
     }
 
 
-    public String getTitle() {
-        return titulo;
-    }
-
-    public List<String> getOptions() {
-        return opcoes;
-    }
-
-    public List<Integer> getValues() {
-        return valores;
-    }
-
-    public String creatorId() {
-        return criadorId;
-    }
 
 
     @Override
@@ -287,78 +277,63 @@ public class Poll implements Serializable{
         }
     }
 
-    public HashMap<String, Integer> getUsersId() {
+
+    public String getCriadorId() {
+        return criadorId;
+    }
+
+    public void setCriadorId(String criadorId) {
+        this.criadorId = criadorId;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public List<String> getOpcoes() {
+        return opcoes;
+    }
+
+    public void setOpcoes(List<String> opcoes) {
+        this.opcoes = opcoes;
+    }
+
+    public List<Integer> getValores() {
+        return valores;
+    }
+
+    public void setValores(List<Integer> valores) {
+        this.valores = valores;
+    }
+
+    public HashMap<String, Integer> getUsuariosId() {
         return usuariosId;
     }
 
-    public LocalDateTime getDeadLine() {
+    public void setUsuariosId(HashMap<String, Integer> usuariosId) {
+        this.usuariosId = usuariosId;
+    }
+
+    public LocalDateTime getDataLimite() {
         return dataLimite;
     }
 
-    public void setDeadLine(LocalDateTime dataLimite) {
+    public void setDataLimite(LocalDateTime dataLimite) {
         this.dataLimite = dataLimite;
     }
 
-    public LocalDateTime getCreationTime() {
+    public LocalDateTime getDataCriacao() {
         return dataCriacao;
     }
 
-    public void setCreationTime(LocalDateTime dataCriacao) {
+    public void setDataCriacao(LocalDateTime dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
-    private class top{
-        private int pri;
-        private int priPos;
-        private int sec;
-        private int secPos;
-        private int total;
 
-        public top(int pri, int priPos, int sec, int secPos, int total) {
-            this.pri = pri;
-            this.priPos = priPos;
-            this.sec = sec;
-            this.secPos = secPos;
-            this.total = total;
-        }
+    private record top(int pri, int priPos, int sec, int secPos, int total){}
 
-        public int pri() {
-            return pri;
-        }
-
-        public void pri(int pri) {
-            this.pri = pri;
-        }
-
-        public int priPos() {
-            return priPos;
-        }
-
-        public void priPos(int priPos) {
-            this.priPos = priPos;
-        }
-
-        public int sec() {
-            return sec;
-        }
-
-        public void sec(int sec) {
-            this.sec = sec;
-        }
-
-        public int secPos() {
-            return secPos;
-        }
-
-        public void secPos(int secPos) {
-            this.secPos = secPos;
-        }
-
-        public int total() {
-            return total;
-        }
-
-        public void total(int total) {
-            this.total = total;
-        }
-    }
 }

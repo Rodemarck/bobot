@@ -1,18 +1,18 @@
 package rode.comando.guild.poll.texto;
 
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Command;
-import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.bson.Document;
 import rode.core.Anotacoes.EComandoPoll;
-import rode.model.ComandoGuild;
 import rode.core.Helper;
 import rode.core.PollHelper;
 import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 @EComandoPoll
@@ -23,10 +23,10 @@ public class DeletaPoll extends AbrePoll {
     }
 
     @Override
-    public void subscribeSlash(CommandUpdateAction.CommandData commandData, ResourceBundle bundle) {
-        var subCommand = new CommandUpdateAction.SubcommandData(getCommand(), bundle.getString(getHelp()))
-                .addOption(new CommandUpdateAction.OptionData(Command.OptionType.STRING,"titulo", "titulo da poll a ser deletada").setRequired(true));
-        commandData.addSubcommand(subCommand);
+    public void subscribeSlash(CommandData commandData, ResourceBundle bundle) {
+        var subCommand = new SubcommandData(getCommand(), bundle.getString(getHelp()))
+                .addOptions(new OptionData(OptionType.STRING,"titulo", "titulo da poll a ser deletada").setRequired(true));
+        commandData.addSubcommands(subCommand);
     }
 
     @Override
@@ -39,10 +39,10 @@ public class DeletaPoll extends AbrePoll {
                 var poll = dp.guild().getPoll(dp.titulo());
                 dp.guild().getPolls().remove(poll);
                 Memoria.guilds.updateOne(dp.query(),new Document("$set",dp.guild().toMongo()));
-                hm.reply(String.format(hm.text("del.exec.delete"), dp.titulo()), message -> message.addReaction(Constantes.emote("check")).queue());
+                hm.reply(String.format(hm.getText("del.exec.delete"), dp.titulo()), message -> message.addReaction(Constantes.emote("check")).queue());
                 return;
             }
-            hm.reply(String.format(hm.text("del.exec.404"), dp.titulo()));
+            hm.reply(String.format(hm.getText("del.exec.404"), dp.titulo()));
         });
     }
 

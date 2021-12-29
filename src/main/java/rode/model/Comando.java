@@ -25,6 +25,6 @@ public abstract class Comando {
     public abstract void helpExtensive(EmbedBuilder me, ResourceBundle loc);
 
     protected void fail(Helper h){
-        h.reply(String.format(h.text("cmd.fail"), command,h.text(permission.getName())));
+        h.reply(String.format(h.getText("cmd.fail"), command,h.getText("role."+permission.getName())));
     }
 }

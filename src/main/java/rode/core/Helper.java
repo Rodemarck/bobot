@@ -30,7 +30,7 @@ public abstract class Helper {
     protected JDA jda;
     protected TextChannel canal;
 
-    public void mensagem(Message message) {
+    public void setMensagem(Message message) {
         this.message = message;
     }
 
@@ -48,23 +48,30 @@ public abstract class Helper {
         this.bundle = ResourceBundle.getBundle("messages", locale);
     }
 
-    public ResourceBundle bundle() {
+    public ResourceBundle getBundle() {
         return bundle;
     }
 
-    public String text(String s){
+    public String getText(String s){
         return bundle.getString(s);
     }
     
 
     public void reply(String str){
-        canal.sendMessage(str).queue();
+        var n = str.length();
+        for (int i = 0; i < n;){
+            var prox = i + 1800 > n? n : i + 1800;
+            var txt = str.substring(i,prox);
+            canal.sendMessage(txt).queue();
+            i = prox;
+        }
+
     }
     public void reply(EmbedBuilder eb){
-        canal.sendMessage(eb.build()).queue();
+        canal.sendMessageEmbeds(eb.build()).queue();
     }
     public void reply(MessageEmbed me){
-        canal.sendMessage(me).queue();
+        canal.sendMessageEmbeds(me).queue();
     }
     public void reply(File arq){
         reply(arq,message -> arq.delete());
@@ -81,8 +88,8 @@ public abstract class Helper {
     }
 
     public void embed(File f, Function<String,EmbedBuilder> msg){
-        canal.sendFile(f,"arq.png")
-                .embed(msg.apply("attachment://arq.png").build()).queue(q->
+        canal.sendFile(f, "arq.png")
+                .setEmbeds(msg.apply("attachment://arq.png").build()).queue(q->
                     f.delete()
         );
     }
@@ -91,13 +98,13 @@ public abstract class Helper {
         canal.sendMessage(str).queue(action);
     }
     public void reply(EmbedBuilder eb, Consumer<Message> action){
-        canal.sendMessage(eb.build()).queue(action,err->{
+        canal.sendMessageEmbeds(eb.build()).queue(action,err->{
             log.error(err.getMessage());
         });
     }
     public void reply(MessageEmbed me, Consumer<Message> action){
 
-        canal.sendMessage(me).queue(action);
+        canal.sendMessageEmbeds(me).queue(action);
     }
     public void reply(File arq,Consumer<Message> action) {
         canal.sendFile(arq).queue(msg->{
@@ -116,14 +123,14 @@ public abstract class Helper {
     public void dm(EmbedBuilder eb){
         jda.retrieveUserById(id).queue(user ->
                 user.openPrivateChannel().queue(pv->
-                        pv.sendMessage(eb.build()).queue()
+                        pv.sendMessageEmbeds(eb.build()).queue()
                 )
         );
     }
     public void dm(MessageEmbed me){
         jda.retrieveUserById(id).queue(user ->
                 user.openPrivateChannel().queue(pv->
-                        pv.sendMessage(me).queue()
+                        pv.sendMessageEmbeds(me).queue()
                 )
         );
     }
@@ -146,14 +153,14 @@ public abstract class Helper {
     public void dm(EmbedBuilder eb, Consumer<Message> action){
         jda.retrieveUserById(id).queue(user ->
                 user.openPrivateChannel().queue(pv->
-                        pv.sendMessage(eb.build()).queue(action)
+                        pv.sendMessageEmbeds(eb.build()).queue(action)
                 )
         );
     }
     public void dm(MessageEmbed me, Consumer<Message> action){
         jda.retrieveUserById(id).queue(user ->
                 user.openPrivateChannel().queue(pv->
-                        pv.sendMessage(me).queue(action)
+                        pv.sendMessageEmbeds(me).queue(action)
                 )
         );
     }
@@ -165,16 +172,16 @@ public abstract class Helper {
         );
     }
 
-    public Message mensagem() {
+    public Message getMensagem() {
         return message;
     }
-    public String id(){
+    public String getId(){
         return id;
     }
-    public Member membro() {
+    public Member getMembro() {
         return member;
     }
-    public void membro(Member member) {
+    public void setMembro(Member member) {
         this.member =  member;
     }
 
@@ -236,13 +243,14 @@ public abstract class Helper {
             return null;
         }
 
-        public void replySlash(EmbedBuilder b) {
-            event.reply(b.build()).setEphemeral(true).queue();
-        }
 
         @Override
         public void reply(String a) {
              event.reply(a).setEphemeral(true).queue();
+        }
+        /*
+        public void replySlash(EmbedBuilder b) {
+            event.reply(b.build()).setEphemeral(true).queue();
         }
         @Override
         public void reply(EmbedBuilder a) {
@@ -251,7 +259,7 @@ public abstract class Helper {
         @Override
         public void reply(MessageEmbed a) {
             event.reply(a).setEphemeral(true).queue();
-        }
+        }*/
     }
 
 }

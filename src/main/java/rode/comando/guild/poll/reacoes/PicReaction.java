@@ -33,14 +33,14 @@ public class PicReaction {
         log.debug("não é troca");
         final int n = aux;
         PollHelper.getPollFromEmote(args, hr, dp->{
-            var emb = hr.mensagem().getEmbeds().get(0);
+            var emb = hr.getMensagem().getEmbeds().get(0);
             LinkedList<String> param = Regex.extract("\\d+", emb.getFooter().getText());
             int index = Integer.parseInt(param.getFirst());
             if(n == 0){
-                if(dp.poll().hasUser(hr.id())){
-                    int i = dp.poll().votesTo(hr.id());
+                if(dp.poll().hasUser(hr.getId())){
+                    int i = dp.poll().votesTo(hr.getId());
                     if(i == index){
-                        dp.poll().remove(index,hr.id());
+                        dp.poll().remove(index,hr.getId());
                         Memoria.update(dp);
                         PollHelper.removeVoto(hr, index);
                         PollHelper.reRender(hr,"pic", dp);
@@ -49,19 +49,19 @@ public class PicReaction {
                     PollHelper.jaVotou(hr,i);
                     return;
                 }
-                dp.poll().add(index, hr.id());
+                dp.poll().add(index, hr.getId());
                 Memoria.update(dp);
                 PollHelper.contaVoto(hr, index);
                 PollHelper.reRender(hr,"pic", dp);
                 return;
             }
             index = (index + n);
-            if(index >= dp.poll().getOptions().size())
+            if(index >= dp.poll().getOpcoes().size())
                 index = 0;
             else if (index < 0)
-                index = dp.poll().getOptions().size() - 1;
-            hr.mensagem().editMessage(dp.poll().makeDisplayEmbed(index,hr.bundle())).queue();
+                index = dp.poll().getOpcoes().size() - 1;
+            hr.getMensagem().editMessageEmbeds(dp.poll().makeDisplayEmbed(index,hr.getBundle())).queue();
         });
-        final var emb = hr.mensagem().getEmbeds().get(0);
+        final var emb = hr.getMensagem().getEmbeds().get(0);
     }
 }

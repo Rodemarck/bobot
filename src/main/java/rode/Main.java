@@ -3,9 +3,10 @@ package rode;
 
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
+import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +15,13 @@ import rode.core.Anotacoes.IgnoraComando;
 import rode.core.Executador;
 import rode.model.ComandoGuild;
 import rode.model.ComandoGuildReacoes;
+import rode.utilitarios.ClienteHttp;
 import rode.utilitarios.Constantes;
 
+import javax.imageio.ImageIO;
 import javax.security.auth.login.LoginException;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -25,29 +30,28 @@ import java.util.Set;
 
 public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
+        //System.out.println(ClienteHttp.get("https://github.com/public-apis/public-apis"));
         jda();
     }
-
     private static void jda(){
         log.debug("logando");
         try{
-            var jda = JDABuilder.createDefault(Constantes.env("token_teste"),Set.of(
+            var jda = JDABuilder.createLight(Constantes.env("token"),Set.of(
                         GatewayIntent.GUILD_MESSAGE_REACTIONS,
                         GatewayIntent.GUILD_MESSAGES,
-                        GatewayIntent.DIRECT_MESSAGES)
-                    ).setActivity(Activity.playing("-help"))
+                        GatewayIntent.GUILD_PRESENCES
+                    )).setActivity(Activity.playing("-help"))
                     .setStatus(OnlineStatus.ONLINE)
                     .addEventListeners(new Controlador())
                     .build();
-
             inicializaComandos(jda.updateCommands());
         } catch (LoginException e) {
             e.printStackTrace();
         }
     }
 
-    private static void inicializaComandos(CommandUpdateAction cua) {
+    private static void inicializaComandos(CommandListUpdateAction cua) {
         var reflections = new Reflections("rode.comando.guild");
         var locale = new Locale("pt","BR");
         var bundle = ResourceBundle.getBundle("messages", locale);
@@ -63,7 +67,7 @@ public class Main {
     }
 
 
-    public static void cadastraComando(Class<? extends ComandoGuild> clazz,CommandUpdateAction cua, ResourceBundle bundle, Reflections reflections) {
+    public static void cadastraComando(Class<? extends ComandoGuild> clazz,CommandListUpdateAction cua, ResourceBundle bundle, Reflections reflections) {
         ComandoGuild command;
         try {
             command = clazz.getConstructor().newInstance();

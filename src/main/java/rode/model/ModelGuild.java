@@ -1,5 +1,6 @@
 package rode.model;
 
+import lombok.Data;
 import net.dv8tion.jda.api.JDA;
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -9,7 +10,7 @@ import rode.utilitarios.Memoria;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Data
 public class ModelGuild {
     private static Logger log = LoggerFactory.getLogger(ModelGuild.class);
     private String id;
@@ -23,23 +24,6 @@ public class ModelGuild {
         this.id = id;
         this.polls = new LinkedList<>();
         this.chat = null;
-    }
-
-
-    public String getId() {
-        return id;
-    }
-
-    public String getChat() {
-        return chat;
-    }
-
-    public void setChat(String chat) {
-        this.chat = chat;
-    }
-
-    public List<Poll> getPolls() {
-        return polls;
     }
 
     public Document toMongo() {
@@ -58,7 +42,7 @@ public class ModelGuild {
 
     public Poll getPoll(String titulo){
         for(Poll p:polls) {
-            if (p.getTitle().equalsIgnoreCase(titulo)) {
+            if (p.getTitulo().equalsIgnoreCase(titulo)) {
                 return p;
             }
         }

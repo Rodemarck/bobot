@@ -18,7 +18,8 @@ public class Regex {
         LinkedList<String> strs = new LinkedList<>(extract(pattern, input)
                 .stream()
                 .map(s -> s.substring(1, s.length()-1))
-                .collect(Collectors.toList()));
+                .toList()
+        );
         return strs;
     }
 

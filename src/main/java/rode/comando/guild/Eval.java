@@ -21,8 +21,8 @@ public class Eval extends ComandoGuild {
 
     @Override
     public void execute(String[] __, Helper.Mensagem hm) throws Exception {
-        hm.reply(Constantes.builder(hm.bundle()), message -> {
-            hm.mensagem(message);
+        hm.reply(Constantes.builder(hm.getBundle()), message -> {
+            hm.setMensagem(message);
             EventLoop.addTexto(new ConversaEval(hm));
         });
     }
@@ -32,13 +32,13 @@ public class Eval extends ComandoGuild {
         private JShell shell;
 
         private ConversaEval(Helper.Mensagem hm) {
-            super(hm, Arrays.asList(hm.id()), hm.text("eval.exec.close"));
-            src(new HashMap<>() {{
-                put(Pattern.compile("^([Ff](im|echar?)|[Ee]nd|[Cc]lose)"), h -> end());
+            super(hm, Arrays.asList(hm.getId()), hm.getText("eval.exec.close"));
+            setComandos(new HashMap<>() {{
+                put(Pattern.compile(Constantes.REGEX_SAIR), h -> end());
                 put(Pattern.compile("^[^\\-]"), h -> fun(h));
             }});
-            delay(180000);
-            hm.reply(hm.text("eval.exec.open"));
+            setDelay(180000);
+            hm.reply(hm.getText("eval.exec.open"));
             this.shell = JShell.create();
 
         }
@@ -56,13 +56,16 @@ public class Eval extends ComandoGuild {
         private void fun(Helper.Mensagem hm) {
             if (shell == null)
                 return;
-            var comando = hm.mensagem().getContentStripped();
+            var comando = hm.getMensagem().getContentStripped();
             var res = shell.eval(comando);
             for (var se : res) {
                 if (se.status().equals(Snippet.Status.VALID)) {
+                    setFim(getFim()+ getDelay());
                     hm.reply(">>> " + se.value());
-                } else
-                    hm.reply("error :" + se.value());
+                } else{
+                    System.out.println(se);
+                    hm.reply("error :" + se.causeSnippet());
+                }
             }
         }
 

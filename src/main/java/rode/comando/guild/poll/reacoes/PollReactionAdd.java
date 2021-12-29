@@ -21,28 +21,28 @@ public class PollReactionAdd extends ComandoGuildReacoes {
         log.debug("inicio");
         PollHelper.getPollFromEmote(args, hr,dp -> {
             log.debug("callback");
-            if(dp.poll().getOptions().size() > dp.index()){
-                if(dp.poll().hasUser(hr.id())){
-                    hr.mensagem().removeReaction(hr.emoji(), hr.getEvent().getUser()).queue(mm->{
-                        int v = dp.poll().votesTo(hr.id());
+            if(dp.poll().getOpcoes().size() > dp.index()){
+                if(dp.poll().hasUser(hr.getId())){
+                    hr.getMensagem().removeReaction(hr.emoji(), hr.getEvent().getUser()).queue(mm->{
+                        int v = dp.poll().votesTo(hr.getId());
                         if(dp.index() == v){
-                            dp.poll().remove(dp.index(),hr.id());
+                            dp.poll().remove(dp.index(),hr.getId());
                             PollHelper.removeVoto(hr,dp.index());
                             Memoria.update(dp);
                             PollHelper.reRender(hr,tipo,dp);
                             return;
                         }
                         PollHelper.jaVotou(hr,v);
-                        dp.poll().remove(v,hr.id());
+                        dp.poll().remove(v,hr.getId());
                         PollHelper.removeVoto(hr, v);
-                        dp.poll().add(dp.index(),hr.id());
+                        dp.poll().add(dp.index(),hr.getId());
                         PollHelper.contaVoto(hr, dp.index());
                         PollHelper.reRender(hr,tipo,dp);
                         Memoria.update(dp);
                     });
                     return;
                 }
-                dp.poll().add(dp.index(), hr.id());
+                dp.poll().add(dp.index(), hr.getId());
                 Memoria.update(dp);
                 PollHelper.contaVoto(hr, dp.index());
                 PollHelper.reRender(hr,toString(),dp);

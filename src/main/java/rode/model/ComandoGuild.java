@@ -3,7 +3,8 @@ package rode.model;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.reflections.Reflections;
 import rode.core.Helper;
 
@@ -35,13 +36,13 @@ public abstract class ComandoGuild extends Comando {
         }
     }
 
-    public void subscribeSlash(CommandUpdateAction cua, ResourceBundle bundle){
+    public void subscribeSlash(CommandListUpdateAction cua, ResourceBundle bundle){
         /*System.out.println(getCommand());
         cua.addCommands(
                 new CommandUpdateAction.CommandData(command,bundle.getString(getHelp()))
         );*/
     }
-    public void subscribeSlash(CommandUpdateAction.CommandData commandData, ResourceBundle bundle){
+    public void subscribeSlash(CommandData commandData, ResourceBundle bundle){
 
     }
 
@@ -91,14 +92,11 @@ public abstract class ComandoGuild extends Comando {
             try {
                 var subObject = subClass.getConstructor().newInstance();
                 sons.put(subObject.getCommand(), subObject);
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
+            } catch (InstantiationException
+                    |IllegalAccessException
+                    |InvocationTargetException
+                    |NoSuchMethodException ex) {
+                ex.printStackTrace();
             }
         });
     }

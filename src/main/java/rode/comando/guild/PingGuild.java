@@ -5,7 +5,6 @@ import rode.core.Anotacoes.EcomandoGeral;
 import rode.model.ComandoGuild;
 import rode.core.Helper;
 
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 @EcomandoGeral
@@ -19,7 +18,7 @@ public class PingGuild extends ComandoGuild {
     }
 
     public void execute(String[] args, Helper.Mensagem hm) {
-        hm.reply(hm.text("ping.exec").formatted(hm.jda().getGatewayPing()));
+        hm.reply(String.format(hm.getText("ping.exec"),hm.jda().getGatewayPing()));
     }
 
     public void helpExtensive(EmbedBuilder me, ResourceBundle bd) {

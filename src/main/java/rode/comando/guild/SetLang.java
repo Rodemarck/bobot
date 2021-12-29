@@ -1,6 +1,5 @@
 package rode.comando.guild;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +12,6 @@ import rode.utilitarios.Constantes;
 import rode.utilitarios.Memoria;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -24,19 +22,15 @@ public class SetLang extends ComandoGuild {
         super("lingua", Permission.ADMINISTRATOR, "idioma","lingua","lang");
     }
 
-
-    @Override
-    public void helpExtensive(EmbedBuilder me, ResourceBundle loc) {
-        me.appendDescription(loc.getString("lingua.help.ex"));
-    }
-
     @Override
     public void execute(String[] args, Helper.Mensagem hm) throws Exception {
-        log.info("mudando idioma");
-        hm.getEvent().getChannel().sendMessage(Constantes.builder(hm.bundle()).build()).queue(msg->{
-            log.info("alterando mensagem");
-            hm.mensagem(msg);
-            log.info("add evento");
+        log.debug("mudando idioma");
+        hm.getEvent()
+                .getChannel()
+                .sendMessageEmbeds(Constantes.builder(hm.getBundle()).build()).queue(msg->{
+            log.debug("alterando mensagem");
+            hm.setMensagem(msg);
+            log.debug("add evento");
             EventLoop.addReacao(new ConversaLingua(hm));
         },err->{
             log.error(err.getMessage());
@@ -47,15 +41,15 @@ public class SetLang extends ComandoGuild {
         private static Logger log = LoggerFactory.getLogger(ConversaLingua.class);
         private ResourceBundle rb;
         public ConversaLingua(Helper hr) {
-            super(hr,hr.mensagem(),null,System.currentTimeMillis()+120000,Permission.ADMINISTRATOR,new HashMap<>());
-            log.info("ConversaLingua<Init>");
-            src(new HashMap<>(){{
-                put(Constantes.emote("br"), x->mudaIdioma(guildId(),"pt","BR"));
-                put(Constantes.emote("en"),x->mudaIdioma(guildId(), "en","US"));
+            super(hr,hr.getMensagem(),null,System.currentTimeMillis()+120000,Permission.ADMINISTRATOR,new HashMap<>());
+            log.debug("ConversaLingua<Init>");
+            setComandos(new HashMap<>(){{
+                put(Constantes.emote("br"), x->mudaIdioma(getGuildId(),"pt","BR"));
+                put(Constantes.emote("en"),x->mudaIdioma(getGuildId(), "en","US"));
             }});
-            mensagem().addReaction(Constantes.emote("br")).queue();
-            mensagem().addReaction(Constantes.emote("en")).queue();
-            rb = hr.bundle();
+            getMensagem().addReaction(Constantes.emote("br")).queue();
+            getMensagem().addReaction(Constantes.emote("en")).queue();
+            rb = hr.getBundle();
             rerender(rb);
         }
 
@@ -70,7 +64,7 @@ public class SetLang extends ComandoGuild {
             eb.setTitle(rb.getString("lingua.titulo"));
             eb.appendDescription(rb.getString("lingua.br"));
             eb.appendDescription(rb.getString("lingua.us"));
-            mensagem().editMessage(eb.build()).queue();
+            getMensagem().editMessageEmbeds(eb.build()).queue();
         }
         private void mudaIdioma(String id, String lingua, String pais){
             Memoria.usandoConfig(id,cg->{
@@ -80,7 +74,7 @@ public class SetLang extends ComandoGuild {
                 cg.pais(pais);
                 var l = new Locale(lingua, pais);
                 rb = ResourceBundle.getBundle("messages", l);
-                Constantes.loc(guildId(),l);
+                Constantes.loc(getGuildId(),l);
             });
         }
     }

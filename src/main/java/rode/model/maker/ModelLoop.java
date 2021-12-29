@@ -4,26 +4,27 @@ import net.dv8tion.jda.api.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rode.core.EventLoop;
+import rode.core.Helper;
 
 import java.util.List;
 
 
 public abstract class ModelLoop {
     private static Logger log = LoggerFactory.getLogger(ModelLoop.class);
-    private TipoLoop tipo;
+    private getTipo tipo;
     private long id;
-    private List<String> membro;
+    private List<String> membros;
     private long inicio;
     private long fim;
     private long delay;
     private boolean ativo = true;
     private Permission permissao;
 
-    public ModelLoop(TipoLoop tipo, long id, List<String> membro, long inicio, long fim, long delay, Permission permissao) {
+    public ModelLoop(getTipo tipo, long id, List<String> membros, long inicio, long fim, long delay, Permission permissao) {
         log.info("ModelLoop<Init>");
         this.tipo = tipo;
         this.id = id;
-        this.membro = membro;
+        this.membros = membros;
         this.inicio = inicio;
         this.fim = fim;
         this.delay = delay;
@@ -31,72 +32,72 @@ public abstract class ModelLoop {
         this.permissao = permissao;
     }
 
-    public Permission permissao() {
+    public Permission getPermissao() {
         return permissao;
     }
 
-    public void permissao(Permission permissao) {
+    public void setPermissao(Permission permissao) {
         this.permissao = permissao;
     }
 
-    public long id() {
+    public long getId() {
         return id;
     }
 
-    public void id(long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public long inicio() {
+    public long getInicio() {
         return inicio;
     }
 
-    public void inicio(long inicio) {
+    public void setInicio(long inicio) {
         this.inicio = inicio;
     }
 
-    public long fim() {
+    public long getFim() {
         return fim;
     }
 
-    public void fim(long fim) {
+    public void setFim(long fim) {
         this.fim = fim;
     }
 
-    public long delay() {
+    public long getDelay() {
         return delay;
     }
 
-    public void delay(long delay) {
+    public void setDelay(long delay) {
         this.delay = delay;
     }
 
-    public boolean ativo() {
+    public boolean getAtivo() {
         return ativo;
     }
 
-    public void ativo(boolean ativo) {
+    public void setAtivo(boolean ativo) {
         this.ativo = ativo;
     }
 
-    public TipoLoop tipo() {
+    public getTipo getTipos() {
         return tipo;
     }
 
-    public void tipo(TipoLoop tipo) {
+    public void setTipo(getTipo tipo) {
         this.tipo = tipo;
     }
 
-    public List<String> membro() {
-        return membro;
+    public List<String> getMembros() {
+        return membros;
     }
 
-    public void membro(List<String> membro) {
-        this.membro = membro;
+    public void setMembros(List<String> membro) {
+        this.membros = membro;
     }
 
     public void finaliza(){
-        ativo(false);
+        setAtivo(false);
         EventLoop.checa();
     }
 }

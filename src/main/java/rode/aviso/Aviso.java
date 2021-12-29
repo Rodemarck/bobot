@@ -31,66 +31,59 @@ public abstract class Aviso {
             this.titulo = titulo;
     }
 
-    public String canal() {
+    public String getCanal() {
         return canal;
     }
 
-    public void canal(String canal) {
+    public void setCanal(String canal) {
         this.canal = canal;
     }
 
-    public LocalDateTime horario() {
+    public LocalDateTime getHorario() {
         return horario;
     }
 
-    public void horario(LocalDateTime horario) {
+    public void setHorario(LocalDateTime horario) {
         this.horario = horario;
     }
 
-    public String mensagem() {
+    public String getMensagem() {
         return mensagem;
     }
 
-    public void mensagem(String mensagem) {
+    public void setMensagem(String mensagem) {
         this.mensagem = mensagem;
     }
 
-    public String titulo() {
+    public String getTitulo() {
         return titulo;
     }
 
-    public void titulo(String titulo) {
+    public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
 
-    public String guildId() {
+    public String getGuildId() {
         return guildId;
     }
 
-    public void guildId(String guildId) {
+    public void setGuildId(String guildId) {
         this.guildId = guildId;
     }
 
-    public String id() {
+    public String getId() {
         return id;
     }
 
-    public void id(String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
     public abstract boolean acao(JDA jda);
 
     public Document toMongo(){
-        this.guildId = guildId;
-        this.id = id;
-        this.canal = canal;
-        this.horario = horario;
-        this.mensagem = mensagem;
         if(titulo == null || titulo.isEmpty())
             this.titulo = "Alarme programado";
-        else
-            this.titulo = titulo;
         return new Document("guildId",guildId)
                 .append("id",id)
                 .append("canal",canal)
